@@ -15,7 +15,7 @@
 .navbar-brand img {
     height: 100%; /* L'image occupe toute la hauteur de son conteneur */
     max-width: none; /* Permet à l'image de s'étendre au-delà de la largeur maximale initialement fixée */
-    object-fit: contain; /* S'assure que l'image reste dans son conteneur tout en gardant ses proportions */
+    object-fit: contain;
 }
 
 .navbar-menu {
@@ -28,7 +28,7 @@
     text-decoration: none;
     padding: 10px 15px;
     transition: background-color 0.3s;
-    line-height: 120px; /* Aligne les liens de navigation verticalement avec le logo */
+    line-height: 120px;
 }
 
 .navbar-item:hover {
