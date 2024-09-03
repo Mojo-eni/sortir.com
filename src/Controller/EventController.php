@@ -2,7 +2,12 @@
 
 namespace App\Controller;
 
+use App\Repository\CampusRepository;
+use App\Repository\CityRepository;
 use App\Repository\EventRepository;
+use App\Repository\PlaceRepository;
+use App\Repository\StatusRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -26,7 +31,8 @@ class EventController extends AbstractController
      * @param $statusRepository
      * @param $userRepository
      */
-    public function __construct($eventRepository, $cityRepository, $campusRepository, $placeRepository, $statusRepository, $userRepository)
+    public function __construct(EventRepository $eventRepository,CityRepository $cityRepository,CampusRepository $campusRepository,
+                                PlaceRepository $placeRepository,StatusRepository $statusRepository,UserRepository $userRepository)
     {
         $this->eventRepository = $eventRepository;
         $this->cityRepository = $cityRepository;
