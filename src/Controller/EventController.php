@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Repository\CampusRepository;
 use App\Repository\CityRepository;
 use App\Repository\EventRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PlaceRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -44,10 +46,17 @@ class EventController extends AbstractController
 
 
     #[Route('/', name: '_list')]
-    public function index(): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $events = $this->eventRepository->findAll();
+        $campuses = $this->campusRepository->findAll();
+        $participants = $this->userRepository->findAll();
+
         return $this->render('event/index.html.twig', [
             'controller_name' => 'EventController',
+            'events' => $events,
+            'campuses' => $campuses,
+            'participants' => $participants,
         ]);
     }
 }

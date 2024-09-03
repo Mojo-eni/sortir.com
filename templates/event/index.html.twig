@@ -9,12 +9,19 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
+    <h1>Tous ensemble avec Lenny!</h1>
+    <label for="campus-select">
+        Filtrer les sorties
+    </label>
+    <select id = campus-select>
+        {% for campus in campuses %}
+            <option>{{ campus.name }}</option>
+        {%  endfor %}
+    </select>
     <ul>
-        <li>Your controller at <code>C:/wamp64/www/sortir.com/src/Controller/EventController.php</code></li>
-        <li>Your template at <code>C:/wamp64/www/sortir.com/templates/event/index.html.twig</code></li>
+        {% for event in events %}
+            <li>{{ event.name }} in {{ event.place.name }}, {{ event.place.city.name }}</li>
+        {%  endfor %}
     </ul>
 </div>
 {% endblock %}
