@@ -44,6 +44,10 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?Place $place = null;
 
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $organizer = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -153,6 +157,18 @@ class Event
     public function setPlace(?Place $place): static
     {
         $this->place = $place;
+
+        return $this;
+    }
+
+    public function getOrganizer(): ?User
+    {
+        return $this->organizer;
+    }
+
+    public function setOrganizer(?User $organizer): static
+    {
+        $this->organizer = $organizer;
 
         return $this;
     }
