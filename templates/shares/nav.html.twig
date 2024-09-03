@@ -1,0 +1,18 @@
+<nav class="navbar">
+    <div class="navbar-brand">
+        <a href="{{ path('app_login') }}">
+            <img src="{{ asset('image/LOGO1.png') }}" alt="Logo" />
+        </a>
+
+    </div>
+    <div class="navbar-menu">
+        <a href="{{ path('app_login') }}" class="navbar-item">Home</a>
+        <a href="{{ path('app_login') }}" class="navbar-item">All Wishes</a>
+        {# # {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %} #}
+
+            <a href="{{ path('app_login') }}" class="navbar-item">Logout</a>
+        {# # {% else %}
+        <a href="{{ path('app_login') }}" class="navbar-item">Login</a>
+        {% endif %} #}
+    </div>
+</nav>

@@ -1,0 +1,36 @@
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Sépare les éléments pour qu'ils soient aux extrémités */
+    align-items: center; /* Aligne les éléments verticalement au centre */
+    padding: 10px 20px; /* Ajoute un peu de padding pour de l'espace autour */
+    background-color: #dbedfb;
+    height: 120px; /* Hauteur fixe de la navbar */
+}
+
+.navbar-brand {
+    height: 100%; /* Hauteur de la navbar pour contenir l'image */
+    max-height: 100%; /* Assurez-vous que le conteneur du logo utilise toute la hauteur */
+}
+
+.navbar-brand img {
+    height: 100%; /* L'image occupe toute la hauteur de son conteneur */
+    max-width: none; /* Permet à l'image de s'étendre au-delà de la largeur maximale initialement fixée */
+    object-fit: contain; /* S'assure que l'image reste dans son conteneur tout en gardant ses proportions */
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-item {
+    color: #001e39;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: background-color 0.3s;
+    line-height: 120px; /* Aligne les liens de navigation verticalement avec le logo */
+}
+
+.navbar-item:hover {
+    background-color: #dbedfb;
+}
