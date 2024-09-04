@@ -2,10 +2,14 @@
 
 namespace App\Form;
 
+use App\Entity\Campus;
 use App\Entity\User;
 
+use mysql_xdevapi\TableSelect;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
@@ -54,10 +58,15 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Active',
                 'required' => false,
             ])
+            ->add('campus', EntityType::class, [
+                'class' => Campus::class,
+                'choice_label' => 'name',
+                'label' => 'Campus',
+                'required' => false,
+                'placeholder' => 'Sélectionnez un campus',
+            ])
 
             ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
