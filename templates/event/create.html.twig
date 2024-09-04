@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle sortie{% endblock %}
+
+{% block body %}
+    <div>
+        <h1>Créer une sortie</h1>
+        {{ form_start(eventForm) }}
+
+        <div class="group">
+            {{ form_label(eventForm.name) }}
+            {{ form_widget(eventForm.name) }}
+            {{ form_errors(eventForm.name) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.eventStart) }}
+            {{ form_widget(eventForm.eventStart) }}
+            {{ form_errors(eventForm.eventStart) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.participationDeadline) }}
+            {{ form_widget(eventForm.participationDeadline) }}
+            {{ form_errors(eventForm.participationDeadline) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.participantLimit) }}
+            {{ form_widget(eventForm.participantLimit) }}
+            {{ form_errors(eventForm.participantLimit) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.duration) }}
+            {{ form_widget(eventForm.duration) }}
+            {{ form_errors(eventForm.duration) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.description) }}
+            {{ form_widget(eventForm.description) }}
+            {{ form_errors(eventForm.description) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.campus) }}
+            {{ form_widget(eventForm.campus) }}
+            {{ form_errors(eventForm.campus) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.city) }}
+            {{ form_widget(eventForm.city) }}
+            {{ form_errors(eventForm.city) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.place) }}
+            {{ form_widget(eventForm.place) }}
+            {{ form_errors(eventForm.place) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.address) }}
+            {{ form_widget(eventForm.address) }}
+            {{ form_errors(eventForm.address) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.zipcode) }}
+            {{ form_widget(eventForm.zipcode) }}
+            {{ form_errors(eventForm.zipcode) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.latitude) }}
+            {{ form_widget(eventForm.latitude) }}
+            {{ form_errors(eventForm.latitude) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.longitude) }}
+            {{ form_widget(eventForm.longitude) }}
+            {{ form_errors(eventForm.longitude) }}
+        </div>
+        <div class="group">
+            {{ form_label(eventForm.save) }}
+            {{ form_widget(eventForm.save) }}
+        </div>
+
+        {{ form_end(eventForm) }}
+    </div>
+{% endblock %}

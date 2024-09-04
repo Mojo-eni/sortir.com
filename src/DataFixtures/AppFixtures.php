@@ -67,11 +67,15 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
-    private function addUsers(int $number, ObjectManager $manager)
+    private function addUsers(int $number, ObjectManager $manager): void
     {
         for ($i = 0; $i < $number; $i++) {
             $user = new User();
-            $user->setNameSurname($this->faker->firstName())
+            $user->setPseudo("user ".$i)
+                ->setLastName($this->faker->lastName())
+                ->setFirstName($this->faker->firstName())
+                ->setEmail($this->faker->email())
+                ->setActif(true)
                 ->setRoles(['ROLE_USER'])
                 ->setPassword(
                     $this->userPasswordHasher->hashPassword(
