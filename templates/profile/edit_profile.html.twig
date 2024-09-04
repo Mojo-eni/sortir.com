@@ -1,0 +1,17 @@
+{# templates/profile/edit.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+    <h1>Edit Profile</h1>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+
+    <button class="btn btn-success">Save changes</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_profile') }}" class="btn btn-secondary">Cancel</a>
+{% endblock %}
