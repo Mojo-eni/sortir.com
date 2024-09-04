@@ -1,0 +1,21 @@
+{# templates/profile/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block body %}
+    <h1>Profile Details</h1>
+
+    <ul>
+        <li><strong>Pseudo:</strong> {{ user.pseudo }}</li>
+        <li><strong>First Name:</strong> {{ user.firstName }}</li>
+        <li><strong>Last Name:</strong> {{ user.lastName }}</li>
+        <li><strong>Email:</strong> {{ user.email }}</li>
+        <li><strong>Phone:</strong> {{ user.phone }}</li>
+        <li><strong>Active:</strong> {{ user.isActif ? 'Yes' : 'No' }}</li>
+        <li><strong>Roles:</strong> {{ user.roles|join(', ') }}</li>
+    </ul>
+
+    <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">Modifier</a>
+{% endblock %}
