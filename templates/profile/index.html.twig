@@ -16,6 +16,11 @@
         <li><strong>Active:</strong> {{ user.isActif ? 'Yes' : 'No' }}</li>
         <li><strong>Roles:</strong> {{ user.roles|join(', ') }}</li>
         <li><strong>Campus:</strong> {{ user.campus.name }}</li>
+        {% if user.photo %}
+            <img src="{{ asset('uploads/photos/' ~ user.photo) }}" alt="Photo de profil">
+        {% else %}
+            <p>Aucune photo de profil n'est disponible.</p>
+        {% endif %}
     </ul>
 
     <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">Modifier</a>

@@ -11,6 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -53,6 +54,12 @@ class RegistrationFormType extends AbstractType
                         'message' => 'Please enter your email address',
                     ]),
                 ],
+            ])
+            ->add('photoFile', FileType::class, [
+                'label' => 'Photo de profil (Fichier image)',
+                'required' => false,
+                'mapped' => false, // Important car ce champ ne correspond pas directement à une propriété de l'entité
+                'attr' => ['accept' => 'image/*'],
             ])
             ->add('actif', CheckboxType::class, [
                 'label' => 'Active',
