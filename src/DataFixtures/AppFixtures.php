@@ -67,7 +67,7 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
-    private function addUsers(int $number, ObjectManager $manager)
+    private function addUsers(int $number, ObjectManager $manager): void
     {
         $campuses = $manager->getRepository(Campus::class)->findAll();
         for ($i = 0; $i < $number; $i++) {

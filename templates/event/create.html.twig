@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle sortie{% endblock %}
+
+{% block body %}
+    <div>
+        <h1>Créer une sortie</h1>
+        {{ form_start(eventForm) }}
+
+        <div class="group">
+            {{ form_label(eventForm.name) }}
+            {{ form_widget(eventForm.name) }}
+            {{ form_errors(eventForm.name) }}
+        </div>
+
+        <div class="group">
+            {{ form_label(eventForm.eventStart) }}
+            {{ form_widget(eventForm.eventStart) }}
+            {{ form_errors(eventForm.eventStart) }}
+        </div>
+
+        <div class="group">
+            {{ form_label(eventForm.participationDeadline) }}
+            {{ form_widget(eventForm.participationDeadline) }}
+            {{ form_errors(eventForm.participationDeadline) }}
+        </div>
+
+        <div class="group">
+            {{ form_label(eventForm.participantLimit) }}
+            {{ form_widget(eventForm.participantLimit) }}
+            {{ form_errors(eventForm.participantLimit) }}
+        </div>
+
+        <div class="group">
+            {{ form_label(eventForm.duration) }}
+            {{ form_widget(eventForm.duration) }}
+            {{ form_errors(eventForm.duration) }}
+        </div>
+
+        <div class="group">
+            {{ form_label(eventForm.description) }}
+            {{ form_widget(eventForm.description) }}
+            {{ form_errors(eventForm.description) }}
+        </div>
+
+        <div class="group">
+            {{ form_label(eventForm.campus) }}
+            {{ form_widget(eventForm.campus) }}
+            {{ form_errors(eventForm.campus) }}
+        </div>
+
+        <div class="group">
+            <label for="city">Ville</label>
+            <select id="city" name="{{ field_name(eventForm.city) }}" onchange="clicCitySelect(this)" >
+                {% for name, id in field_choices(eventForm.city) %}
+                    <option value="{{ id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
+            {% for error in field_errors(eventForm.city) %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="group">
+            <label for="place">Lieu</label>
+            <select id="place" name="{{ field_name(eventForm.place) }}" onchange="clicPlaceSelect(this)" >
+                {% for name, id in field_choices(eventForm.place) %}
+                    <option value="{{ id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
+            {% for error in field_errors(eventForm.place) %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="group">
+            <label for="address">Rue</label>
+            <input type="text"
+                   id="address"
+                   name="{{ field_name(eventForm.address) }}"
+                   value="{{ field_value(eventForm.address) }}"
+                   placeholder=""
+                   class="form-control"
+                   disabled
+            >
+            {% for error in field_errors(eventForm.address) %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="group">
+            <label for="zipcode">Code postal</label>
+            <input type="text"
+                   id="zipcode"
+                   name="{{ field_name(eventForm.zipcode) }}"
+                   value="{{ field_value(eventForm.zipcode) }}"
+                   placeholder=""
+                   class="form-control"
+                   disabled
+            >
+            {% for error in field_errors(eventForm.zipcode) %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="group">
+            <label for="latitude">Latitude</label>
+            <input type="text"
+                   id="latitude"
+                   name="{{ field_name(eventForm.latitude) }}"
+                   value="{{ field_value(eventForm.latitude) }}"
+                   placeholder=""
+                   class="form-control"
+                   disabled
+            >
+            {% for error in field_errors(eventForm.latitude) %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="group">
+            <label for="longitude">Longitude</label>
+            <input type="text"
+                   id="longitude"
+                   name="{{ field_name(eventForm.longitude) }}"
+                   value="{{ field_value(eventForm.longitude) }}"
+                   placeholder=""
+                   class="form-control"
+                   disabled
+            >
+            {% for error in field_errors(eventForm.longitude) %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="group">
+            {{ form_label(eventForm.save) }}
+            {{ form_widget(eventForm.save) }}
+        </div>
+
+        <div class="group">
+            {{ form_label(eventForm.publish) }}
+            {{ form_widget(eventForm.publish) }}
+        </div>
+
+        <div class="group">
+            {{ form_label(eventForm.cancel) }}
+            {{ form_widget(eventForm.cancel) }}
+        </div>
+
+        {{ form_end(eventForm) }}
+    </div>
+
+
+
+
+
+{% endblock %}
+
+{% block ajax %}
+    <script>
+        async function clicPlaceSelect(element) {
+            let placeID = element.value;
+            let response = await fetch( '/event/get-place-info/' + placeID);
+            let result = await response.json();
+            let addressInput = document.getElementById('address');
+            let latitudeInput = document.getElementById('latitude');
+            let longitudeInput = document.getElementById('longitude');
+            addressInput.value = result.address;
+            latitudeInput.value = result.latitude;
+            longitudeInput.value = result.longitude;
+        }
+    </script>
+
+    <script>
+        async function clicCitySelect(element) {
+            let cityID = element.value;
+            let response = await fetch('/event/get-city-places/' + cityID);
+            let result = await response.json();
+            let placeTable = JSON.parse(result);
+            let placeSelect = document.querySelector("#place");
+            placeSelect.innerHTML = "";
+
+            for(let i = 0; i < placeTable.length; i++) {
+                let opt = placeTable[i];
+                let el = document.createElement("option");
+                el.textContent = opt.name;
+                el.value = opt.id;
+                placeSelect.appendChild(el);
+            }
+        }
+    </script>
+{% endblock %}
