@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\City;
 use App\Entity\Event;
 use App\Entity\Place;
 use App\Form\EventType;
@@ -94,10 +95,17 @@ class EventController extends AbstractController
         ]);
     }
 
+    #[Route('/get-city-info/{id}', name: 'get_city_info')]
+    public function getCityInfo(City $city): JsonResponse{
+        return new JsonResponse([
+            'zipcode' => $city->getZipcode()
+        ]);
+    }
+
     #[Route('/get-city-places/{id}', name: 'get_city_places')]
     public function getCityPlaces(Request $request, PlaceRepository $repo, string $id = '1'): Response
     {
-        $characters = json_encode($repo->findByCityId($id));
-        return $this->json($characters);
+        $places = json_encode($repo->findByCityId($id));
+        return $this->json($places);
     }
 }
