@@ -2,10 +2,16 @@
 
 {% block title %}Log in!{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+{% endblock %}
+
 {% block body %}
-    <div class="form-container">
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <form method="post">
+    <div class="card login-card">
+        <div class="card-body">
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
 
             {% if app.user %}
                 <div class="mb-3">
@@ -13,32 +19,28 @@
                 </div>
             {% endif %}
 
-            <div class="form-group">
-                <label for="inputEmail">Email</label>
-                <input type="email"  name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-            </div>
+            <h1 class="h3 mb-3 font-weight-normal text-center">Please sign in</h1>
 
-            <div class="form-group">
-                <label for="inputPassword">Password</label>
-                <div class="input-icon">
-                    <i class="fa fa-lock"></i>
-                    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+            <form method="post">
+                <div class="form-group">
+                    <label for="username">Pseudo</label>
+                    <input type="text" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="username" required autofocus>
                 </div>
-            </div>
 
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+                </div>
 
-            {# Uncomment to activate remember me functionality #}
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-            <div class="checkbox mb-3">
-                <label>
-                    <input type="checkbox" name="_remember_me"> Remember me
-                </label>
-            </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" name="_remember_me" id="_remember_me" class="form-check-input">
+                    <label for="_remember_me" class="form-check-label">Remember me</label>
+                </div>
 
-
-            <button class="btn btn-lg btn-primary" type="submit">Sign in</button>
-        </form>
-
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            </form>
+        </div>
     </div>
 {% endblock %}

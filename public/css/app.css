@@ -34,3 +34,25 @@
 .navbar-item:hover {
     background-color: #dbedfb;
 }
+
+/* LOGIN FORM */
+/* public/css/styles.css */
+
+.login-card {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: wheat;
+}
+
+.login-card .card-body {
+    padding: 20px;
+}
+
+.login-card .text-center {
+    text-align: center;
+}
+
+.btn-block {
+    width: 50%;
+}
