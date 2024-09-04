@@ -27,7 +27,7 @@ class EventType extends AbstractType
             ])
             ->add('eventStart', DateTimeType::class, [
                 'widget' => 'single_text',
-                'label' => 'Début de la sortie',
+                'label' => 'Date et heure de la sortie',
             ])
             ->add('participationDeadline', DateType::class, [
                 'widget' => 'single_text',

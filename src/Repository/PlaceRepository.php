@@ -40,4 +40,16 @@ class PlaceRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findByCityId(string $id)
+    {
+        return $this->createQueryBuilder('p')
+            ->select(['p.name', 'p.id'])
+            ->leftJoin('p.city', 'c')
+            ->andWhere('c.id = :val')
+            ->setParameter('val', $id)
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

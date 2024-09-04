@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\Place;
 use App\Form\EventType;
 use App\Repository\CampusRepository;
 use App\Repository\CityRepository;
@@ -13,6 +14,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -81,5 +83,21 @@ class EventController extends AbstractController
             'controller_name' => 'EventController',
             'eventForm' => $eventForm->createView()
         ]);
+    }
+
+    #[Route('/get-place-info/{id}', name: 'get_place_info')]
+    public function getPlaceInfo(Place $place): JsonResponse{
+        return new JsonResponse([
+            'address' => $place->getAddress(),
+            'latitude' => $place->getLatitude(),
+            'longitude' => $place->getLongitude()
+        ]);
+    }
+
+    #[Route('/get-city-places/{id}', name: 'get_city_places')]
+    public function getCityPlaces(Request $request, PlaceRepository $repo, string $id = '1'): Response
+    {
+        $characters = json_encode($repo->findByCityId($id));
+        return $this->json($characters);
     }
 }

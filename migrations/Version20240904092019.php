@@ -21,13 +21,11 @@ final class Version20240904092019 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE event CHANGE participation_deadline participation_deadline DATETIME NOT NULL');
-        $this->addSql('ALTER TABLE user RENAME INDEX uniq_identifier_name_surname TO UNIQ_IDENTIFIER_PSEUDO');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE `user` RENAME INDEX uniq_identifier_pseudo TO UNIQ_IDENTIFIER_NAME_SURNAME');
         $this->addSql('ALTER TABLE event CHANGE participation_deadline participation_deadline DATE NOT NULL');
     }
 }
