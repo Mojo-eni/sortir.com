@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 
+use App\Entity\User;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -50,6 +51,25 @@ class ProfileController extends AbstractController
         return $this->render('profile/edit_profile.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/profiles', name: 'app_profiles')]
+    public function showListUsers(EntityManagerInterface $entityManager): Response
+    {
+        $users= $entityManager-> getRepository(User::class)->findAll();
+
+        return $this->render('profile/list_users.html.twig', [ 'users' => $users]);
+    }
+
+
+    /**
+     *@Route("/detail/{id}" , name ="_detail_id")
+     */
+    #[Route('/profile/{id}', name: 'app_profile_id')]
+    public function UserDetails(EntityManagerInterface $entityManager, int $id): Response
+    {
+        $user = $entityManager->getRepository(User::class)->find($id);
+        return $this->render('profile/user_detail.html.twig',['user' => $user] );
     }
 
 }
