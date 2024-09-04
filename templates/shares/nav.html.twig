@@ -1,18 +1,20 @@
 <nav class="navbar">
     <div class="navbar-brand">
-        <a href="{{ path('app_login') }}">
+        <a href="{{ path('app_event_list') }}">
             <img src="{{ asset('image/LOGO1.png') }}" alt="Logo" />
         </a>
 
     </div>
     <div class="navbar-menu">
-        <a href="{{ path('app_login') }}" class="navbar-item">Home</a>
-        <a href="{{ path('app_login') }}" class="navbar-item">Profile</a>
-        {# # {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %} #}
 
-            <a href="{{ path('app_login') }}" class="navbar-item">Logout</a>
-        {# # {% else %}
-        <a href="{{ path('app_login') }}" class="navbar-item">Login</a>
-        {% endif %} #}
+         {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+             <a href="{{ path('app_event_list') }}" class="navbar-item">Home</a>
+
+             <a href="{{ path('app_profile') }}" class="navbar-item">Profile</a>
+            <a href="{{ path('app_logout') }}" class="navbar-item">Logout</a>
+
+        {# {% else %}
+        { <a href="{{ path('app_login') }}" class="navbar-item">Login</a>}#}
+        {% endif %}
     </div>
 </nav>
