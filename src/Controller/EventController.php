@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\ListEventFormType;
 use App\Repository\CampusRepository;
 use App\Repository\CityRepository;
 use App\Repository\EventRepository;
@@ -52,11 +53,16 @@ class EventController extends AbstractController
         $campuses = $this->campusRepository->findAll();
         $participants = $this->userRepository->findAll();
 
+
+        $listForm = $this->createForm(ListEventFormType::class);
+        $listForm->handleRequest($request);
+
         return $this->render('event/index.html.twig', [
             'controller_name' => 'EventController',
             'events' => $events,
             'campuses' => $campuses,
             'participants' => $participants,
+            'listForm' => $listForm,
         ]);
     }
 }
