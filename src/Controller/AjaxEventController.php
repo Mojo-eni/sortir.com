@@ -17,4 +17,11 @@ class AjaxEventController extends AbstractController
         $events = $eventRepository->findByCampusId($id);
         return new JsonResponse($events);
     }
+
+    #[Route('/sort-data/{keyword}', name: 'filter-keyword')]
+    public function filterKeyword(EventRepository $eventRepository, $id = 1): JsonResponse
+    {
+        $events = $eventRepository->findByCampusId($id);
+        return new JsonResponse($events);
+    }
 }

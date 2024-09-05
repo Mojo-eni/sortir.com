@@ -24,7 +24,7 @@ class ListEventFormType extends AbstractType
                 'choice_label' => 'name',
                 'label' => "Campus"
             ])
-            ->add('name', TextType::class, [
+            ->add('keyword', TextType::class, [
                 'mapped' => false,
                 'label' => 'Keyword',
                 'required' => false,

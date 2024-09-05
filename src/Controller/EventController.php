@@ -63,6 +63,37 @@ class EventController extends AbstractController
         $listForm = $this->createForm(ListEventFormType::class);
         $listForm->handleRequest($request);
 
+        if ($listForm->isSubmitted() && $listForm->isValid()) {
+            // Get the search query
+            $query = $request->get('list_event_form');
+            $events = $this->eventRepository->findBy(['campus' => $query['campus']]);
+            // Filter the data
+            if ($query['keyword']) {
+
+                $events = array_filter($events, function ($item) use ($query) {
+                    return stripos($item->getName(), $query['keyword']) !== false;
+                });
+            }
+
+            if ($query['dateTo'] || $query['dateFrom']) {
+                $events = array_filter($events, function ($item) use ($query) {
+                    $eventDate = $item->getEventStart();
+                    $startDate = $query['dateFrom'];
+                    $endDate = $query['dateTo'];
+                    if ($startDate && $endDate) {
+                        return $eventDate >= $startDate && $eventDate <= $endDate;
+                    } else if ($startDate) {
+                        return $eventDate >= $startDate;
+                    } else if ($endDate) {
+                        return $eventDate <= $endDate;
+                    }
+                    return false;
+                }
+                );
+            }
+        }
+
+
         return $this->render('event/index.html.twig', [
             'controller_name' => 'EventController',
             'events' => $events,

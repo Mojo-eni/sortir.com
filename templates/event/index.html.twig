@@ -27,7 +27,7 @@
 
         <ul id="event_liste">
             {% for event in events %}
-                <li>{{ event.name }} in {{ event.place.name }}, {{ event.place.city.name }} CAMPUS {{ event.campus.id }}</li>
+                <li>{{ event.name }} in {{ event.place.name }}, {{ event.place.city.name }} CAMPUS {{ event.campus.id }} LE {{ event.eventStart|date("m/d/Y", false) }}</li>
             {%  endfor %}
         </ul>
     </div>
@@ -35,7 +35,22 @@
         <script>
             async function clicCampusSelect(element) {
                 let campusId = element.value;
-                console.log('Campus ID : ' + campusId);
+                let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
+                let result = await response.json();
+
+                let listContainer = document.getElementById("event_liste");
+                listContainer.innerHTML = "";
+
+                for(let i = 0; i < result.length; i++) {
+                    let opt = result[i];
+                    let el = document.createElement("li");
+                    el.textContent = opt.name;
+                    el.value = opt.id;
+                    listContainer.appendChild(el);
+                }
+            }
+            async function searchKeyword(element) {
+                let keyword = element.value;
                 let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
                 let result = await response.json();
                 console.log(result);
