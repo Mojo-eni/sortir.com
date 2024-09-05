@@ -3,18 +3,71 @@
 {% block title %}Hello EventController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <div class="example-wrapper">
+        <h1>Tous ensemble avec Lenny!</h1>
+        <div>
+            <label>Date du jour : {{ "now"|date("Y-m-d") }}</label>
+            <label>Participant.e : {{ app.user.pseudo }}</label>
+        </div>
+        <div>{{ form_start(listForm) }}
+            <label class="form-label" for="{{ field_label(listForm.campus) }}">Filtrer les sorties</label>
+            <select id = "{{ field_label(listForm.campus) }}" class="form-control" onchange="clicCampusSelect(this)"
+                    name="{{ field_name(listForm.campus) }}">
+                {% for name, id in field_choices(listForm.campus) %}
+                    <option value="{{ id }}">{{ name }}</option>
+                {%  endfor %}
+            </select>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/wamp64/www/sortir.com/src/Controller/EventController.php</code></li>
-        <li>Your template at <code>C:/wamp64/www/sortir.com/templates/event/index.html.twig</code></li>
-    </ul>
-</div>
+        </div>{{ form_end(listForm) }}
+
+        <ul id="event_liste">
+            {% for event in events %}
+                <li>{{ event.name }} in {{ event.place.name }}, {{ event.place.city.name }} CAMPUS {{ event.campus.id }} LE {{ event.eventStart|date("m/d/Y", false) }}</li>
+            {%  endfor %}
+        </ul>
+    </div>
+    {% block ajax %}
+        <script>
+            async function clicCampusSelect(element) {
+                let campusId = element.value;
+                let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
+                let result = await response.json();
+
+                let listContainer = document.getElementById("event_liste");
+                listContainer.innerHTML = "";
+
+                for(let i = 0; i < result.length; i++) {
+                    let opt = result[i];
+                    let el = document.createElement("li");
+                    el.textContent = opt.name;
+                    el.value = opt.id;
+                    listContainer.appendChild(el);
+                }
+            }
+            async function searchKeyword(element) {
+                let keyword = element.value;
+                let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
+                let result = await response.json();
+                console.log(result);
+
+                let listContainer = document.getElementById("event_liste");
+                listContainer.innerHTML = "";
+
+                for(let i = 0; i < result.length; i++) {
+                    let opt = result[i];
+                    let el = document.createElement("li");
+                    console.log(opt.name);
+                    el.textContent = opt.name;
+                    el.value = opt.id;
+                    listContainer.appendChild(el);
+                }
+            }
+        </script>
+    {% endblock %}
 {% endblock %}
+

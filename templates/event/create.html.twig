@@ -149,6 +149,10 @@
         </div>
 
         {{ form_end(eventForm) }}
+
+        <div>
+            <button><a href="{{ path('app_event_list') }}">Annuler</a></button>
+        </div>
     </div>
 
 
@@ -159,6 +163,19 @@
 
 {% block ajax %}
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            selectInit();
+        });
+
+        function selectInit() {
+            let placeSelect = document.querySelector("#place");
+            placeSelect.innerHTML = "";
+            let el = document.createElement("option");
+            el.textContent = "---";
+            el.value = "";
+            placeSelect.appendChild(el);
+        }
+
         async function clicPlaceSelect(element) {
             let placeID = element.value;
             let response = await fetch( '/event/get-place-info/' + placeID);
@@ -166,14 +183,23 @@
             let addressInput = document.getElementById('address');
             let latitudeInput = document.getElementById('latitude');
             let longitudeInput = document.getElementById('longitude');
-            addressInput.value = result.address;
-            latitudeInput.value = result.latitude;
-            longitudeInput.value = result.longitude;
+            if(placeID) {
+                let response = await fetch( '/event/get-place-info/' + placeID);
+                let result = await response.json();
+                addressInput.value = result.address;
+                latitudeInput.value = result.latitude;
+                longitudeInput.value = result.longitude;
+            } else {
+                addressInput.value = "";
+                latitudeInput.value = "";
+                longitudeInput.value = "";
+            }
         }
     </script>
 
     <script>
         async function clicCitySelect(element) {
+            // récupération des lieux liés à la ville
             let cityID = element.value;
             let response = await fetch('/event/get-city-places/' + cityID);
             let result = await response.json();
@@ -181,6 +207,10 @@
             let placeSelect = document.querySelector("#place");
             placeSelect.innerHTML = "";
 
+            let el = document.createElement("option");
+            el.textContent = "---";
+            el.value = "";
+            placeSelect.appendChild(el);
             for(let i = 0; i < placeTable.length; i++) {
                 let opt = placeTable[i];
                 let el = document.createElement("option");
@@ -188,6 +218,20 @@
                 el.value = opt.id;
                 placeSelect.appendChild(el);
             }
+
+            // récupération des détails de la ville (code postal)
+            let infoResponse = await fetch('/event/get-city-info/' + cityID);
+            let infoResult = await infoResponse.json();
+            let zipcodeInput = document.getElementById('zipcode');
+            zipcodeInput.value = infoResult.zipcode;
+
+            // effacement des infos du lieu sélectionné
+            let addressInput = document.getElementById('address');
+            let latitudeInput = document.getElementById('latitude');
+            let longitudeInput = document.getElementById('longitude');
+            addressInput.value = "";
+            latitudeInput.value = "";
+            longitudeInput.value = "";
         }
     </script>
 {% endblock %}
