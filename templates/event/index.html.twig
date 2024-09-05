@@ -10,6 +10,10 @@
 
     <div class="example-wrapper">
         <h1>Tous ensemble avec Lenny!</h1>
+        <div>
+            <label>Date du jour : {{ "now"|date("Y-m-d") }}</label>
+            <label>Participant.e : {{ app.user.pseudo }}</label>
+        </div>
         <div>{{ form_start(listForm) }}
             <label class="form-label" for="{{ field_label(listForm.campus) }}">Filtrer les sorties</label>
             <select id = "{{ field_label(listForm.campus) }}" class="form-control" onchange="clicCampusSelect(this)"
@@ -18,34 +22,6 @@
                     <option value="{{ id }}">{{ name }}</option>
                 {%  endfor %}
             </select>
-
-            <label for="searchbar"> Search
-                <input id="searchbar" type="text">
-            </label>
-
-            <div id="dateSearch">
-                <label>Entre
-                    <input type="date">
-                </label>
-                <label>Et
-                    <input type="date">
-                </label>
-            </div>
-
-            <div id="checks">
-                <label>I'm organizing
-                    <input type="checkbox">
-                </label>
-                <label>I'm attending
-                    <input type="checkbox">
-                </label>
-                <label>Not attending
-                    <input type="checkbox">
-                </label>
-                <label>Past
-                    <input type="checkbox">
-                </label>
-            </div>
 
         </div>{{ form_end(listForm) }}
 
