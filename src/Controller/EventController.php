@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\ListEventFormType;
+use App\Entity\City;
 use App\Entity\Event;
 use App\Entity\Place;
 use App\Form\EventType;
@@ -15,8 +16,8 @@ use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Exception\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -71,19 +72,30 @@ class EventController extends AbstractController
         ]);
     }
 
+
     #[Route('/create', name: '_create')]
     public function create(Request $request, EntityManagerInterface $em): Response
     {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
         $event = new Event();
         $eventForm = $this->createForm(EventType::class, $event);
         $eventForm->handleRequest($request);
+
         if ($eventForm->isSubmitted() && $eventForm->isValid()) {
             $event = $eventForm->getData();
             $event->getParticipationDeadline()->setTime(0,0);
             // TODO vérifier que la date limite d'inscription est avant la date de la sortie ?
-            // TODO récupérer les bons statut et organisateur
-            $event->setStatus($this->statusRepository->findOneBy(['name' => 'status 0']));
-            $event->setOrganizer($this->userRepository->findOneBy(['pseudo' => 'user 0']));
+            if ($eventForm->getClickedButton() === $eventForm->get('save')) {
+                $event->setStatus($this->statusRepository->findOneBy(['name' => 'Créée']));
+            } elseif ($eventForm->getClickedButton() === $eventForm->get('publish')) {
+                $event->setStatus($this->statusRepository->findOneBy(['name' => 'Ouverte']));
+            } elseif ($eventForm->getClickedButton() === $eventForm->get('cancel')) {
+                return $this->redirectToRoute('app_event_list');
+            }
+            $event->setOrganizer($user);
             try{
                 $em->persist($event);
                 $em->flush();
@@ -107,10 +119,17 @@ class EventController extends AbstractController
         ]);
     }
 
+    #[Route('/get-city-info/{id}', name: 'get_city_info')]
+    public function getCityInfo(City $city): JsonResponse{
+        return new JsonResponse([
+            'zipcode' => $city->getZipcode()
+        ]);
+    }
+
     #[Route('/get-city-places/{id}', name: 'get_city_places')]
     public function getCityPlaces(Request $request, PlaceRepository $repo, string $id = '1'): Response
     {
-        $characters = json_encode($repo->findByCityId($id));
-        return $this->json($characters);
+        $places = json_encode($repo->findByCityId($id));
+        return $this->json($places);
     }
 }
