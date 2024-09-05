@@ -64,9 +64,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
+    private Collection $participations;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
+        $this->participations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -254,6 +261,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhoto(?string $photo): static
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getParticipations(): Collection
+    {
+        return $this->participations;
+    }
+
+    public function addParticipation(Event $participation): static
+    {
+        if (!$this->participations->contains($participation)) {
+            $this->participations->add($participation);
+            $participation->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipation(Event $participation): static
+    {
+        if ($this->participations->removeElement($participation)) {
+            $participation->removeParticipant($this);
+        }
 
         return $this;
     }

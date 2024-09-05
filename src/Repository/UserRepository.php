@@ -33,6 +33,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function findByEventParticipation($eventID): array {
+        // TODO
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

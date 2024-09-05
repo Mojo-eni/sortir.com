@@ -96,6 +96,19 @@ class EventController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}', name: '_details')]
+    public function details($id, Request $req, EventRepository $eRepo, UserRepository $uRepo, EntityManagerInterface $em): Response {
+        $event = $eRepo->find($id);
+        if($event) {
+            return $this->render('event/details.html.twig', [
+                'event' => $event
+            ]);
+        } else {
+            return $this->redirectToRoute('app_event_list');
+        }
+    }
+
+    // TODO déplacer dans AjaxController
     #[Route('/get-place-info/{id}', name: 'get_place_info')]
     public function getPlaceInfo(Place $place): JsonResponse{
         return new JsonResponse([
