@@ -304,6 +304,9 @@
             "./webpack.config.js"
         ]
     },
+    "symfonycasts/tailwind-bundle": {
+        "version": "v0.6.0"
+    },
     "twig/extra-bundle": {
         "version": "v3.12.0"
     }
