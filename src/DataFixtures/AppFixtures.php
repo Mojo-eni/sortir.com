@@ -24,10 +24,10 @@ class AppFixtures extends Fixture
     }
 
     public function load(ObjectManager $manager): void {
-        $this->addUsers(5, $manager);
         $this->addCities(5, $manager);
-        $this->addStatuses($manager);
         $this->addCampuses($manager);
+        $this->addUsers(5, $manager);
+        $this->addStatuses($manager);
         $this->addPlaces(10, $manager);
         $this->addEvents(10, $manager);
     }
@@ -69,6 +69,7 @@ class AppFixtures extends Fixture
 
     private function addUsers(int $number, ObjectManager $manager): void
     {
+        $campuses = $manager->getRepository(Campus::class)->findAll();
         for ($i = 0; $i < $number; $i++) {
             $user = new User();
             $user->setPseudo("user ".$i)
@@ -77,6 +78,7 @@ class AppFixtures extends Fixture
                 ->setEmail($this->faker->email())
                 ->setActif(true)
                 ->setRoles(['ROLE_USER'])
+                ->setCampus($this->faker->randomElement($campuses))
                 ->setPassword(
                     $this->userPasswordHasher->hashPassword(
                         $user,
