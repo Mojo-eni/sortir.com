@@ -143,12 +143,11 @@
             {{ form_widget(eventForm.publish) }}
         </div>
 
-        <div class="group">
-            {{ form_label(eventForm.cancel) }}
-            {{ form_widget(eventForm.cancel) }}
-        </div>
-
         {{ form_end(eventForm) }}
+
+        <div>
+            <button><a href="{{ path('app_event_list') }}">Annuler</a></button>
+        </div>
     </div>
 {% endblock %}
 
