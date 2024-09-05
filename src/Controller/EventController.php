@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\ListEventFormType;
 use App\Entity\City;
 use App\Entity\Event;
 use App\Entity\Place;
@@ -9,10 +10,10 @@ use App\Form\EventType;
 use App\Repository\CampusRepository;
 use App\Repository\CityRepository;
 use App\Repository\EventRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PlaceRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -52,12 +53,56 @@ class EventController extends AbstractController
 
 
     #[Route('/', name: '_list')]
-    public function index(): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $events = $this->eventRepository->findAll();
+        $campuses = $this->campusRepository->findAll();
+        $participants = $this->userRepository->findAll();
+
+
+        $listForm = $this->createForm(ListEventFormType::class);
+        $listForm->handleRequest($request);
+
+        if ($listForm->isSubmitted() && $listForm->isValid()) {
+            // Get the search query
+            $query = $request->get('list_event_form');
+            $events = $this->eventRepository->findBy(['campus' => $query['campus']]);
+            // Filter the data
+            if ($query['keyword']) {
+
+                $events = array_filter($events, function ($item) use ($query) {
+                    return stripos($item->getName(), $query['keyword']) !== false;
+                });
+            }
+
+            if ($query['dateTo'] || $query['dateFrom']) {
+                $events = array_filter($events, function ($item) use ($query) {
+                    $eventDate = $item->getEventStart();
+                    $startDate = $query['dateFrom'];
+                    $endDate = $query['dateTo'];
+                    if ($startDate && $endDate) {
+                        return $eventDate >= $startDate && $eventDate <= $endDate;
+                    } else if ($startDate) {
+                        return $eventDate >= $startDate;
+                    } else if ($endDate) {
+                        return $eventDate <= $endDate;
+                    }
+                    return false;
+                }
+                );
+            }
+        }
+
+
         return $this->render('event/index.html.twig', [
             'controller_name' => 'EventController',
+            'events' => $events,
+            'campuses' => $campuses,
+            'participants' => $participants,
+            'listForm' => $listForm,
         ]);
     }
+
 
     #[Route('/create', name: '_create')]
     public function create(Request $request, EntityManagerInterface $em): Response

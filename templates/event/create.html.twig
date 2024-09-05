@@ -143,12 +143,22 @@
             {{ form_widget(eventForm.publish) }}
         </div>
 
+        <div class="group">
+            {{ form_label(eventForm.cancel) }}
+            {{ form_widget(eventForm.cancel) }}
+        </div>
+
         {{ form_end(eventForm) }}
 
         <div>
             <button><a href="{{ path('app_event_list') }}">Annuler</a></button>
         </div>
     </div>
+
+
+
+
+
 {% endblock %}
 
 {% block ajax %}
@@ -168,6 +178,8 @@
 
         async function clicPlaceSelect(element) {
             let placeID = element.value;
+            let response = await fetch( '/event/get-place-info/' + placeID);
+            let result = await response.json();
             let addressInput = document.getElementById('address');
             let latitudeInput = document.getElementById('latitude');
             let longitudeInput = document.getElementById('longitude');
@@ -183,7 +195,9 @@
                 longitudeInput.value = "";
             }
         }
+    </script>
 
+    <script>
         async function clicCitySelect(element) {
             // récupération des lieux liés à la ville
             let cityID = element.value;
