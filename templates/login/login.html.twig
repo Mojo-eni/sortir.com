@@ -3,49 +3,73 @@
 {% block title %}Log in!{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+
 {% endblock %}
 
 {% block body %}
-<div class="main-content">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="bg-gray-900 border-[4px] border-blue-900 rounded-2xl hover:border-blue-500 transition-all duration-200">
+            <div class="mx-auto flex items-center space-y-4 py-16 px-12 font-semibold text-gray-500 flex-col">
 
-    <div class="card login-card">
-        <div class="card-body">
-            {% if error %}
-                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-            {% endif %}
+                <svg viewBox="0 0 24 24" class="h-12 w-12 text-white" fill="currentColor">
+                    <g>
+                        <path
+                                d="M23.643 4.937c-.835.37-1.732.62-2.675.733.962-.576 1.7-1.49 2.048-2.578-.9.534-1.897.922-2.958 1.13-.85-.904-2.06-1.47-3.4-1.47-2.572 0-4.658 2.086-4.658 4.66 0 .364.042.718.12 1.06-3.873-.195-7.304-2.05-9.602-4.868-.4.69-.63 1.49-.63 2.342 0 1.616.823 3.043 2.072 3.878-.764-.025-1.482-.234-2.11-.583v.06c0 2.257 1.605 4.14 3.737 4.568-.392.106-.803.162-1.227.162-.3 0-.593-.028-.877-.082.593 1.85 2.313 3.198 4.352 3.234-1.595 1.25-3.604 1.995-5.786 1.995-.376 0-.747-.022-1.112-.065 2.062 1.323 4.51 2.093 7.14 2.093 8.57 0 13.255-7.098 13.255-13.254 0-.2-.005-.402-.014-.602.91-.658 1.7-1.477 2.323-2.41z"
+                        ></path>
+                    </g>
+                </svg>
 
-            {% if app.user %}
-                <div class="mb-3">
-                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-                </div>
-            {% endif %}
+                <h1 class="text-white text-2xl">Sign in to Twitter</h1>
 
-            <h1 class="h3 mb-3 font-weight-normal text-center">Sign in</h1>
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
 
-            <form method="post">
-                <div class="form-group">
-                    <label for="username">Pseudo</label>
-                    <input type="text" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="username" required autofocus>
-                </div>
+                {% if app.user %}
+                    <div class="mb-3">
+                        You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                    </div>
+                {% endif %}
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
-                </div>
+                <form method="post" class="w-full">
+                    <input
+                            type="text"
+                            name="_username"
+                            id="username"
+                            value="{{ last_username }}"
+                            placeholder="Email"
+                            class="w-full p-2 bg-blue-900 rounded-md border border-gray-700 focus:border-blue-700 hover:border-blue-500 transition-all duration-200"
+                            required
+                            autofocus
+                    />
 
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <input
+                            type="password"
+                            name="_password"
+                            id="password"
+                            placeholder="Password"
+                            class="w-full p-2 bg-blue-900 rounded-md border border-gray-700 focus:border-blue-700 hover:border-blue-500 transition-all duration-200"
+                            required
+                    />
 
-                <div class="form-group form-check">
-                    <input type="checkbox" name="_remember_me" id="_remember_me" class="form-check-input">
-                    <label for="_remember_me" class="form-check-label">Remember me</label>
-                </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
+                    <input
+                            type="submit"
+                            class="w-full p-2 bg-gray-50 rounded-full font-bold text-gray-900 border-[4px] border-gray-700 hover:border-blue-500 transition-all duration-200"
+                            value="Sign in"
+                    />
 
-
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-            </form>
+                    <p class="text-gray-500 mt-4">
+                        Don't have an account?
+                        <a
+                                class="font-semibold text-white hover:text-blue-500 transition-all duration-200"
+                                href=""
+                        >Sign up</a
+                        >
+                    </p>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
