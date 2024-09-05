@@ -76,6 +76,25 @@
         </div>
 
         <div>
+            <table>
+                <thead>
+                <tr>
+                    <td>Pseudo</td>
+                    <td>Nom</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for participant in event.participants %}
+                    <tr>
+                        <td>{{ participant.pseudo }}</td>
+                        <td>{{ participant.email }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div>
             <button><a href="{{ path('app_event_list') }}">Retour</a></button>
         </div>
     </div>

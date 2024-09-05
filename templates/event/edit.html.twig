@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouvelle sortie{% endblock %}
+{% block title %}Modifier la sortie{% endblock %}
 
 {% block body %}
     <div>
-        <h1>Créer une sortie</h1>
+        <h1>Modifier la sortie</h1>
         {{ form_start(eventForm) }}
 
         <div class="group">
@@ -80,10 +80,10 @@
         <div class="group">
             <label for="description">Description</label>
             <textarea
-                   id="description"
-                   name="{{ field_name(eventForm.description) }}"
-                   placeholder=""
-                   class="form-control"
+                    id="description"
+                    name="{{ field_name(eventForm.description) }}"
+                    placeholder=""
+                    class="form-control"
             >{{ field_value(eventForm.description) }}</textarea>
             {% for error in field_errors(eventForm.description) %}
                 <div class="error">{{ error }}</div>
@@ -217,11 +217,7 @@
 
         function selectInit() {
             let placeSelect = document.querySelector("#place");
-            placeSelect.innerHTML = "";
-            let el = document.createElement("option");
-            el.textContent = "---";
-            el.value = "";
-            placeSelect.appendChild(el);
+            // TODO chercher l'option et la sélectionner ?
         }
 
         async function clicPlaceSelect(element) {
@@ -255,10 +251,6 @@
             let placeSelect = document.querySelector("#place");
             placeSelect.innerHTML = "";
 
-            let el = document.createElement("option");
-            el.textContent = "---";
-            el.value = "";
-            placeSelect.appendChild(el);
             for(let i = 0; i < placeTable.length; i++) {
                 let opt = placeTable[i];
                 let el = document.createElement("option");

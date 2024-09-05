@@ -123,8 +123,6 @@ class EventController extends AbstractController
                 $event->setStatus($this->statusRepository->findOneBy(['name' => 'Créée']));
             } elseif ($eventForm->getClickedButton() === $eventForm->get('publish')) {
                 $event->setStatus($this->statusRepository->findOneBy(['name' => 'Ouverte']));
-            } elseif ($eventForm->getClickedButton() === $eventForm->get('cancel')) {
-                return $this->redirectToRoute('app_event_list');
             }
             $event->setOrganizer($user);
             try{
@@ -153,27 +151,34 @@ class EventController extends AbstractController
         }
     }
 
-    // TODO déplacer dans AjaxController
-    #[Route('/get-place-info/{id}', name: 'get_place_info')]
-    public function getPlaceInfo(Place $place): JsonResponse{
-        return new JsonResponse([
-            'address' => $place->getAddress(),
-            'latitude' => $place->getLatitude(),
-            'longitude' => $place->getLongitude()
-        ]);
-    }
+    #[Route('/edit/{id}', name: '_edit')]
+    public function edit($id, Request $req, EventRepository $eRepo, EntityManagerInterface $em): Response {
+        $event = $eRepo->find($id);
+        // TODO vérifier si l'utilisateur connecté est l'organisateur de la sortie
 
-    #[Route('/get-city-info/{id}', name: 'get_city_info')]
-    public function getCityInfo(City $city): JsonResponse{
-        return new JsonResponse([
-            'zipcode' => $city->getZipcode()
-        ]);
-    }
+        $eventForm = $this->createForm(EventType::class, $event);
+        $eventForm->handleRequest($req);
 
-    #[Route('/get-city-places/{id}', name: 'get_city_places')]
-    public function getCityPlaces(Request $request, PlaceRepository $repo, string $id = '1'): Response
-    {
-        $places = json_encode($repo->findByCityId($id));
-        return $this->json($places);
+        if ($eventForm->isSubmitted() && $eventForm->isValid()) {
+            $event = $eventForm->getData();
+            $event->getParticipationDeadline()->setTime(0,0);
+            // TODO vérifier que la date limite d'inscription est avant la date de la sortie ?
+            if ($eventForm->getClickedButton() === $eventForm->get('save')) {
+                $event->setStatus($this->statusRepository->findOneBy(['name' => 'Créée']));
+            } elseif ($eventForm->getClickedButton() === $eventForm->get('publish')) {
+                $event->setStatus($this->statusRepository->findOneBy(['name' => 'Ouverte']));
+            }
+            try{
+                $em->persist($event);
+                $em->flush();
+            } catch (ORMException $e) {
+                var_dump($e->getMessage());
+            }
+            return $this->redirectToRoute('app_event_list');
+        }
+        return $this->render('event/edit.html.twig', [
+            'controller_name' => 'EventController',
+            'eventForm' => $eventForm->createView()
+        ]);
     }
 }
