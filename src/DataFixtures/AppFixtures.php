@@ -32,38 +32,102 @@ class AppFixtures extends Fixture
         $this->addEvents(10, $manager);
     }
 
-
-
     private function addCities(int $number, ObjectManager $manager): void {
-        for ($i = 0; $i < $number; $i++) {
-            $city = new City();
-            $city->setName('city '.$i);
-            $city->setZipcode(mt_rand(0, 9).mt_rand(0, 9).mt_rand(0, 9).mt_rand(0, 9).mt_rand(0, 9));
-            $manager->persist($city);
-        }
+        $city1 = new City();
+        $city1->setName('Saint-Herblain');
+        $city1->setZipcode('44800');
+        $manager->persist($city1);
+        $city2 = new City();
+        $city2->setName('La-Roche-sur-Yon');
+        $city2->setZipcode('85000');
+        $manager->persist($city2);
+        $city3 = new City();
+        $city3->setName('Chartres-de-Bretagne');
+        $city3->setZipcode('35131');
+        $manager->persist($city3);
+        $city4 = new City();
+        $city4->setName('Rennes');
+        $city4->setZipcode('35000');
+        $manager->persist($city4);
+        $city5 = new City();
+        $city5->setName('Guichen');
+        $city5->setZipcode('35580');
+        $manager->persist($city5);
+
+//        for ($i = 0; $i < $number; $i++) {
+//            $city = new City();
+//            $city->setName('city '.$i);
+//            $city->setZipcode(mt_rand(0, 9).mt_rand(0, 9).mt_rand(0, 9).mt_rand(0, 9).mt_rand(0, 9));
+//            $manager->persist($city);
+//        }
+
         $manager->flush();
     }
 
     private function addStatuses(ObjectManager $manager): void {
-        // create 5 cities
-        for ($i = 0; $i < 6; $i++) {
-            $status = new Status();
-            $status->setName('status '.$i);
-            $manager->persist($status);
-        }
+        $status1 = new Status();
+        $status1->setName('Créée');
+        $manager->persist($status1);
+
+        $status2 = new Status();
+        $status2->setName('Ouverte');
+        $manager->persist($status2);
+
+        $status3 = new Status();
+        $status3->setName('Clôturée');
+        $manager->persist($status3);
+
+        $status4 = new Status();
+        $status4->setName('En cours');
+        $manager->persist($status4);
+
+        $status5 = new Status();
+        $status5->setName('Passée');
+        $manager->persist($status5);
+
+        $status6 = new Status();
+        $status6->setName('Annulée');
+        $manager->persist($status6);
+
+//        // create 5 status
+//        for ($i = 0; $i < 6; $i++) {
+//            $status = new Status();
+//            $status->setName('status '.$i);
+//            $manager->persist($status);
+//        }
+
         $manager->flush();
     }
 
     private function addCampuses(ObjectManager $manager): void {
-        //accès à un repository depuis l'entitymanager
+        // accès à un repository depuis l'entitymanager
         $cities = $manager->getRepository(City::class)->findAll();
 
-        for ($i = 0; $i < 4; $i++) {
-            $campus = new Campus();
-            $campus->setName('campus '.$i);
-            $campus->setCity($this->faker->randomElement($cities));
-            $manager->persist($campus);
-        }
+        $campus1 = new Campus();
+        $campus1->setName("CDB");
+        $campus1->setCity($manager->getRepository(City::class)->findOneBy(["name" => "Chartres-de-Bretagne"]));
+        $manager->persist($campus1);
+
+        $campus2 = new Campus();
+        $campus2->setName("La Roche");
+        $campus2->setCity($manager->getRepository(City::class)->findOneBy(["name" => "La-Roche-sur-Yon"]));
+        $manager->persist($campus2);
+
+        $campus3 = new Campus();
+        $campus3->setName("Saint-Herblain");
+        $campus3->setCity($manager->getRepository(City::class)->findOneBy(["name" => "Saint-Herblain"]));
+        $manager->persist($campus3);
+
+
+        // accès à un repository depuis l'entitymanager
+//        $cities = $manager->getRepository(City::class)->findAll();
+//        for ($i = 0; $i < 4; $i++) {
+//            $campus = new Campus();
+//            $campus->setName('campus '.$i);
+//            $campus->setCity($this->faker->randomElement($cities));
+//            $manager->persist($campus);
+//        }
+
         $manager->flush();
     }
 
