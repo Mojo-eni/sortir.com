@@ -1,26 +1,26 @@
-<nav class="navbar backdrop-blur-lg bg-transparent bg-opacity-50 shadow-md py-4 px-8 fixed top-0 w-full z-50">
+<nav class="navbar backdrop-blur-lg bg-transparent bg-opacity-50 shadow-xl py-9 px-8 sticky top-0 w-full z-50 flex items-center">
     <div class="flex justify-between items-center w-full">
         <!-- Logo -->
-        <div class="navbar-brand">
+        <div class="flex items-center absolute">
             <a href="{{ path('app_event_list') }}" class="text-white font-bold text-lg">
-                <img src="{{ asset('image/LOGO1.png') }}" alt="Logo" class="h-16 w-auto"> <!-- Augmentation de la taille du logo -->
+                <img src="{{ asset('image/LOGO1.png') }}" alt="Logo" class="h-48 w-auto"> <!-- Augmentation de la taille du logo -->
             </a>
         </div>
 
         <!-- Menu -->
-        <div class="navbar-menu flex items-center space-x-8"> <!-- Augmentation de l'espacement entre les items du menu -->
+        <div class="navbar-menu flex items-center space-x-8 mx-auto">
             {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                 <a href="{{ path('app_event_list') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Home</a>
-                <a href="{{ path('app_profile') }}" class="navbar-item text-custom-orange hover:text-orange-400 transition duration-200">Profile</a>
+                <a href="{{ path('app_profile') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Profile</a>
                 <a href="{{ path('app_logout') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Logout</a>
             {% endif %}
         </div>
 
         <!-- User Profile Picture -->
-        <div class="ml-8">
+        <div class="flex items-center ml-8">
             {% if app.user and app.user.photo %}
                 <a href="{{ path('app_profile') }}">
-                    <img src="{{ asset('uploads/profile_pictures/' ~ app.user.photo) }}" alt="Profile Picture"
+                    <img src="{{ asset('uploads/photos/' ~ app.user.photo) }}" alt="Profile Picture"
                          class="h-12 w-12 rounded-full border-2 border-white hover:border-orange-400 transition duration-200"> <!-- Augmentation de la taille de la photo -->
                 </a>
             {% else %}
@@ -33,3 +33,7 @@
         </div>
     </div>
 </nav>
+
+<div class="pt-24">
+
+</div>
