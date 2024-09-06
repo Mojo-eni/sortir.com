@@ -8,7 +8,6 @@ use App\Entity\Event;
 use App\Entity\Place;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -59,7 +58,7 @@ class EventType extends AbstractType
             ->add('place', EntityType::class, [
                 'class' => Place::class,
                 'choice_label' => 'name',
-                'label' => 'Lieu',
+                'label' => 'Lieu'
             ])
             ->add('address', TextType::class, [
                 'mapped' => false,
@@ -87,10 +86,6 @@ class EventType extends AbstractType
             ->add('publish', SubmitType::class, [
                 'label' => 'Publier'
             ])
-//            ->add('cancel', ButtonType::class, [
-//                'label' => 'Annuler',
-//                'attr' => ["href" => "/"]
-//            ])
         ;
     }
 
