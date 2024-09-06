@@ -58,7 +58,7 @@ class EventType extends AbstractType
             ->add('place', EntityType::class, [
                 'class' => Place::class,
                 'choice_label' => 'name',
-                'label' => 'Lieu',
+                'label' => 'Lieu'
             ])
             ->add('address', TextType::class, [
                 'mapped' => false,

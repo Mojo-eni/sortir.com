@@ -154,6 +154,7 @@ class EventController extends AbstractController
     #[Route('/edit/{id}', name: '_edit')]
     public function edit($id, Request $req, EventRepository $eRepo, EntityManagerInterface $em): Response {
         $event = $eRepo->find($id);
+
         // TODO vérifier si l'utilisateur connecté est l'organisateur de la sortie
 
         $eventForm = $this->createForm(EventType::class, $event);
