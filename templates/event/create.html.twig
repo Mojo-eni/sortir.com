@@ -94,7 +94,7 @@
             <label for="campus">Campus</label>
             <select id="campus" name="{{ field_name(eventForm.campus) }}" >
                 {% for name, id in field_choices(eventForm.campus) %}
-                    <option value="{{ id }}">{{ name }}</option>
+                    <option value="{{ id }}" {% if id == eventForm.vars.value.organizer.campus.id %}selected{% endif %}>{{ name }}</option>
                 {% endfor %}
             </select>
             {% for error in field_errors(eventForm.campus) %}
@@ -106,7 +106,7 @@
             <label for="city">Ville</label>
             <select id="city" name="{{ field_name(eventForm.city) }}" onchange="clicCitySelect(this)" >
                 {% for name, id in field_choices(eventForm.city) %}
-                    <option value="{{ id }}">{{ name }}</option>
+                    <option value="{{ id }}" {% if id == eventForm.vars.value.organizer.campus.city.id %}selected{% endif %}>{{ name }}</option>
                 {% endfor %}
             </select>
             {% for error in field_errors(eventForm.city) %}
