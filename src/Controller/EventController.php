@@ -116,19 +116,20 @@ class EventController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
         $event = new Event();
+        $event->setOrganizer($user);
         $eventForm = $this->createForm(EventType::class, $event);
         $eventForm->handleRequest($request);
 
         if ($eventForm->isSubmitted() && $eventForm->isValid()) {
             $event = $eventForm->getData();
             $event->getParticipationDeadline()->setTime(0,0);
-            // TODO vérifier que la date limite d'inscription est avant la date de la sortie ?
+            $event->addParticipant($user);
+            // TODO vérifier que la date limite d'inscription est avant la date de la sortie
             if ($eventForm->getClickedButton() === $eventForm->get('save')) {
                 $event->setStatus($this->statusRepository->findOneBy(['name' => 'Créée']));
             } elseif ($eventForm->getClickedButton() === $eventForm->get('publish')) {
                 $event->setStatus($this->statusRepository->findOneBy(['name' => 'Ouverte']));
             }
-            $event->setOrganizer($user);
             try{
                 $em->persist($event);
                 $em->flush();
@@ -158,16 +159,16 @@ class EventController extends AbstractController
     #[Route('/edit/{id}', name: '_edit')]
     public function edit($id, Request $req, EventRepository $eRepo, EntityManagerInterface $em): Response {
         $event = $eRepo->find($id);
-
-        // TODO vérifier si l'utilisateur connecté est l'organisateur de la sortie
-
+        if (!$event | $this->getUser() !== $event->getOrganizer()) {
+            return $this->redirectToRoute('app_event_list');
+        }
         $eventForm = $this->createForm(EventType::class, $event);
         $eventForm->handleRequest($req);
 
         if ($eventForm->isSubmitted() && $eventForm->isValid()) {
             $event = $eventForm->getData();
             $event->getParticipationDeadline()->setTime(0,0);
-            // TODO vérifier que la date limite d'inscription est avant la date de la sortie ?
+            // TODO vérifier que la date limite d'inscription est avant la date de la sortie
             if ($eventForm->getClickedButton() === $eventForm->get('save')) {
                 $event->setStatus($this->statusRepository->findOneBy(['name' => 'Créée']));
             } elseif ($eventForm->getClickedButton() === $eventForm->get('publish')) {
@@ -185,5 +186,19 @@ class EventController extends AbstractController
             'controller_name' => 'EventController',
             'eventForm' => $eventForm->createView()
         ]);
+    }
+
+    #[Route('/delete/{id}', name: '_delete')]
+    public function delete($id, Request $req, EventRepository $eRepo, EntityManagerInterface $em): Response {
+        $event = $eRepo->find($id);
+        if (!$event) {
+            return $this->redirectToRoute('app_event_list');
+        }
+        if ($this->getUser() !== $event->getOrganizer()) {
+            return $this->redirectToRoute('app_event_list');
+        }
+        $em->remove($event);
+        $em->flush();
+        return $this->redirectToRoute('app_event_list');
     }
 }

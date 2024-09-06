@@ -11,6 +11,10 @@ module.exports = {
         'light-blue': '#669bbc',
         'custom-orange': '#ffa155'
       },
+      backgroundImage: {
+        'bg': "url('C:\\wamp64\\www\\sortir.com\\assets\\images/friends.jpg')",
+      }
+
     },
   },
   plugins: [],
