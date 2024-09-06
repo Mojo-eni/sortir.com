@@ -190,6 +190,7 @@ class AppFixtures extends Fixture
             $event->setPlace($this->faker->randomElement($places));
             $event->setCampus($this->faker->randomElement($campuses));
             $event->setStatus($this->faker->randomElement($statuses));
+            $event->addParticipant($this->faker->randomElement($users));
             $manager->persist($event);
         }
         $manager->flush();

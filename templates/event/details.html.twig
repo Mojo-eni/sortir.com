@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la sortie{% endblock %}
+
+{% block body %}
+    <div>
+        <h1>Détails de la sortie</h1>
+        <div class="group">
+            <label for="user">Organisateur</label>
+            <input id="user" type="text" value="{{ event.organizer.pseudo() }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="name">Nom de la sortie</label>
+            <input id="name" type="text" value="{{ event.name() }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="eventStart">Date et heure de la sortie</label>
+            <input id="eventStart" type="text" value="{{ event.eventStart | date('d/m/Y H:i') }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="participationDeadline">Date limite d'inscription</label>
+            <input id="participationDeadline" type="text" value="{{ event.participationDeadline | date('d/m/Y') }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="participantLimit">Nombre de places</label>
+            <input id="participantLimit" type="text" value="{{ event.participantLimit }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="duration">Durée</label>
+            <input id="duration" type="text" value="{{ event.duration }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="description">Description</label>
+            <input id="description" type="text" value="{{ event.description }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="campus">Campus</label>
+            <input id="campus" type="text" value="{{ event.campus.name }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="city">Ville</label>
+            <input id="city" type="text" value="{{ event.place.city.name }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="place">Lieu</label>
+            <input id="place" type="text" value="{{ event.place.name }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="address">Rue</label>
+            <input id="address" type="text" value="{{ event.place.address }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="zipcode">Code postal</label>
+            <input id="zipcode" type="text" value="{{ event.place.city.zipcode }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="latitude">Latitude</label>
+            <input id="latitude" type="text" value="{{ event.place.latitude }}" disabled>
+        </div>
+
+        <div class="group">
+            <label for="longitude">Longitude</label>
+            <input id="longitude" type="text" value="{{ event.place.longitude }}" disabled>
+        </div>
+
+        <div>
+            <table>
+                <thead>
+                <tr>
+                    <td>Pseudo</td>
+                    <td>Nom</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for participant in event.participants %}
+                    <tr>
+                        <td>{{ participant.pseudo }}</td>
+                        <td>{{ participant.email }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <button><a href="{{ path('app_event_list') }}">Retour</a></button>
+            {% if app.user == event.organizer %}
+                <button><a href="{{ path('app_event_edit', { 'id': event.id } ) }}">Modifier</a></button>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

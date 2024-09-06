@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouvelle sortie{% endblock %}
+{% block title %}Modifier la sortie{% endblock %}
 
 {% block body %}
     <div>
-        <h1>Créer une sortie</h1>
+        <h1>Modifier la sortie</h1>
         {{ form_start(eventForm) }}
 
         <div class="group">
@@ -80,10 +80,10 @@
         <div class="group">
             <label for="description">Description</label>
             <textarea
-                   id="description"
-                   name="{{ field_name(eventForm.description) }}"
-                   placeholder=""
-                   class="form-control"
+                    id="description"
+                    name="{{ field_name(eventForm.description) }}"
+                    placeholder=""
+                    class="form-control"
             >{{ field_value(eventForm.description) }}</textarea>
             {% for error in field_errors(eventForm.description) %}
                 <div class="error">{{ error }}</div>
@@ -94,7 +94,7 @@
             <label for="campus">Campus</label>
             <select id="campus" name="{{ field_name(eventForm.campus) }}" >
                 {% for name, id in field_choices(eventForm.campus) %}
-                    <option value="{{ id }}">{{ name }}</option>
+                    <option value="{{ id }}" {% if id == eventForm.vars.value.campus.id %}selected{% endif %}>{{ name }}</option>
                 {% endfor %}
             </select>
             {% for error in field_errors(eventForm.campus) %}
@@ -106,7 +106,7 @@
             <label for="city">Ville</label>
             <select id="city" name="{{ field_name(eventForm.city) }}" onchange="clicCitySelect(this)" >
                 {% for name, id in field_choices(eventForm.city) %}
-                    <option value="{{ id }}">{{ name }}</option>
+                    <option value="{{ id }}" {% if id == eventForm.vars.value.place.city.id %}selected{% endif %}>{{ name }}</option>
                 {% endfor %}
             </select>
             {% for error in field_errors(eventForm.city) %}
@@ -118,7 +118,7 @@
             <label for="place">Lieu</label>
             <select id="place" name="{{ field_name(eventForm.place) }}" onchange="clicPlaceSelect(this)" >
                 {% for name, id in field_choices(eventForm.place) %}
-                    <option value="{{ id }}">{{ name }}</option>
+                    <option value="{{ id }}" {% if id == eventForm.vars.value.place.id %}selected{% endif %}>{{ name }}</option>
                 {% endfor %}
             </select>
             {% for error in field_errors(eventForm.place) %}
@@ -131,7 +131,7 @@
             <input type="text"
                    id="address"
                    name="{{ field_name(eventForm.address) }}"
-                   value="{{ field_value(eventForm.address) }}"
+                   value="{{ eventForm.vars.value.place.address }}"
                    placeholder=""
                    class="form-control"
                    disabled
@@ -146,7 +146,7 @@
             <input type="text"
                    id="zipcode"
                    name="{{ field_name(eventForm.zipcode) }}"
-                   value="{{ field_value(eventForm.zipcode) }}"
+                   value="{{ eventForm.vars.value.place.city.zipcode }}"
                    placeholder=""
                    class="form-control"
                    disabled
@@ -161,7 +161,7 @@
             <input type="text"
                    id="latitude"
                    name="{{ field_name(eventForm.latitude) }}"
-                   value="{{ field_value(eventForm.latitude) }}"
+                   value="{{ eventForm.vars.value.place.latitude }}"
                    placeholder=""
                    class="form-control"
                    disabled
@@ -176,7 +176,7 @@
             <input type="text"
                    id="longitude"
                    name="{{ field_name(eventForm.longitude) }}"
-                   value="{{ field_value(eventForm.longitude) }}"
+                   value="{{ eventForm.vars.value.place.longitude }}"
                    placeholder=""
                    class="form-control"
                    disabled
@@ -199,7 +199,9 @@
         {{ form_end(eventForm) }}
 
         <div>
-            <button><a href="{{ path('app_event_list') }}">Annuler</a></button>
+
+            <button><a href="{{ path('app_event_details', { 'id': eventForm.vars.value.id } ) }}">Annuler</a></button>
+
         </div>
     </div>
 
@@ -212,22 +214,13 @@
 {% block ajax %}
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            selectInit();
+            let citySelect = document.querySelector("#city");
+            clicCitySelect(citySelect);
         });
 
-        function selectInit() {
-            let placeSelect = document.querySelector("#place");
-            placeSelect.innerHTML = "";
-            let el = document.createElement("option");
-            el.textContent = "---";
-            el.value = "";
-            placeSelect.appendChild(el);
-        }
-
         async function clicPlaceSelect(element) {
+            console.log("clicPlaceSelect")
             let placeID = element.value;
-            let response = await fetch( '{{ path('get_place_info') }}' + '/' + placeID);
-            let result = await response.json();
             let addressInput = document.getElementById('address');
             let latitudeInput = document.getElementById('latitude');
             let longitudeInput = document.getElementById('longitude');
@@ -247,6 +240,7 @@
 
     <script>
         async function clicCitySelect(element) {
+            console.log("clicCitySelect")
             // récupération des lieux liés à la ville
             let cityID = element.value;
             let response = await fetch('{{ path('get_city_places') }}' + "/" + cityID);
@@ -255,15 +249,14 @@
             let placeSelect = document.querySelector("#place");
             placeSelect.innerHTML = "";
 
-            let el = document.createElement("option");
-            el.textContent = "---";
-            el.value = "";
-            placeSelect.appendChild(el);
             for(let i = 0; i < placeTable.length; i++) {
                 let opt = placeTable[i];
                 let el = document.createElement("option");
                 el.textContent = opt.name;
                 el.value = opt.id;
+                if(opt.id === {{ eventForm.vars.value.place.id }}) {
+                    el.selected = true;
+                }
                 placeSelect.appendChild(el);
             }
 
@@ -280,6 +273,8 @@
             addressInput.value = "";
             latitudeInput.value = "";
             longitudeInput.value = "";
+
+            await clicPlaceSelect(placeSelect);
         }
     </script>
 {% endblock %}
