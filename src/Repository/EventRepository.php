@@ -22,6 +22,7 @@ class EventRepository extends ServiceEntityRepository
         public function findByCampusId($id): array
         {
             return $this->createQueryBuilder('q')
+                ->leftJoin('p.city', 'c')
                 ->andWhere('q.campus = :val')
                 ->setParameter('val', $id)
                 ->orderBy('q.id', 'ASC')

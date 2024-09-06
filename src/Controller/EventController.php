@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/event', name: 'app_event')]
 
@@ -53,7 +54,7 @@ class EventController extends AbstractController
 
 
     #[Route('/', name: '_list')]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    public function index(SerializerInterface $serializer, Request $request, EntityManagerInterface $entityManager): Response
     {
         $events = $this->eventRepository->findAll();
         $campuses = $this->campusRepository->findAll();
@@ -62,6 +63,8 @@ class EventController extends AbstractController
 
         $listForm = $this->createForm(ListEventFormType::class);
         $listForm->handleRequest($request);
+        $user = $this->getUser();
+        $serializedUser = $serializer->serialize($user, 'json', ['groups' => ['default']]);
 
         if ($listForm->isSubmitted() && $listForm->isValid()) {
             // Get the search query
@@ -100,6 +103,7 @@ class EventController extends AbstractController
             'campuses' => $campuses,
             'participants' => $participants,
             'listForm' => $listForm,
+            'serializedUser' => $serializedUser,
         ]);
     }
 
