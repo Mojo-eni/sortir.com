@@ -5,23 +5,62 @@
 {% block title %}My Profile{% endblock %}
 
 {% block body %}
-    <h1>Profile Details</h1>
+    <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold mb-6">Profile Details</h1>
 
-    <ul>
-        <li><strong>Pseudo:</strong> {{ user.pseudo }}</li>
-        <li><strong>First Name:</strong> {{ user.firstName }}</li>
-        <li><strong>Last Name:</strong> {{ user.lastName }}</li>
-        <li><strong>Email:</strong> {{ user.email }}</li>
-        <li><strong>Phone:</strong> {{ user.phone }}</li>
-        <li><strong>Active:</strong> {{ user.isActif ? 'Yes' : 'No' }}</li>
-        <li><strong>Roles:</strong> {{ user.roles|join(', ') }}</li>
-        <li><strong>Campus:</strong> {{ user.campus.name }}</li>
-        {% if user.photo %}
-            <img src="{{ asset('uploads/photos/' ~ user.photo) }}" alt="Photo de profil">
-        {% else %}
-            <p>Aucune photo de profil n'est disponible.</p>
-        {% endif %}
-    </ul>
+        <div class="mb-6">
+            <ul class="space-y-4">
+                <li class="flex items-center">
+                    <strong class="w-36 text-gray-700">Pseudo:</strong>
+                    <span class="text-gray-900">{{ user.pseudo }}</span>
+                </li>
+                <li class="flex items-center">
+                    <strong class="w-36 text-gray-700">First Name:</strong>
+                    <span class="text-gray-900">{{ user.firstName }}</span>
+                </li>
+                <li class="flex items-center">
+                    <strong class="w-36 text-gray-700">Last Name:</strong>
+                    <span class="text-gray-900">{{ user.lastName }}</span>
+                </li>
+                <li class="flex items-center">
+                    <strong class="w-36 text-gray-700">Email:</strong>
+                    <span class="text-gray-900">{{ user.email }}</span>
+                </li>
+                <li class="flex items-center">
+                    <strong class="w-36 text-gray-700">Phone:</strong>
+                    <span class="text-gray-900">{{ user.phone }}</span>
+                </li>
+                <li class="flex items-center">
+                    <strong class="w-36 text-gray-700">Active:</strong>
+                    <span class="text-gray-900">{{ user.isActif ? 'Yes' : 'No' }}</span>
+                </li>
+                <li class="flex items-center">
+                    <strong class="w-36 text-gray-700">Roles:</strong>
+                    <span class="text-gray-900">{{ user.roles|join(', ') }}</span>
+                </li>
+                <li class="flex items-center">
+                    <strong class="w-36 text-gray-700">Campus:</strong>
+                    <span class="text-gray-900">{{ user.campus.name }}</span>
+                </li>
+                {% if user.photo %}
+                    <li class="flex items-center">
+                        <strong class="w-36 text-gray-700">Profile Photo:</strong>
+                        <img src="{{ asset('uploads/photos/' ~ user.photo) }}" alt="Photo de profil" class="w-24 h-24 rounded-full border-2 border-gray-300 object-cover">
+                    </li>
+                {% else %}
+                    <li class="flex items-center">
+                        <strong class="w-36 text-gray-700">Profile Photo:</strong>
+                        <p class="text-gray-500">Aucune photo de profil n'est disponible.</p>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
 
-    <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">Modifier</a>
+
+        <button class="group group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 hover:border-orange-400 hover:before:[box-shadow:_20px_20px_20px_30px_#ff9b54] duration-500 before:duration-500 hover:duration-500  underline-offset-2 hover:after:-right-8 hover:before:right-12 hover:before:-bottom-8 hover:before:blur hover:underline hover:underline-offset-4  origin-left hover:decoration-2 hover:text-white relative bg-custom-blue h-12 w-full border text-center p-3 text-gray-50 text-base font-bold rounded-lg  overflow-hidden  before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-orange-400 before:rounded-full before:blur-lg  after:absolute after:z-10 after:w-20 after:h-20 after:content['']  after:bg-light-blue after:right-8 after:top-3 after:rounded-full after:blur-lg"
+              >
+            <a href="{{ path('app_profile_edit') }}"></a>
+       Modifier
+        </button>
+    </div>
 {% endblock %}
