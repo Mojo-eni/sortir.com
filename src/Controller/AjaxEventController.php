@@ -13,14 +13,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class AjaxEventController extends AbstractController
 {
     #[Route('/get-data/{id}', name: 'get_list_from_campus')]
-    public function getData(EventRepository $eventRepository, $id = 1): JsonResponse
+    public function getData(SerializerInterface $serializer, EventRepository $eventRepository, $id = 1): JsonResponse
     {
-        $events = $eventRepository->findByCampusId($id);
-        return new JsonResponse($events);
+        $events = $eventRepository->findBy(['campus' => $id]);
+        $data = $serializer->serialize($events, 'json', ['groups' => 'default']);
+        return JsonResponse::fromJsonString($data);
     }
 
     #[Route('/sort-data/{keyword}', name: 'filter-keyword')]

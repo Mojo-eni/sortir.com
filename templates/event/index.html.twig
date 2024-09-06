@@ -25,14 +25,76 @@
 
         </div>{{ form_end(listForm) }}
 
-        <ul id="event_liste">
+        <div class="js-user-rating"
+             data-is-authenticated="{{ app.user ? 'true' : 'false' }}"
+             data-user="{{ serializedUser }}"></div>
+
+        <table style="border-spacing: 25px">
+            <thead>
+            <tr>
+                <th>Event</th>
+                <th>Place</th>
+                <th>Campus</th>
+                <th>City</th>
+                <th>Start</th>
+                <th>Deadline</th>
+                <th>S'inscrire</th>
+                <th>Modifier</th>
+            </tr>
+            </thead>
+            <tbody id="event_liste">
             {% for event in events %}
-                <li>{{ event.name }} in {{ event.place.name }}, {{ event.place.city.name }} CAMPUS {{ event.campus.id }} LE {{ event.eventStart|date("m/d/Y", false) }}</li>
-            {%  endfor %}
-        </ul>
+                <tr>
+                    <td>{{ event.name }}</td>
+                    <td>{{ event.place.name }}</td>
+                    <td>{{ event.campus.name }}</td>
+                    <td>{{ event.place.city.name }}</td>
+                    <td>{{ event.eventStart|date("Y/m/d", false) }}</td>
+                    <td>{{ event.participationDeadline|date("Y/m/d", false) }}</td>
+                    <td>
+                        <a href="details.html.twig">Détails</a>
+                    </td>
+                    <td>
+                        {% if (app.user.roles[0] is same as('ROLE_ADMIN')) or (event.organizer.id is same as(app.user.id))  %}
+                            <a href="">Modifier</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">No events found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
     </div>
+{% endblock %}
+
     {% block ajax %}
         <script>
+            let currentUser = null;
+            let isAuthenticated = null;
+            document.addEventListener('DOMContentLoaded', function() {
+                const userRating = document.querySelector('.js-user-rating');
+                console.log(userRating);
+                isAuthenticated = userRating.getAttribute('data-is-authenticated');
+                console.log('iA'+isAuthenticated);
+
+                currentUser = JSON.parse(userRating.getAttribute('data-user'));
+                console.log('cU'+currentUser);
+
+            })
+
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}/${month}/${day}`;
+            }
+
             async function clicCampusSelect(element) {
                 let campusId = element.value;
                 let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
@@ -41,33 +103,42 @@
                 let listContainer = document.getElementById("event_liste");
                 listContainer.innerHTML = "";
 
-                for(let i = 0; i < result.length; i++) {
-                    let opt = result[i];
-                    let el = document.createElement("li");
-                    el.textContent = opt.name;
-                    el.value = opt.id;
-                    listContainer.appendChild(el);
-                }
-            }
-            async function searchKeyword(element) {
-                let keyword = element.value;
-                let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
-                let result = await response.json();
-                console.log(result);
+                if (result.length > 0) {
+                    console.log("RESULT IS HERE");
+                    result.forEach(event => {
+                        const row = document.createElement('tr');
 
-                let listContainer = document.getElementById("event_liste");
-                listContainer.innerHTML = "";
+                        if (event.organizer && event.organizer.id === currentUser.id) {
+                            lastTd1Content = `<a href="/edit/${event.id}">Attend</a>`;
+                        } else {
+                            lastTd1Content = 'Not allowed';
+                        }
 
-                for(let i = 0; i < result.length; i++) {
-                    let opt = result[i];
-                    let el = document.createElement("li");
-                    console.log(opt.name);
-                    el.textContent = opt.name;
-                    el.value = opt.id;
-                    listContainer.appendChild(el);
+                        if (currentUser.role === 'ROLE_USER') {
+                            lastTd2Content = `<a href="/edit/${event.id}">Edit</a>`;
+                        } else {
+                            lastTd2Content = 'Not allowed';
+                        }
+
+                        row.innerHTML = `
+                        <td>${event.name}</td>
+                        <td>${event.place.name}</td>
+                        <td>${event.campus.name}</td>
+                        <td>${event.place.city.name}</td>
+                        <td>${formatDate(event.eventStart)}</td>
+                        <td>${formatDate(event.participationDeadline)}</td>
+                        <td>${lastTd1Content}</td>
+                        <td>${lastTd2Content}</td>
+                    `;
+                        listContainer.appendChild(row);
+                    });
+                } else {
+                    // If no data is found, show a message in the table
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="6">No products found</td>';
+                    listContainer.appendChild(row);
                 }
             }
         </script>
-    {% endblock %}
 {% endblock %}
 

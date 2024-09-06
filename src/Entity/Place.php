@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PlaceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PlaceRepository::class)]
 class Place
@@ -11,9 +12,11 @@ class Place
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('default')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('default')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
@@ -27,6 +30,7 @@ class Place
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('default')]
     private ?City $city = null;
 
     public function getId(): ?int

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -16,6 +17,7 @@ class Event
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('default')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -24,14 +26,17 @@ class Event
         max: 100,
         minMessage: "Le nom de la sortie ne peut pas être inférieur à 10 caractères",
         maxMessage: "Le nom de la sortie ne peut pas être supérieur à 100 caractères")]
+    #[Groups('default')]
     private ?string $name = null;
 
+    #[Groups('default')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\GreaterThan(
         'today 23:59:59',
         message:"Le début de la sortie ne peut pas être fixé avant demain")]
     private ?\DateTimeInterface $eventStart = null;
 
+    #[Groups('default')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\LessThan(
         propertyPath: 'eventStart',
@@ -41,33 +46,40 @@ class Event
         message:"La date limite d'inscription à la sortie ne peut pas être fixée avant demain")]
     private ?\DateTimeInterface $participationDeadline = null;
 
+    #[Groups('default')]
     #[ORM\Column]
     #[Assert\Range(
         minMessage: "Le nombre de participants ne peut pas être inférieur à 1",
         min: 1)]
     private ?int $participantLimit = null;
 
+    #[Groups('default')]
     #[ORM\Column(nullable: true)]
     #[Assert\Range(
         minMessage: "La durée de la sortie ne peut pas être inférieure à 1",
         min: 1)]
     private ?int $duration = null;
 
+    #[Groups('default')]
     #[ORM\Column(length: 1000, nullable: true)]
     private ?string $description = null;
 
+    #[Groups('default')]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Status $status = null;
 
+    #[Groups('default')]
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campus = null;
 
+    #[Groups('default')]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Place $place = null;
 
+    #[Groups('default')]
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $organizer = null;
