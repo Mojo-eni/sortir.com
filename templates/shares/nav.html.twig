@@ -1,20 +1,35 @@
-<nav class="navbar">
-    <div class="navbar-brand">
-        <a href="{{ path('app_event_list') }}">
-            <img src="{{ asset('image/LOGO1.png') }}" alt="Logo" />
-        </a>
+<nav class="navbar backdrop-blur-lg bg-transparent bg-opacity-50 shadow-md py-4 px-8 fixed top-0 w-full z-50">
+    <div class="flex justify-between items-center w-full">
+        <!-- Logo -->
+        <div class="navbar-brand">
+            <a href="{{ path('app_event_list') }}" class="text-white font-bold text-lg">
+                <img src="{{ asset('image/LOGO1.png') }}" alt="Logo" class="h-16 w-auto"> <!-- Augmentation de la taille du logo -->
+            </a>
+        </div>
 
-    </div>
-    <div class="navbar-menu">
+        <!-- Menu -->
+        <div class="navbar-menu flex items-center space-x-8"> <!-- Augmentation de l'espacement entre les items du menu -->
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                <a href="{{ path('app_event_list') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Home</a>
+                <a href="{{ path('app_profile') }}" class="navbar-item text-custom-orange hover:text-orange-400 transition duration-200">Profile</a>
+                <a href="{{ path('app_logout') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Logout</a>
+            {% endif %}
+        </div>
 
-         {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-             <a href="{{ path('app_event_list') }}" class="navbar-item">Home</a>
-
-             <a href="{{ path('app_profile') }}" class="navbar-item">Profile</a>
-            <a href="{{ path('app_logout') }}" class="navbar-item">Logout</a>
-
-        {# {% else %}
-        { <a href="{{ path('app_login') }}" class="navbar-item">Login</a>}#}
-        {% endif %}
+        <!-- User Profile Picture -->
+        <div class="ml-8">
+            {% if app.user and app.user.photo %}
+                <a href="{{ path('app_profile') }}">
+                    <img src="{{ asset('uploads/profile_pictures/' ~ app.user.photo) }}" alt="Profile Picture"
+                         class="h-12 w-12 rounded-full border-2 border-white hover:border-orange-400 transition duration-200"> <!-- Augmentation de la taille de la photo -->
+                </a>
+            {% else %}
+                <!-- Default avatar if no profile picture exists -->
+                <a href="{{ path('app_profile') }}">
+                    <img src="{{ asset('image/default_avatar.png') }}" alt="Default Avatar"
+                         class="h-12 w-12 rounded-full border-2 border-white hover:border-orange-400 transition duration-200"> <!-- Augmentation de la taille de l'avatar par défaut -->
+                </a>
+            {% endif %}
+        </div>
     </div>
 </nav>
