@@ -3,208 +3,265 @@
 {% block title %}Nouvelle sortie{% endblock %}
 
 {% block body %}
-    <div>
-        <h1>Créer une sortie</h1>
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="w-full bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl shadow-2xl overflow-hidden p-12 space-y-8 mx-48 mb-48"
+             style="animation: slideInFromLeft 1s ease-out;">
+
+        <h1 class="text-center text-4xl font-extrabold" style="animation: appear 2s ease-out;">Créer une sortie</h1>
+
         {{ form_start(eventForm) }}
 
-        <div class="group">
-            <label for="name">Nom de la sortie</label>
-            <input type="text"
-                   id="name"
-                   name="{{ field_name(eventForm.name) }}"
-                   value="{{ field_value(eventForm.name) }}"
-                   placeholder=""
-                   class="form-control"
-            >
-            {% for error in field_errors(eventForm.name) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+            <div class="flex">
+                <div class="flex-column w-1/2 p-5">
 
-        <div class="group">
-            <label for="eventStart">Date et heure de la sortie</label>
-            <input type="datetime-local"
-                   id="eventStart"
-                   name="{{ field_name(eventForm.eventStart) }}"
-                   value="{{ field_value(eventForm.eventStart) }}"
-                   placeholder=""
-                   class="form-control"
-            >
-            {% for error in field_errors(eventForm.eventStart) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+                    <div class="relative mt-6">
+                        <label for="name"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Nom de la sortie</label>
+                        <input type="text"
+                               id="name"
+                               name="{{ field_name(eventForm.name) }}"
+                               value="{{ field_value(eventForm.name) }}"
+                               placeholder=""
+                               class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                        >
+                        {% for error in field_errors(eventForm.name) %}
+                            <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                        {% endfor %}
+                    </div>
 
-        <div class="group">
-            <label for="participationDeadline">Date limite d'inscription</label>
-            <input type="date"
-                   id="participationDeadline"
-                   name="{{ field_name(eventForm.participationDeadline) }}"
-                   value="{{ field_value(eventForm.participationDeadline) }}"
-                   placeholder=""
-                   class="form-control"
-            >
-            {% for error in field_errors(eventForm.participationDeadline) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+                    <div class="relative mt-6">
+                        <label for="eventStart"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Date et heure de la sortie</label>
+                        <input type="datetime-local"
+                               id="eventStart"
+                               name="{{ field_name(eventForm.eventStart) }}"
+                               value="{{ field_value(eventForm.eventStart) }}"
+                               placeholder=""
+                               class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                        >
+                        {% for error in field_errors(eventForm.eventStart) %}
+                            <div class="text-ms accent-red-700">{{ error }}</div>
+                        {% endfor %}
+                    </div>
 
-        <div class="group">
-            <label for="participantLimit">Nombre de places</label>
-            <input type="number"
-                   id="participantLimit"
-                   name="{{ field_name(eventForm.participantLimit) }}"
-                   value="{{ field_value(eventForm.participantLimit) }}"
-                   placeholder=""
-                   class="form-control"
-            >
-            {% for error in field_errors(eventForm.participantLimit) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+                    <div class="relative mt-6">
+                        <label for="participationDeadline"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Date limite d'inscription</label>
+                        <input type="date"
+                               id="participationDeadline"
+                               name="{{ field_name(eventForm.participationDeadline) }}"
+                               value="{{ field_value(eventForm.participationDeadline) }}"
+                               placeholder=""
+                               class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                        >
+                        {% for error in field_errors(eventForm.participationDeadline) %}
+                            <div class="text-ms accent-red-700">{{ error }}</div>
+                        {% endfor %}
+                    </div>
 
-        <div class="group">
-            <label for="duration">Durée de la sortie</label>
-            <input type="number"
-                   id="duration"
-                   name="{{ field_name(eventForm.duration) }}"
-                   value="{{ field_value(eventForm.duration) }}"
-                   placeholder=""
-                   class="form-control"
-            >
-            {% for error in field_errors(eventForm.duration) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+                    <div class="relative mt-6">
+                        <label for="participantLimit"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Nombre de places</label>
+                        <input type="number"
+                               id="participantLimit"
+                               name="{{ field_name(eventForm.participantLimit) }}"
+                               value="{{ field_value(eventForm.participantLimit) }}"
+                               placeholder=""
+                               class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                        >
+                        {% for error in field_errors(eventForm.participantLimit) %}
+                            <div class="text-ms accent-red-700">{{ error }}</div>
+                        {% endfor %}
+                    </div>
 
-        <div class="group">
-            <label for="description">Description</label>
-            <textarea
-                   id="description"
-                   name="{{ field_name(eventForm.description) }}"
-                   placeholder=""
-                   class="form-control"
-            >{{ field_value(eventForm.description) }}</textarea>
-            {% for error in field_errors(eventForm.description) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+                    <div class="relative mt-6">
+                        <label for="duration"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Durée de la sortie</label>
+                        <input type="number"
+                               id="duration"
+                               name="{{ field_name(eventForm.duration) }}"
+                               value="{{ field_value(eventForm.duration) }}"
+                               placeholder=""
+                               class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                        >
+                        {% for error in field_errors(eventForm.duration) %}
+                            <div class="text-ms accent-red-700">{{ error }}</div>
+                        {% endfor %}
+                    </div>
 
-        <div class="group">
-            <label for="campus">Campus</label>
-            <select id="campus" name="{{ field_name(eventForm.campus) }}" >
-                {% for name, id in field_choices(eventForm.campus) %}
-                    <option value="{{ id }}" {% if id == eventForm.vars.value.organizer.campus.id %}selected{% endif %}>{{ name }}</option>
-                {% endfor %}
-            </select>
-            {% for error in field_errors(eventForm.campus) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+                    <div class="relative mt-6">
+                        <label for="description"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Description</label>
+                        <textarea
+                               id="description"
+                               name="{{ field_name(eventForm.description) }}"
+                               placeholder=""
+                               class="peer h-32 max-h-32 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                        >{{ field_value(eventForm.description) }}</textarea>
+                        {% for error in field_errors(eventForm.description) %}
+                            <div class="text-ms accent-red-700">{{ error }}</div>
+                        {% endfor %}
+                    </div>
 
-        <div class="group">
-            <label for="city">Ville</label>
-            <select id="city" name="{{ field_name(eventForm.city) }}" onchange="clicCitySelect(this)" >
-                {% for name, id in field_choices(eventForm.city) %}
-                    <option value="{{ id }}" {% if id == eventForm.vars.value.organizer.campus.city.id %}selected{% endif %}>{{ name }}</option>
-                {% endfor %}
-            </select>
-            {% for error in field_errors(eventForm.city) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+                </div>
 
-        <div class="group">
-            <label for="place">Lieu</label>
-            <select id="place" name="{{ field_name(eventForm.place) }}" onchange="clicPlaceSelect(this)" >
-                {% for name, id in field_choices(eventForm.place) %}
-                    <option value="{{ id }}">{{ name }}</option>
-                {% endfor %}
-            </select>
-            {% for error in field_errors(eventForm.place) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+                <div class="flex-column w-1/2 p-5">
 
-        <div class="group">
-            <label for="address">Rue</label>
-            <input type="text"
-                   id="address"
-                   name="{{ field_name(eventForm.address) }}"
-                   value="{{ field_value(eventForm.address) }}"
-                   placeholder=""
-                   class="form-control"
-                   disabled
-            >
-            {% for error in field_errors(eventForm.address) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+                    <div class="relative mt-6">
+                        <label for="campus"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Campus</label>
+                        <select id="campus" name="{{ field_name(eventForm.campus) }}"
+                                class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue">
+                            {% for name, id in field_choices(eventForm.campus) %}
+                                <option value="{{ id }}" {% if id == eventForm.vars.value.organizer.campus.id %}selected{% endif %}>{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                        {% for error in field_errors(eventForm.campus) %}
+                            <div class="text-ms accent-red-700">{{ error }}</div>
+                        {% endfor %}
+                    </div>
 
-        <div class="group">
-            <label for="zipcode">Code postal</label>
-            <input type="text"
-                   id="zipcode"
-                   name="{{ field_name(eventForm.zipcode) }}"
-                   value="{{ field_value(eventForm.zipcode) }}"
-                   placeholder=""
-                   class="form-control"
-                   disabled
-            >
-            {% for error in field_errors(eventForm.zipcode) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+                    <div class="relative mt-6">
+                        <label for="city"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Ville</label>
+                        <select id="city" name="{{ field_name(eventForm.city) }}" onchange="clicCitySelect(this)"
+                                class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue">
+                            {% for name, id in field_choices(eventForm.city) %}
+                                <option value="{{ id }}" {% if id == eventForm.vars.value.organizer.campus.city.id %}selected{% endif %}>{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                        {% for error in field_errors(eventForm.city) %}
+                            <div class="text-ms accent-red-700">{{ error }}</div>
+                        {% endfor %}
+                    </div>
 
-        <div class="group">
-            <label for="latitude">Latitude</label>
-            <input type="text"
-                   id="latitude"
-                   name="{{ field_name(eventForm.latitude) }}"
-                   value="{{ field_value(eventForm.latitude) }}"
-                   placeholder=""
-                   class="form-control"
-                   disabled
-            >
-            {% for error in field_errors(eventForm.latitude) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+                    <div class="relative mt-6">
+                        <label for="place"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Lieu</label>
+                        <select id="place" name="{{ field_name(eventForm.place) }}" onchange="clicPlaceSelect(this)"
+                                class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue">
+                            {% for name, id in field_choices(eventForm.place) %}
+                                <option value="{{ id }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                        {% for error in field_errors(eventForm.place) %}
+                            <div class="text-ms accent-red-700">{{ error }}</div>
+                        {% endfor %}
+                    </div>
 
-        <div class="group">
-            <label for="longitude">Longitude</label>
-            <input type="text"
-                   id="longitude"
-                   name="{{ field_name(eventForm.longitude) }}"
-                   value="{{ field_value(eventForm.longitude) }}"
-                   placeholder=""
-                   class="form-control"
-                   disabled
-            >
-            {% for error in field_errors(eventForm.longitude) %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        </div>
+                    <div class="relative mt-6">
+                        <label for="address"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Rue</label>
+                        <input type="text"
+                               id="address"
+                               name="{{ field_name(eventForm.address) }}"
+                               value="{{ field_value(eventForm.address) }}"
+                               placeholder=""
+                               class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                               disabled
+                        >
+                        {% for error in field_errors(eventForm.address) %}
+                            <div class="text-ms accent-red-700">{{ error }}</div>
+                        {% endfor %}
+                    </div>
 
-        <div class="group">
-            {{ form_label(eventForm.save) }}
-            {{ form_widget(eventForm.save) }}
-        </div>
+                    <div class="relative mt-6">
+                        <label for="zipcode"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Code postal</label>
+                        <input type="text"
+                               id="zipcode"
+                               name="{{ field_name(eventForm.zipcode) }}"
+                               value="{{ field_value(eventForm.zipcode) }}"
+                               placeholder=""
+                               class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                               disabled
+                        >
+                        {% for error in field_errors(eventForm.zipcode) %}
+                            <div class="text-ms accent-red-700">{{ error }}</div>
+                        {% endfor %}
+                    </div>
 
-        <div class="group">
-            {{ form_label(eventForm.publish) }}
-            {{ form_widget(eventForm.publish) }}
-        </div>
+                    <div class="relative mt-6">
+                        <label for="latitude"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Latitude</label>
+                        <input type="text"
+                               id="latitude"
+                               name="{{ field_name(eventForm.latitude) }}"
+                               value="{{ field_value(eventForm.latitude) }}"
+                               placeholder=""
+                               class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                               disabled
+                        >
+                        {% for error in field_errors(eventForm.latitude) %}
+                            <div class="text-ms accent-red-700">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="relative mt-6">
+                        <label for="longitude"
+                               class="absolute left-0 -top-4 text-gray-500 text-m"
+                        >Longitude</label>
+                        <input type="text"
+                               id="longitude"
+                               name="{{ field_name(eventForm.longitude) }}"
+                               value="{{ field_value(eventForm.longitude) }}"
+                               placeholder=""
+                               class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                               disabled
+                        >
+                        {% for error in field_errors(eventForm.longitude) %}
+                            <div class="text-ms accent-red-700">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="flex-row">
+
+                <div class="relative">
+                    {{ form_label(eventForm.save) }}
+                    {{ form_widget(eventForm.save) }}
+                </div>
+
+                <div class="relative">
+                    {{ form_label(eventForm.publish) }}
+                    {{ form_widget(eventForm.publish) }}
+                </div>
+
+                <div class="relative">
+                    <button><a href="{{ path('app_event_list') }}">Annuler</a></button>
+                </div>
+            </div>
 
         {{ form_end(eventForm) }}
-
-        <div>
-            <button><a href="{{ path('app_event_list') }}">Annuler</a></button>
-        </div>
     </div>
-
-
-
+    </div>
 
 
 {% endblock %}
