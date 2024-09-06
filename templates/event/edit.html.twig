@@ -199,9 +199,10 @@
         {{ form_end(eventForm) }}
 
         <div>
-
+            {% if eventForm.vars.value.status.name == "Créée" %}
+                <button><a href="{{ path('app_event_delete', { 'id': eventForm.vars.value.id } ) }}">Supprimer la sortie</a></button>
+            {% endif %}
             <button><a href="{{ path('app_event_details', { 'id': eventForm.vars.value.id } ) }}">Annuler</a></button>
-
         </div>
     </div>
 
