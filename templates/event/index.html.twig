@@ -12,7 +12,7 @@
         <h1>Tous ensemble avec Lenny!</h1>
         <div>
             <label>Date du jour : {{ "now"|date("Y-m-d") }}</label>
-            <label>Participant.e : {{ app.user.pseudo }}</label>
+            {# # { { <label>Participant.e : {{ app.user.pseudo }}</label>} } #}
         </div>
         <div>{{ form_start(listForm) }}
             <label class="form-label" for="{{ field_label(listForm.campus) }}">Filtrer les sorties</label>
