@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\ListEventFormType;
 use App\Entity\City;
 use App\Entity\Event;
@@ -15,6 +16,7 @@ use App\Repository\PlaceRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Exception\ORMException;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -197,4 +199,26 @@ class EventController extends AbstractController
         $em->flush();
         return $this->redirectToRoute('app_event_list');
     }
+
+
+    #[Route('/{id}', name: '_participate'), ]
+    public function addParticipant(
+        int $id,
+        EntityManagerInterface $em,
+        EventRepository $eRepo,
+
+    ): Response {
+        $user = new User();
+        $event = $eRepo->find($id);
+
+
+
+            $event->addParticipant($user);
+            $em->persist($event);
+            $em->flush();
+
+        $this->addFlash('success', 'Participant ajouté avec succès !');
+        return $this->redirectToRoute('event_details', ['id' => $id]);
+    }
+
 }
