@@ -8,7 +8,8 @@ module.exports = {
     extend: {
       colors: {
         'custom-blue': '#144A80',
-        'light-blue': '#669bbc',
+        'light-blue': '#5698ba',
+        'gray-blue':'#56656c',
         'custom-orange': '#ffa155'
       },
       backgroundImage: {

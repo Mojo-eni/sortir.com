@@ -151,8 +151,12 @@ class EventController extends AbstractController
     public function details($id, Request $req, EventRepository $eRepo, UserRepository $uRepo, EntityManagerInterface $em): Response {
         $event = $eRepo->find($id);
         if($event) {
+
+
+            $now = new \DateTime();
+
             return $this->render('event/details.html.twig', [
-                'event' => $event
+                'event' => $event, 'now' => $now
             ]);
         } else {
             return $this->redirectToRoute('app_event_list');
@@ -207,29 +211,26 @@ class EventController extends AbstractController
 
 
     #[Route('/{id}/participate', name: '_participate')]
-    public function addParticipant(int $id, EntityManagerInterface $em, EventRepository $eRepo): Response
+    // src/Controller/SomeController.php
+
+    public function participateEvent(int $id, EntityManagerInterface $em): Response
     {
+        $event = $em->getRepository(Event::class)->find($id);
         $user = $this->getUser();
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
 
-        $event = $eRepo->find($id);
         if (!$event) {
-            return $this->redirectToRoute('app_event_list');
+            throw $this->createNotFoundException('Événement non trouvé');
         }
 
-        
         if ($event->getParticipants()->contains($user)) {
             $this->addFlash('warning', 'Vous participez déjà à cet événement.');
             return $this->redirectToRoute('app_event_details', ['id' => $id]);
         }
 
-        if($event->getStatus()->getName() == 'Ouverte' ) {
+        if ($event->getStatus()->getName() !== 'Ouverte') {
             $this->addFlash('error', 'Les inscriptions sont fermées pour cet événement.');
             return $this->redirectToRoute('app_event_details', ['id' => $id]);
         }
-
 
         $now = new \DateTime();
         if ($now > $event->getParticipationDeadline()) {
@@ -237,20 +238,17 @@ class EventController extends AbstractController
             return $this->redirectToRoute('app_event_details', ['id' => $id]);
         }
 
-        if( $event->getParticipants()->count() >= $event->getParticipantLimit() ) {
+        if ($event->getParticipants()->count() >= $event->getParticipantLimit()) {
             $this->addFlash('error', 'Le nombre limite est atteint.');
             return $this->redirectToRoute('app_event_details', ['id' => $id]);
         }
 
         $event->addParticipant($user);
-
-
         $em->persist($event);
         $em->flush();
 
         $this->addFlash('success', 'Vous avez été ajouté comme participant à cet événement !');
         return $this->redirectToRoute('app_event_details', ['id' => $id]);
     }
-
 
 }
