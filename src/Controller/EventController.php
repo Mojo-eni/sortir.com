@@ -195,6 +195,8 @@ class EventController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/delete/{id}', name: '_delete')]
     public function delete($id, Request $req, EventRepository $eRepo, EntityManagerInterface $em): Response {
         $event = $eRepo->find($id);
@@ -250,6 +252,29 @@ class EventController extends AbstractController
         return $this->redirectToRoute('app_event_details', ['id' => $id]);
     }
 
+
+    #[Route('/{id}/cancel', name: '_cancel')]
+
+    public function cancelEvent(int $id, EntityManagerInterface $em): Response
+    {
+        $event = $em->getRepository(Event::class)->find($id);
+        $user = $this->getUser();
+
+        if (!$event) {
+            throw $this->createNotFoundException('Événement non trouvé');
+        }
+
+
+        $status = $event->getStatus()->getName();
+        $status->setName(Annulé);
+        $event->setStatus($status);
+        $em->persist($event);
+        $em->flush();
+
+        $this->addFlash('success', 'Vous avez annuler cet event !');
+        return $this->redirectToRoute('app_event_details', ['id' => $id]);
+    }
+
     #[Route('/{id}/exit', name: '_exit')]
 
     public function exitEvent(int $id, EntityManagerInterface $em): Response
@@ -267,8 +292,6 @@ class EventController extends AbstractController
             $this->addFlash('error', 'tu ne peux pas te desister.');
             return $this->redirectToRoute('app_event_details', ['id' => $id]);
         }
-
-
 
 
 
