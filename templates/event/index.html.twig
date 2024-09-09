@@ -102,6 +102,7 @@
                 let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
                 let result = await response.json();
 
+                console.log(result)
                 let listContainer = document.getElementById("event_liste");
                 listContainer.innerHTML = "";
 
@@ -133,7 +134,7 @@
                         <td>${formatDate(event.participationDeadline)}</td>
                         <td>${lastTd1Content}</td>
                         <td>${lastTd2Content}</td>
-                        <td>${event.participantLimit}/${event.participantLimit}</td>
+                        <td>${event.participants.length}/${event.participantLimit}</td>
                     `;
                         listContainer.appendChild(row);
                     });
