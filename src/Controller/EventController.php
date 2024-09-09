@@ -11,6 +11,7 @@ use App\Form\EventType;
 use App\Repository\CampusRepository;
 use App\Repository\CityRepository;
 use App\Repository\EventRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PlaceRepository;
 use App\Repository\StatusRepository;
@@ -23,7 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Constraints\DateTime;
+
 
 #[Route('/event', name: 'app_event')]
 
@@ -70,12 +71,11 @@ class EventController extends AbstractController
         $serializedUser = $serializer->serialize($user, 'json', ['groups' => ['default']]);
 
         if ($listForm->isSubmitted() && $listForm->isValid()) {
-            // Get the search query
+
             $query = $request->get('list_event_form');
             $events = $this->eventRepository->findBy(['campus' => $query['campus']]);
-            // Filter the data
-            if ($query['keyword']) {
 
+            if ($query['keyword']) {
                 $events = array_filter($events, function ($item) use ($query) {
                     return stripos($item->getName(), $query['keyword']) !== false;
                 });
@@ -84,14 +84,10 @@ class EventController extends AbstractController
             if ($query['dateTo'] || $query['dateFrom']) {
                 $events = array_filter($events, function ($item) use ($query) {
                     $eventDate = $item->getEventStart();
-                    $startDate = $query['dateFrom'];
-                    $endDate = $query['dateTo'];
+                    $startDate = isset($query['dateFrom']) ? DateTime::createFromFormat('Y-m-d', $query['dateFrom']) : null;
+                    $endDate = isset($query['dateTo']) ? DateTime::createFromFormat('Y-m-d', $query['dateTo']) : null;
                     if ($startDate && $endDate) {
                         return $eventDate >= $startDate && $eventDate <= $endDate;
-                    } else if ($startDate) {
-                        return $eventDate >= $startDate;
-                    } else if ($endDate) {
-                        return $eventDate <= $endDate;
                     }
                     return false;
                 }
