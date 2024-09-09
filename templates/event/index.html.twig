@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello EventController!{% endblock %}
+{% block title %}Consult all the Events!{% endblock %}
 
 {% block body %}
     <style>
@@ -9,10 +9,10 @@
     </style>
 
     <div class="example-wrapper">
-        <h1>Tous ensemble avec Lenny!</h1>
-        <div>
+        <h1>Event List</h1>
+        <div class="greeter">
             <label>Date du jour : {{ "now"|date("Y-m-d") }}</label>
-            {# # { { <label>Participant.e : {{ app.user.pseudo }}</label>} } #}
+            <label>Hello {{ app.user.pseudo }}</label>
         </div>
         <div>{{ form_start(listForm) }}
             <label class="form-label" for="{{ field_label(listForm.campus) }}">Filtrer les sorties</label>
@@ -40,6 +40,7 @@
                 <th>Deadline</th>
                 <th>S'inscrire</th>
                 <th>Modifier</th>
+                <th>Participants</th>
             </tr>
             </thead>
             <tbody id="event_liste">
