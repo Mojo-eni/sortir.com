@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Status;
 use App\Entity\User;
 use App\Form\ListEventFormType;
 use App\Entity\City;
@@ -264,14 +265,14 @@ class EventController extends AbstractController
             throw $this->createNotFoundException('Événement non trouvé');
         }
 
+        $canceledStatus = $em->getRepository(Status::class)->findOneBy(['name' => 'Annulée']);
 
-        $status = $event->getStatus()->getName();
-        $status->setName(Annulé);
-        $event->setStatus($status);
+        $event->setStatus($canceledStatus);
+
         $em->persist($event);
         $em->flush();
 
-        $this->addFlash('success', 'Vous avez annuler cet event !');
+        $this->addFlash('success', 'Vous avez annulé cet event !');
         return $this->redirectToRoute('app_event_details', ['id' => $id]);
     }
 
