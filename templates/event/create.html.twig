@@ -151,12 +151,13 @@
                         {% endfor %}
                     </div>
 
-                    <div class="relative mt-6">
+                    <div class="relative mt-6 flex flex-row justify-between">
+                        <div class="max-w-full flex items-center">
                         <label for="place"
                                class="absolute left-0 -top-4 text-gray-500 text-m"
                         >Lieu</label>
                         <select id="place" name="{{ field_name(eventForm.place) }}" onchange="clicPlaceSelect(this)"
-                                class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                                class="peer h-12 w-64 border-b-2 border-gray-300 bg-transparent placeholder-transparent
                                focus:outline-none focus:border-light-blue">
                             {% for name, id in field_choices(eventForm.place) %}
                                 <option value="{{ id }}">{{ name }}</option>
@@ -165,6 +166,14 @@
                         {% for error in field_errors(eventForm.place) %}
                             <div class="text-ms accent-red-700">{{ error }}</div>
                         {% endfor %}
+                        </div>
+                        <div>
+                            <button
+                                    class="select-none rounded-lg bg-gray-900 py-3 px-6 text-center font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+                                    id="open-place-popup-button" type="button">
+                                +
+                            </button>
+                        </div>
                     </div>
 
                     <div class="relative mt-6">
@@ -263,22 +272,173 @@
     </div>
     </div>
 
+    <!-- Main modal -->
+    <div id="place-popup"
+         class="fixed inset-0 z-50 hidden grid h-screen w-screen place-items-center bg-black bg-opacity-60 opacity-0 backdrop-blur-sm transition-opacity duration-300">
+        <div class="relative mx-auto flex w-full max-w-[24rem] flex-col rounded-xl bg-white text-gray-700 shadow-md">
+            <div class="flex flex-col gap-4 p-6">
+                <h4 class="text-2xl font-semibold text-blue-gray-900">Créer un lieu</h4>
+
+                <div class="w-full">
+                    <div class="flex-column p-5">
+
+                        <div class="relative mt-6">
+                            <label for="place-name"
+                                   class="absolute left-0 -top-4 text-gray-500 text-m"
+                            >Nom du lieu</label>
+                            <input type="text"
+                                   id="place-name"
+                                   name="{{ field_name(placeForm.name) }}"
+                                   value="{{ field_value(placeForm.name) }}"
+                                   placeholder=""
+                                   class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                            >
+                            {% for error in field_errors(placeForm.name) %}
+                                <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="relative mt-6">
+                            <label for="place-address"
+                                   class="absolute left-0 -top-4 text-gray-500 text-m"
+                            >Rue</label>
+                            <input type="text"
+                                   id="place-address"
+                                   name="{{ field_name(placeForm.address) }}"
+                                   value="{{ field_value(placeForm.address) }}"
+                                   placeholder=""
+                                   class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                            >
+                            {% for error in field_errors(placeForm.address) %}
+                                <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="relative mt-6">
+                            <label for="place-latitude"
+                                   class="absolute left-0 -top-4 text-gray-500 text-m"
+                            >Latitude</label>
+                            <input type="text"
+                                   id="place-latitude"
+                                   name="{{ field_name(placeForm.latitude) }}"
+                                   value="{{ field_value(placeForm.latitude) }}"
+                                   placeholder=""
+                                   class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                            >
+                            {% for error in field_errors(placeForm.latitude) %}
+                                <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="relative mt-6">
+                            <label for="place-longitude"
+                                   class="absolute left-0 -top-4 text-gray-500 text-m"
+                            >Longitude</label>
+                            <input type="text"
+                                   id="place-longitude"
+                                   name="{{ field_name(placeForm.longitude) }}"
+                                   value="{{ field_value(placeForm.longitude) }}"
+                                   placeholder=""
+                                   class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                            >
+                            {% for error in field_errors(placeForm.longitude) %}
+                                <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="relative mt-6">
+                            <label for="place-city"
+                                   class="absolute left-0 -top-4 text-gray-500 text-m"
+                            >Ville</label>
+                            <select id="place-city" name="{{ field_name(placeForm.city) }}"
+                                    class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue">
+                                {% for name, id in field_choices(placeForm.city) %}
+                                    <option value="{{ id }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                            {% for error in field_errors(placeForm.city) %}
+                                <div class="text-ms accent-red-700">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="p-6 pt-0 flex flex-row">
+                <!-- TODO appel à une méthode asynchrone via méthode JS-->
+                <button><a onclick="savePlace(this)">Enregistrer</a></button>
+            </div>
+
+
+        </div>
+    </div>
+
 
 {% endblock %}
 
 {% block ajax %}
     <script>
+        async function savePlace() {
+            const bodyData = {
+                'name' : document.getElementById("place-name").value,
+                'address' : document.getElementById("place-address").value,
+                'latitude' : document.getElementById("place-latitude").value,
+                'longitude' : document.getElementById("place-longitude").value,
+                'city': document.getElementById("place-city").value
+            }
+            try {
+                let response = await fetch('{{ path('save_place') }}', {
+                    method: 'POST',
+                    headers: { "X-Requested-with": "XMLHttpRequest" },
+                    body: JSON.stringify(bodyData),
+                });
+                let reponseAjax = await response.text();
+                reponseAjax = JSON.parse(reponseAjax);
+                if (reponseAjax['message']) {
+                    let citySelect = document.querySelector("#city");
+                    await clicCitySelect(citySelect);
+                }
+            } catch (error) {
+                console.error("Erreur lors de l'enregistrement' des données:", error);
+            }
+
+        }
+
+        document.getElementById('open-place-popup-button').addEventListener('click', function() {
+            // Montre la popup sans aucun lien avec le formulaire
+            let popup = document.getElementById('place-popup');
+            popup.classList.remove('hidden');
+            popup.classList.add('opacity-100'); // Assure que l'opacité est bien visible
+        });
+
+        document.getElementById('place-popup').addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.classList.add('hidden');
+                this.classList.remove('opacity-100'); // Cache la popup proprement
+            }
+        });
+
         document.addEventListener("DOMContentLoaded", function() {
-            selectInit();
+            // selectInit();
+            let citySelect = document.querySelector("#city");
+            clicCitySelect(citySelect);
         });
 
         function selectInit() {
-            let placeSelect = document.querySelector("#place");
-            placeSelect.innerHTML = "";
-            let el = document.createElement("option");
-            el.textContent = "---";
-            el.value = "";
-            placeSelect.appendChild(el);
+            // let placeSelect = document.querySelector("#place");
+            // placeSelect.innerHTML = "";
+            // let el = document.createElement("option");
+            // el.textContent = "---";
+            // el.value = "";
+            // placeSelect.appendChild(el);
+            // let citySelect = document.querySelector("#city");
+            // clicCitySelect(citySelect);
         }
 
         async function clicPlaceSelect(element) {
@@ -300,9 +460,7 @@
                 longitudeInput.value = "";
             }
         }
-    </script>
 
-    <script>
         async function clicCitySelect(element) {
             // récupération des lieux liés à la ville
             let cityID = element.value;

@@ -114,7 +114,8 @@
             {% endfor %}
         </div>
 
-        <div class="group">
+        <div class="group flex flex-row justify-between">
+            <div class="max-w-full flex items-center">
             <label for="place">Lieu</label>
             <select id="place" name="{{ field_name(eventForm.place) }}" onchange="clicPlaceSelect(this)" >
                 {% for name, id in field_choices(eventForm.place) %}
@@ -124,6 +125,10 @@
             {% for error in field_errors(eventForm.place) %}
                 <div class="error">{{ error }}</div>
             {% endfor %}
+            </div>
+            <div>
+                <a href="{{ path('app_place_create', { 'from': eventForm.vars.value.id}) }}" class="text-4xl pl-5">+</a>
+            </div>
         </div>
 
         <div class="group">
