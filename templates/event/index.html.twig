@@ -23,6 +23,9 @@
                 {%  endfor %}
             </select>
 
+            <label class="form-label" for="{{ field_label(listForm.isAttending) }}">Organizer</label>
+            <input type="checkbox" class="form-control" id="{{ field_label(listForm.isAttending) }}" name="{{ field_name(listForm.isAttending) }}" onclick="clicAttending(this)">
+
         </div>{{ form_end(listForm) }}
 
         <div class="js-user-rating"
@@ -99,15 +102,9 @@
                 return `${year}/${month}/${day}`;
             }
 
-            async function clicCampusSelect(element) {
-                let campusId = element.value;
-                let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
-                let result = await response.json();
-
-                console.log(result)
+            function fillTable(result){
                 let listContainer = document.getElementById("event_liste");
                 listContainer.innerHTML = "";
-
                 if (result.length > 0) {
                     console.log("RESULT IS HERE" + result.length);
                     console.log(currentUser.role);
@@ -145,11 +142,24 @@
                         listContainer.appendChild(row);
                     });
                 } else {
-                    // If no data is found, show a message in the table
                     const row = document.createElement('tr');
                     row.innerHTML = '<td colspan="6">No products found</td>';
                     listContainer.appendChild(row);
                 }
+            }
+
+            async function clicCampusSelect(element) {
+                let campusId = element.value;
+                let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
+                let result = await response.json();
+                fillTable(result);
+            }
+
+            async function clicAttending(element) {
+                console.log(element.checked);
+                let response = await fetch( '{{ path('get_attending_from_user')}}' + '/' + currentUser.id);
+                let result = await response.json();
+                fillTable(result);
             }
         </script>
 {% endblock %}

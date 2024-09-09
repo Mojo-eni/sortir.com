@@ -8,6 +8,7 @@ use App\Entity\City;
 use App\Entity\Place;
 use App\Repository\EventRepository;
 use App\Repository\PlaceRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,6 +22,30 @@ class AjaxEventController extends AbstractController
     public function getData(SerializerInterface $serializer, EventRepository $eventRepository, $campusId = 1): JsonResponse
     {
         $events = $eventRepository->findBy(['campus' => $campusId]);
+        $data = $serializer->serialize($events, 'json', ['groups' => 'default']);
+        return JsonResponse::fromJsonString($data);
+    }
+
+    #[Route('/get-attending-events/{userId}', name: 'get_attending_from_user')]
+    public function getAttendingEvents(SerializerInterface $serializer, UserRepository $userRepository, $userId = 1): JsonResponse
+    {
+        $user = $userRepository->find($userId);
+        if (!$user) {
+            throw $this->createNotFoundException('User not found');
+        }
+        $events = $user->getParticipations();
+        $data = $serializer->serialize($events, 'json', ['groups' => 'default']);
+        return JsonResponse::fromJsonString($data);
+    }
+
+    #[Route('/get-organized-events/{userId}', name: 'get_organized_from_user')]
+    public function getOrganizedEvents(SerializerInterface $serializer, UserRepository $userRepository, $userId = 1): JsonResponse
+    {
+        $user = $userRepository->find($userId);
+        if (!$user) {
+            throw $this->createNotFoundException('User not found');
+        }
+        $events = $user->getEvents();
         $data = $serializer->serialize($events, 'json', ['groups' => 'default']);
         return JsonResponse::fromJsonString($data);
     }
