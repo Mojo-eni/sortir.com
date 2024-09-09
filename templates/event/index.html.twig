@@ -29,39 +29,42 @@
              data-is-authenticated="{{ app.user ? 'true' : 'false' }}"
              data-user="{{ serializedUser }}"></div>
 
-        <table style="border-spacing: 25px">
+        <table class="table-auto border-collapse border border-gray-300 w-full text-center">
             <thead>
-            <tr>
-                <th>Event</th>
-                <th>Place</th>
-                <th>Campus</th>
-                <th>City</th>
-                <th>Start</th>
-                <th>Deadline</th>
-                <th>S'inscrire</th>
-                <th>Modifier</th>
-                <th>Participants</th>
-            </tr>
+                <tr class="bg-gray-100">
+                    <th>Event</th>
+                    <th>Start</th>
+                    <th>Deadline</th>
+                    <th>Participants</th>
+                    <th>Attend</th>
+                    <th>Details</th>
+                    <th>Modify</th>
+                </tr>
             </thead>
             <tbody id="event_liste">
             {% for event in events %}
                 <tr>
-                    <td>{{ event.name }}</td>
-                    <td>{{ event.place.name }}</td>
-                    <td>{{ event.campus.name }}</td>
-                    <td>{{ event.place.city.name }}</td>
-                    <td>{{ event.eventStart|date("Y/m/d", false) }}</td>
-                    <td>{{ event.participationDeadline|date("Y/m/d", false) }}</td>
-                    <td>
-                        <a href="{{ url('app_event_details', {'id': event.id}) }}">Détails</a>
-                    </td>
-                    <td>
-                        {% if (app.user.roles[0] is same as('ROLE_ADMIN')) or (event.organizer.id is same as(app.user.id))  %}
-                            <a href="{{ url('app_event_edit', {'id': event.id}) }}">Modifier</a>
+                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">{{ event.name }}</td>
+                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">{{ event.eventStart|date("Y/m/d", false) }}</td>
+                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">{{ event.participationDeadline|date("Y/m/d", false) }}</td>
+                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">{{ event.participants.count }}/{{ event.participantLimit }}</td>
+                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">
+                        {% if (event.participants.count < event.participantLimit)  %}
+                        <a href="{{ url('app_event_details', {'id': event.id}) }}" class="underline">Attend</a>
+                        {% else %}
+                         <p>Full</p>
                         {% endif %}
                     </td>
-                    <td>{{ event.participants.count }}/{{ event.participantLimit }}</td>
-
+                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">
+                            <a href="{{ url('app_event_details', {'id': event.id}) }}" class="underline">Display</a>
+                    </td>
+                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">
+                        {% if ('ROLE_ADMIN' in app.user.roles) or (event.organizer.id is same as(app.user.id))  %}
+                            <a href="{{ url('app_event_edit', {'id': event.id}) }}" class="underline text-blue-600">Edit</a>
+                        {% else %}
+                            <p>Denied</p>
+                        {% endif %}
+                    </td>
                 </tr>
             {% else %}
                 <tr>
@@ -70,8 +73,6 @@
             {% endfor %}
             </tbody>
         </table>
-
-
     </div>
 {% endblock %}
 
@@ -86,7 +87,7 @@
                 console.log('iA'+isAuthenticated);
 
                 currentUser = JSON.parse(userRating.getAttribute('data-user'));
-                console.log('cU'+currentUser);
+                console.log(currentUser);
 
             })
 
@@ -114,28 +115,32 @@
                     result.forEach(event => {
                         const row = document.createElement('tr');
                         console.log(event);
-                        if (event.organizer && event.organizer.id === currentUser.id) {
-                            lastTd1Content = `<a href="/edit/${event.id}">Attend</a>`;
+                        if (currentUser.roles.includes('ROLE_USER') && event.participants.length < event.participantLimit) {
+                            attend = `<a href="/public/event/${event.id}" class="underline text-blue-600">Attend</a>`;
                         } else {
-                            lastTd1Content = 'Not allowed';
+                            attend = 'Full';
                         }
 
-                        if (currentUser.role === 'ROLE_USER') {
-                            lastTd2Content = `<a href="/edit/${event.id}">Edit</a>`;
+                        if (currentUser.roles.includes('ROLE_USER')) {
+                            details = `<a href="/public/event/${event.id}" class="underline text-blue-600">Display</a>`;
                         } else {
-                            lastTd2Content = 'Not allowed';
+                            details = 'Display';
+                        }
+
+                        if (currentUser.roles.includes('ROLE_ADMIN') || (event.organizer.id === currentUser.id)) {
+                            edit = `<a href="/public/event/edit/${event.id}" class="underline text-blue-600">Edit</a>`;
+                        } else {
+                            edit = 'Denied';
                         }
 
                         row.innerHTML = `
-                        <td>${event.name}</td>
-                        <td>${event.place.name}</td>
-                        <td>${event.campus.name}</td>
-                        <td>${event.place.city.name}</td>
-                        <td>${formatDate(event.eventStart)}</td>
-                        <td>${formatDate(event.participationDeadline)}</td>
-                        <td>${lastTd1Content}</td>
-                        <td>${lastTd2Content}</td>
-                        <td>${event.participants.length}/${event.participantLimit}</td>
+                        <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${event.name}</td>
+                        <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${formatDate(event.eventStart)}</td>
+                        <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${formatDate(event.participationDeadline)}</td>
+                        <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${event.participants.length}/${event.participantLimit}</td>
+                        <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${attend}</td>
+                        <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${details}</td>
+                        <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${edit}</td>
                     `;
                         listContainer.appendChild(row);
                     });
