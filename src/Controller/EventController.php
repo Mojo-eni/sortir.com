@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\ListEventFormType;
 use App\Entity\City;
 use App\Entity\Event;
@@ -15,12 +16,14 @@ use App\Repository\PlaceRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Exception\ORMException;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 #[Route('/event', name: 'app_event')]
 
@@ -148,8 +151,12 @@ class EventController extends AbstractController
     public function details($id, Request $req, EventRepository $eRepo, UserRepository $uRepo, EntityManagerInterface $em): Response {
         $event = $eRepo->find($id);
         if($event) {
+
+
+            $now = new \DateTime();
+
             return $this->render('event/details.html.twig', [
-                'event' => $event
+                'event' => $event, 'now' => $now
             ]);
         } else {
             return $this->redirectToRoute('app_event_list');
@@ -201,4 +208,47 @@ class EventController extends AbstractController
         $em->flush();
         return $this->redirectToRoute('app_event_list');
     }
+
+
+    #[Route('/{id}/participate', name: '_participate')]
+    // src/Controller/SomeController.php
+
+    public function participateEvent(int $id, EntityManagerInterface $em): Response
+    {
+        $event = $em->getRepository(Event::class)->find($id);
+        $user = $this->getUser();
+
+        if (!$event) {
+            throw $this->createNotFoundException('Événement non trouvé');
+        }
+
+        if ($event->getParticipants()->contains($user)) {
+            $this->addFlash('warning', 'Vous participez déjà à cet événement.');
+            return $this->redirectToRoute('app_event_details', ['id' => $id]);
+        }
+
+        if ($event->getStatus()->getName() !== 'Ouverte') {
+            $this->addFlash('error', 'Les inscriptions sont fermées pour cet événement.');
+            return $this->redirectToRoute('app_event_details', ['id' => $id]);
+        }
+
+        $now = new \DateTime();
+        if ($now > $event->getParticipationDeadline()) {
+            $this->addFlash('error', 'La date limite d\'inscription à cet événement est dépassée.');
+            return $this->redirectToRoute('app_event_details', ['id' => $id]);
+        }
+
+        if ($event->getParticipants()->count() >= $event->getParticipantLimit()) {
+            $this->addFlash('error', 'Le nombre limite est atteint.');
+            return $this->redirectToRoute('app_event_details', ['id' => $id]);
+        }
+
+        $event->addParticipant($user);
+        $em->persist($event);
+        $em->flush();
+
+        $this->addFlash('success', 'Vous avez été ajouté comme participant à cet événement !');
+        return $this->redirectToRoute('app_event_details', ['id' => $id]);
+    }
+
 }
