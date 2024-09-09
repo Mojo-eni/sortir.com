@@ -52,13 +52,15 @@
                     <td>{{ event.eventStart|date("Y/m/d", false) }}</td>
                     <td>{{ event.participationDeadline|date("Y/m/d", false) }}</td>
                     <td>
-                        <a href="details.html.twig">Détails</a>
+                        <a href="{{ url('app_event_details', {'id': event.id}) }}">Détails</a>
                     </td>
                     <td>
                         {% if (app.user.roles[0] is same as('ROLE_ADMIN')) or (event.organizer.id is same as(app.user.id))  %}
-                            <a href="">Modifier</a>
+                            <a href="{{ url('app_event_edit', {'id': event.id}) }}">Modifier</a>
                         {% endif %}
                     </td>
+                    <td>{{ event.participants.count }}/{{ event.participantLimit }}</td>
+
                 </tr>
             {% else %}
                 <tr>
@@ -104,10 +106,12 @@
                 listContainer.innerHTML = "";
 
                 if (result.length > 0) {
-                    console.log("RESULT IS HERE");
+                    console.log("RESULT IS HERE" + result.length);
+                    console.log(currentUser.role);
+                    console.log("Role");
                     result.forEach(event => {
                         const row = document.createElement('tr');
-
+                        console.log(event);
                         if (event.organizer && event.organizer.id === currentUser.id) {
                             lastTd1Content = `<a href="/edit/${event.id}">Attend</a>`;
                         } else {
@@ -129,6 +133,7 @@
                         <td>${formatDate(event.participationDeadline)}</td>
                         <td>${lastTd1Content}</td>
                         <td>${lastTd2Content}</td>
+                        <td>${event.participantLimit}/${event.participantLimit}</td>
                     `;
                         listContainer.appendChild(row);
                     });
