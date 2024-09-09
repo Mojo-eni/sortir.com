@@ -211,7 +211,6 @@ class EventController extends AbstractController
 
 
     #[Route('/{id}/participate', name: '_participate')]
-    // src/Controller/SomeController.php
 
     public function participateEvent(int $id, EntityManagerInterface $em): Response
     {
@@ -250,5 +249,36 @@ class EventController extends AbstractController
         $this->addFlash('success', 'Vous avez été ajouté comme participant à cet événement !');
         return $this->redirectToRoute('app_event_details', ['id' => $id]);
     }
+
+    #[Route('/{id}/exit', name: '_exit')]
+
+    public function exitEvent(int $id, EntityManagerInterface $em): Response
+    {
+        $event = $em->getRepository(Event::class)->find($id);
+        $user = $this->getUser();
+
+        if (!$event) {
+            throw $this->createNotFoundException('Événement non trouvé');
+        }
+
+
+
+        if ($event->getStatus()->getName() !== 'Ouverte') {
+            $this->addFlash('error', 'tu ne peux pas te desister.');
+            return $this->redirectToRoute('app_event_details', ['id' => $id]);
+        }
+
+
+
+
+
+        $event->removeParticipant($user);
+        $em->persist($event);
+        $em->flush();
+
+        $this->addFlash('success', 'Vous avez quitter cet événement !');
+        return $this->redirectToRoute('app_event_details', ['id' => $id]);
+    }
+
 
 }
