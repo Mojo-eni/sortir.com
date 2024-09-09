@@ -256,9 +256,27 @@ class EventController extends AbstractController
 
     #[Route('/{id}/cancel', name: '_cancel')]
 
-    public function cancelEvent(int $id, EntityManagerInterface $em): Response
+    public function cancelEvent(int $id, EntityManagerInterface $em,  EventRepository $eRepo,Request $req ): Response
     {
-        $event = $em->getRepository(Event::class)->find($id);
+
+        $event = $eRepo->find($id);
+        if (!$event || $this->getUser() !== $event->getOrganizer()) {
+            return $this->redirectToRoute('app_event_list');
+        }
+
+        $description = $req->request->get('description');
+        if ($description) {
+            $event->setDescription($description);
+            try {
+                $em->persist($event);
+                $em->flush();
+            } catch (ORMException $e) {
+                var_dump($e->getMessage());
+            }
+        }
+
+
+
         $user = $this->getUser();
 
         if (!$event) {
@@ -273,6 +291,7 @@ class EventController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Vous avez annulé cet event !');
+
         return $this->redirectToRoute('app_event_details', ['id' => $id]);
     }
 
