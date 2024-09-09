@@ -84,6 +84,7 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?User $organizer = null;
 
+    #[Groups('default')]
     /**
      * @var Collection<int, User>
      */
