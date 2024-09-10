@@ -5,14 +5,15 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block body %}
-    <div class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="flex justify-center items-center min-h-screen ">
         <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-            <h1 class="text-3xl font-bold mb-6 text-center">Modifier Mon Profil</h1>
+            <h1 class="text-3xl font-bold mb-6 text-center text-custom-blue">Modifier Mon Profil</h1>
 
             {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
 
             <div class="grid grid-cols-1 gap-6">
                 {{ form_row(form.pseudo, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-md'}}) }}
+                {{ form_row(form.plainPassword, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-md'}}) }}
                 {{ form_row(form.first_name, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-md'}}) }}
                 {{ form_row(form.last_name, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-md'}}) }}
                 {{ form_row(form.email, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-md'}}) }}
@@ -21,16 +22,17 @@
 
                 {{ form_row(form.campus, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-md'}}) }}
                 {{ form_row(form.photoFile, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-md'}}) }}
-                {{ form_row(form.plainPassword, {'attr': {'class': 'w-full p-3 border border-gray-300 rounded-md'}}) }}
+
 
 
             </div>
 
             <div class="mt-6 flex justify-center space-x-4">
-                <button class="bg-custom-blue text-white px-6 py-2 rounded-lg shadow-md font-bold hover:bg-blue-700">
+                <button class="group group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 hover:border-white hover:before:[box-shadow:_20px_20px_20px_30px_#ff9b54] duration-500 before:duration-500 hover:duration-500  underline-offset-2 hover:after:-right-8 hover:before:right-12 hover:before:-bottom-8 hover:before:blur hover:underline hover:underline-offset-4  origin-left hover:decoration-2 hover:text-white relative bg-custom-blue h-12 w-full border text-center p-3 text-gray-50 text-base font-bold rounded-lg  overflow-hidden  before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-orange-400 before:rounded-full before:blur-lg  after:absolute after:z-10 after:w-20 after:h-20 after:content['']  after:bg-light-blue after:right-8 after:top-3 after:rounded-full after:blur-lg"
+                >
                     Enregistrer
                 </button>
-                <a href="{{ path('app_profile') }}" class="bg-gray-400 text-white px-6 py-2 rounded-lg shadow-md font-bold hover:bg-gray-600">
+                <a href="{{ path('app_profile') }}" class="bg-light-blue text-white px-6 py-3 rounded-lg shadow-md font-bold hover:bg-orange-400">
                     Annuler
                 </a>
             </div>
