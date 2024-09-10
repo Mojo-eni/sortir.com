@@ -9,6 +9,7 @@ use App\Entity\City;
 use App\Entity\Event;
 use App\Entity\Place;
 use App\Form\EventType;
+use App\Form\PlaceType;
 use App\Repository\CampusRepository;
 use App\Repository\CityRepository;
 use App\Repository\EventRepository;
@@ -120,6 +121,10 @@ class EventController extends AbstractController
         $eventForm = $this->createForm(EventType::class, $event);
         $eventForm->handleRequest($request);
 
+        // initialisation du formulaire de lieu pour la popup
+        $place = new Place();
+        $placeForm = $this->createForm(PlaceType::class, $place);
+
         if ($eventForm->isSubmitted() && $eventForm->isValid()) {
             $event = $eventForm->getData();
             $event->getParticipationDeadline()->setTime(0,0);
@@ -140,7 +145,8 @@ class EventController extends AbstractController
         }
         return $this->render('event/create.html.twig', [
             'controller_name' => 'EventController',
-            'eventForm' => $eventForm->createView()
+            'eventForm' => $eventForm->createView(),
+            'placeForm' => $placeForm->createView()
         ]);
     }
 
@@ -169,6 +175,10 @@ class EventController extends AbstractController
         $eventForm = $this->createForm(EventType::class, $event);
         $eventForm->handleRequest($req);
 
+        // initialisation du formulaire de lieu pour la popup
+        $place = new Place();
+        $placeForm = $this->createForm(PlaceType::class, $place);
+
         if ($eventForm->isSubmitted() && $eventForm->isValid()) {
             $event = $eventForm->getData();
             $event->getParticipationDeadline()->setTime(0,0);
@@ -188,7 +198,8 @@ class EventController extends AbstractController
         }
         return $this->render('event/edit.html.twig', [
             'controller_name' => 'EventController',
-            'eventForm' => $eventForm->createView()
+            'eventForm' => $eventForm->createView(),
+            'placeForm' => $placeForm->createView()
         ]);
     }
 
