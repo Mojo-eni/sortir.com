@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 #[Route('/event', name: 'app_event')]
@@ -110,7 +111,7 @@ class EventController extends AbstractController
 
 
     #[Route('/create', name: '_create')]
-    public function create(Request $request, EntityManagerInterface $em): Response
+    public function create(Request $request, EntityManagerInterface $em, ValidatorInterface $validator): Response
     {
         $user = $this->getUser();
         if (!$user) {
@@ -127,9 +128,9 @@ class EventController extends AbstractController
 
         if ($eventForm->isSubmitted() && $eventForm->isValid()) {
             $event = $eventForm->getData();
-            $event->getParticipationDeadline()->setTime(0,0);
             $event->addParticipant($user);
-            // TODO vérifier que la date limite d'inscription est avant la date de la sortie
+            $event->getParticipationDeadline()->setTime(0,0);
+
             if ($eventForm->getClickedButton() === $eventForm->get('save')) {
                 $event->setStatus($this->statusRepository->findOneBy(['name' => 'Créée']));
             } elseif ($eventForm->getClickedButton() === $eventForm->get('publish')) {
