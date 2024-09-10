@@ -19,6 +19,7 @@
         </div>
 
 
+
         <div class="greeter text-center mb-8 p-4 g">
             <p class="text-lg font-semibold text-gray-800 mb-2">
                 📅 Date du jour :
@@ -172,9 +173,12 @@
         <script>
             let currentUser = null;
             let isAuthenticated = null;
+            let campusId;
             let jsonResponse;
             document.addEventListener('DOMContentLoaded', function() {
                 const userRating = document.querySelector('.js-user-rating');
+                const e = document.getElementById('Campus');
+                clicCampusSelect(e);
                 isAuthenticated = userRating.getAttribute('data-is-authenticated');
                 currentUser = JSON.parse(userRating.getAttribute('data-user'));
             })
@@ -245,7 +249,7 @@
             }
 
             async function clicCampusSelect(element) {
-                let campusId = element.value;
+                campusId = element.value;
                 let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
                 let result = await response.json();
                 fillTable(result);
@@ -256,7 +260,7 @@
                     let response = await fetch( '{{ path('get_attending_from_user')}}' + '/' + currentUser.id);
                     jsonResponse = await response.json();
                 }else{
-                    let response = await fetch('{{ path('app_event_list')}}');
+                    let response = await fetch('{{ path('get_list_from_campus')}}' + '/' + campusId);
                     jsonResponse = await response.json();
                 }
                 fillTable(jsonResponse);
@@ -267,7 +271,7 @@
                     let response = await fetch( '{{ path('get_not_attending_from_user')}}' + '/' + currentUser.id);
                     jsonResponse = await response.json();
                 }else{
-                    let response = await fetch('{{ path('app_event_list')}}');
+                    let response = await fetch('{{ path('get_list_from_campus')}}' + '/' + campusId);
                     jsonResponse = await response.json();
                 }
                 fillTable(jsonResponse);
@@ -278,19 +282,18 @@
                     let response = await fetch( '{{ path('get_organized_from_user')}}' + '/' + currentUser.id);
                     jsonResponse = await response.json();
                 }else{
-                    let response = await fetch('{{ path('app_event_list')}}');
+                    let response = await fetch('{{ path('get_list_from_campus')}}' + '/' + campusId);
                     jsonResponse = await response.json();
                 }
                 fillTable(jsonResponse);
             }
 
             async function clicPassed(element) {
-                let jsonResponse = null;
                 if(element.checked){
                     let response = await fetch( '{{ path('get_past_events')}}');
                     jsonResponse = await response.json();
                 }else{
-                    let response = await fetch('{{ path('app_event_list')}}');
+                    let response = await fetch('{{ path('get_list_from_campus')}}' + '/' + campusId);
                     jsonResponse = await response.json();
                 }
                 fillTable(jsonResponse);
