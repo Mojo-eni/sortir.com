@@ -26,43 +26,43 @@ class ListEventFormType extends AbstractType
             ])
             ->add('keyword', TextType::class, [
                 'mapped' => false,
-                'label' => 'Keyword',
+                'label' => 'Mot-clé',
                 'required' => false,
             ])
             ->add('dateFrom', DateType::class, [
                 'mapped' => false,
                 'widget' => 'single_text',
-                'label' => 'From',
+                'label' => 'Du',
                 'required' => false,
             ])
             ->add('dateTo', DateType::class, [
                 'mapped' => false,
                 'widget' => 'single_text',
-                'label' => 'To',
+                'label' => 'Au',
                 'required' => false,
             ])
             ->add('isOrganizer', CheckboxType::class, [
                 'mapped' => false,
-                'label' => 'Organizer',
+                'label' => 'Organisateur',
                 'required' => false,
             ])
             ->add('isAttending', CheckboxType::class, [
                 'mapped' => false,
-                'label' => 'Attendee',
+                'label' => 'Participant',
                 'required' => false,
             ])
             ->add('isNotAttending', CheckboxType::class, [
                 'mapped' => false,
-                'label' => 'Not going',
+                'label' => 'Non participant',
                 'required' => false,
             ])
             ->add('hasPassed', CheckboxType::class, [
                 'mapped' => false,
-                'label' => 'Past',
+                'label' => 'Passées',
                 'required' => false,
             ])
             ->add('search', SubmitType::class, [
-                'label' => 'Search',
+                'label' => 'Recherche',
             ]);
     }
 
