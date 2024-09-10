@@ -48,9 +48,10 @@ class AjaxEventController extends AbstractController
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
-        $userEvents = $user->getParticipations();
-        $events = $eventRepository->findByCampusId($user->getCampus()->getId());
-        $events = array_diff($events, $userEvents);
+//        $userEvents = $user->getParticipations();
+//        $events = $eventRepository->findBy(['campus' => $user->getCampus()->getId()]);
+//        $events = array_diff($events, $userEvents->getValues());
+        $events = $eventRepository->findEventsNotAttendedByUser($user);
         $data = $serializer->serialize($events, 'json', ['groups' => 'default']);
         return JsonResponse::fromJsonString($data);
     }

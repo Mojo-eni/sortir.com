@@ -44,12 +44,14 @@ class EventRepository extends ServiceEntityRepository
                 ->getResult();
         }
 
-    public function findEventsNotAttendedByUser($userId) : array
+    public function findEventsNotAttendedByUser($user) : array
     {
         return $this->createQueryBuilder('e')
-            ->innerJoin('e.attendees', 'u')
-            ->andWhere('u.id = :userId')
-            ->setParameter('userId', $userId)
+            ->innerJoin('e.participants', 'u')
+            ->andWhere(':userId NOT MEMBER OF e.participants')
+            ->andWhere(':campus = e.campus')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('campus', $user->getCampus())
             ->getQuery()
             ->getResult();
     }
@@ -62,7 +64,7 @@ class EventRepository extends ServiceEntityRepository
         $yesterday = new DateTime();
         $yesterday->sub(new DateInterval('P1D'));
         $oneMonthAgo = new DateTime();
-        $oneMonthAgo->modify('-1 month');
+        $oneMonthAgo->modify('-1 month');   
         return $this->createQueryBuilder('e')
             ->andWhere('e.eventStart < :yesterday')
             ->andWhere('e.eventStart > :oneMonthAgo')
