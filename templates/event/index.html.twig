@@ -44,13 +44,13 @@
         <table class="table-auto border-collapse border border-gray-300 w-full text-center">
             <thead>
                 <tr class="bg-gray-100">
-                    <th>Event</th>
-                    <th>Start</th>
-                    <th>Deadline</th>
+                    <th>Sortie</th>
+                    <th>Début</th>
+                    <th>Limite</th>
                     <th>Participants</th>
-                    <th>Attend</th>
-                    <th>Details</th>
-                    <th>Modify</th>
+                    <th>S'inscrire</th>
+                    <th>Consulter</th>
+                    <th>Modifier</th>
                 </tr>
             </thead>
             <tbody id="event_liste">
@@ -95,13 +95,8 @@
             let jsonResponse;
             document.addEventListener('DOMContentLoaded', function() {
                 const userRating = document.querySelector('.js-user-rating');
-                console.log(userRating);
                 isAuthenticated = userRating.getAttribute('data-is-authenticated');
-                console.log('iA'+isAuthenticated);
-
                 currentUser = JSON.parse(userRating.getAttribute('data-user'));
-                console.log(currentUser);
-
             })
 
             function formatDate(dateString) {
@@ -116,12 +111,8 @@
                 let listContainer = document.getElementById("event_liste");
                 listContainer.innerHTML = "";
                 if (result.length > 0) {
-                    console.log("RESULT IS HERE" + result.length);
-                    console.log(currentUser.role);
-                    console.log("Role");
                     result.forEach(event => {
                         const row = document.createElement('tr');
-                        console.log(event);
                         if (currentUser.roles.includes('ROLE_USER') && event.participants.length < event.participantLimit) {
                             attend = `<a href="/public/event/${event.id}" class="underline text-blue-600">Attend</a>`;
                         } else {
@@ -153,7 +144,7 @@
                     });
                 } else {
                     const row = document.createElement('tr');
-                    row.innerHTML = '<td colspan="6">No products found</td>';
+                    row.innerHTML = '<td colspan="6">Aucune sortie trouvée</td>';
                     listContainer.appendChild(row);
                 }
             }
@@ -178,7 +169,7 @@
 
             async function clicNotAttending(element) {
                 if(element.checked){
-                    let response = await fetch( '{{ path('get_attending_from_user')}}' + '/' + currentUser.id);
+                    let response = await fetch( '{{ path('get_not_attending_from_user')}}' + '/' + currentUser.id);
                     jsonResponse = await response.json();
                 }else{
                     let response = await fetch('{{ path('app_event_list')}}');
@@ -201,7 +192,7 @@
             async function clicPassed(element) {
                 let jsonResponse = null;
                 if(element.checked){
-                    let response = await fetch( '{{ path('get_organized_from_user')}}' + '/' + currentUser.id);
+                    let response = await fetch( '{{ path('get_past_events')}}');
                     jsonResponse = await response.json();
                 }else{
                     let response = await fetch('{{ path('app_event_list')}}');
