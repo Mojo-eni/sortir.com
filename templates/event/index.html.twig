@@ -9,78 +9,159 @@
     </style>
 
     <div class="example-wrapper">
-        <h1>Event List</h1>
-        <div class="greeter">
-            <label>Date du jour : {{ "now"|date("Y-m-d") }}</label>
-            <label>Bonjour {{ app.user.pseudo }}</label>
+        <div class="flex flex-col items-center justify-center">
+            <label class="font-medium text-3xl text-blue-950 mb-4">
+                Bonjour <span class="text-orange-400">{{ app.user.pseudo }}</span>
+            </label>
+            <h1 class="font-bold text-3xl text-blue-950">
+                Rejoignez l'Aventure ! ✨
+            </h1>
         </div>
-        <div>{{ form_start(listForm) }}
-            <label class="form-label" for="{{ field_label(listForm.campus) }}">Filtrer les sorties</label>
-            <select id = "{{ field_label(listForm.campus) }}" class="form-control" onchange="clicCampusSelect(this)"
-                    name="{{ field_name(listForm.campus) }}">
-                {% for name, id in field_choices(listForm.campus) %}
-                    <option value="{{ id }}"  {% if id == app.user.campus.id %} selected {% endif %}>{{ name }}</option>
-                {%  endfor %}
-            </select>
 
-            <label class="form-label" for="{{ field_label(listForm.isOrganizer) }}">Organisateur.ice</label>
-            <input type="checkbox" class="form-control" id="{{ field_label(listForm.isOrganizer) }}" name="{{ field_name(listForm.isOrganizer) }}" onclick="clicOrganizer(this)">
 
-            <label class="form-label" for="{{ field_label(listForm.isAttending) }}">Mes participations</label>
-            <input type="checkbox" class="form-control" id="{{ field_label(listForm.isAttending) }}" name="{{ field_name(listForm.isAttending) }}" onclick="clicAttending(this)">
 
-            <label class="form-label" for="{{ field_label(listForm.isNotAttending) }}">Mes opportunités</label>
-            <input type="checkbox" class="form-control" id="{{ field_label(listForm.isNotAttending) }}" name="{{ field_name(listForm.isNotAttending) }}" onclick="clicNotAttending(this)">
+        <div class="greeter text-center mb-8 p-4 g">
+            <p class="text-lg font-semibold text-gray-800 mb-2">
+                📅 Date du jour :
+            </p>
+            <p class="text-2xl font-bold text-blue-950">
+                {{ "now"|date("Y-m-d") }}
+            </p>
+        </div>
 
-            <label class="form-label" for="{{ field_label(listForm.hasPassed) }}">Sorties passées</label>
-            <input type="checkbox" class="form-control" id="{{ field_label(listForm.hasPassed) }}" name="{{ field_name(listForm.hasPassed) }}" onclick="clicPassed(this)">
+<div>
+            {{ form_start(listForm) }}
 
-        </div>{{ form_end(listForm) }}
+            <div class="flex flex-col space-y-4">
+                <!-- Filtre de sélection -->
+                <div>
+                    <label class="block text-lg font-semibold text-gray-800" for="{{ field_label(listForm.campus) }}">Filtrer les sorties</label>
+                    <select id="{{ field_label(listForm.campus) }}" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+                            name="{{ field_name(listForm.campus) }}" onchange="clicCampusSelect(this)">
+                        {% for name, id in field_choices(listForm.campus) %}
+                            <option value="{{ id }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Cases à cocher -->
+                <div class="space-y-2">
+                    <label class="inline-flex items-center text-lg font-semibold text-gray-800">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-green-500 border-gray-300 rounded" id="{{ field_label(listForm.isOrganizer) }}" name="{{ field_name(listForm.isOrganizer) }}" onclick="clicOrganizer(this)">
+                        <span class="ml-2">Organisateur.ice</span>
+                    </label>
+                    <label class="inline-flex items-center text-lg font-semibold text-gray-800">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-green-500 border-gray-300 rounded" id="{{ field_label(listForm.isAttending) }}" name="{{ field_name(listForm.isAttending) }}" onclick="clicAttending(this)">
+                        <span class="ml-2">Mes participations</span>
+                    </label>
+                    <label class="inline-flex items-center text-lg font-semibold text-gray-800">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-green-500 border-gray-300 rounded" id="{{ field_label(listForm.isNotAttending) }}" name="{{ field_name(listForm.isNotAttending) }}" onclick="clicNotAttending(this)">
+                        <span class="ml-2">Mes opportunités</span>
+                    </label>
+                    <label class="inline-flex items-center text-lg font-semibold text-gray-800">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-green-500 border-gray-300 rounded" id="{{ field_label(listForm.hasPassed) }}" name="{{ field_name(listForm.hasPassed) }}" onclick="clicPassed(this)">
+                        <span class="ml-2">Sorties passées</span>
+                    </label>
+
+
+
+                        <!-- Mot-clé -->
+                        <div>
+                            <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.keyword) }}">Mot-clé</label>
+                            {{ form_widget(listForm.keyword, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
+                            {{ form_errors(listForm.keyword) }}
+                        </div>
+
+                        <!-- Date de début -->
+                        <div>
+                            <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.dateFrom) }}">Du</label>
+                            {{ form_widget(listForm.dateFrom, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
+                            {{ form_errors(listForm.dateFrom) }}
+                        </div>
+
+                        <!-- Date de fin -->
+                        <div>
+                            <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.dateTo) }}">Au</label>
+                            {{ form_widget(listForm.dateTo, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
+                            {{ form_errors(listForm.dateTo) }}
+                        </div>
+                </div>
+                <!-- Bouton de recherche -->
+                <div class="flex justify-center mt-6">
+                    {{ form_widget(listForm.search, {'attr': {'class': 'bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 ease-in-out'}}) }}
+                </div>
+            </div>
+            </div>
+
+            {{ form_end(listForm) }}
+    </div>
+
 
         <div class="js-user-rating"
              data-is-authenticated="{{ app.user ? 'true' : 'false' }}"
-             data-user="{{ serializedUser }}"></div>
+             data-user="{{ serializedUser }}">
 
-        <table class="table-auto border-collapse border border-gray-300 w-full text-center">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th>Sortie</th>
-                    <th>Début</th>
-                    <th>Limite</th>
-                    <th>Participants</th>
-                    <th>S'inscrire</th>
-                    <th>Consulter</th>
-                    <th>Modifier</th>
-                </tr>
+        </div>
+
+        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden ">
+            <thead class="bg-light-blue text-white">
+            <tr>
+                <th class="py-3 px-4 text-left">Sortie</th>
+                <th class="py-3 px-4 text-left">Début</th>
+                <th class="py-6 px-4 text-left">Date Limite</th>
+                <th class="py-3 px-4 text-left">Participants</th>
+                <th class="py-3 px-4 text-left">S'inscrire</th>
+                <th class="py-3 px-4 text-left">Consulter</th>
+                <th class="py-3 px-4 text-left">Modifier</th>
+            </tr>
             </thead>
-            <tbody id="event_liste">
+            <tbody id="event_liste" class="text-gray-700">
             {% for event in events %}
-                <tr>
-                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">{{ event.name }}</td>
-                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">{{ event.eventStart|date("Y/m/d", false) }}</td>
-                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">{{ event.participationDeadline|date("Y/m/d", false) }}</td>
-                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">{{ event.participants.count }}/{{ event.participantLimit }}</td>
-                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">
-                        {% if (event.participants.count < event.participantLimit)  %}
-                        <a href="{{ url('app_event_details', {'id': event.id}) }}" class="underline">Attend</a>
+                <tr class="hover:bg-gray-100 transition duration-200">
+                    <td class="border-t border-gray-200 px-4 py-2">{{ event.name }}</td>
+                    <td class="border-t border-gray-200 px-4 py-2">{{ event.eventStart|date("Y/m/d", false) }}</td>
+                    <td class="border-t border-gray-200 px-4 py-2">{{ event.participationDeadline|date("Y/m/d", false) }}</td>
+                    <td class="border-t border-gray-200 px-4 py-2">{{ event.participants.count }}/{{ event.participantLimit }}</td>
+                    <td class="border-t border-gray-200 px-4 py-2">
+                        {% if (event.participants.count < event.participantLimit) %}
+                            <a href="{{ url('app_event_details', {'id': event.id}) }}">
+                                <button class="bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
+                                    <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                                    <img src="{{ asset('image/participation.png') }}" alt="Participer" class="w-5 h-5"/>
+                                    <span>Participer</span>
+                                </button>
+                            </a>
                         {% else %}
-                         <p>Full</p>
+                            <p class="bg-red-500 text-white px-3 py-1 rounded-lg">Complet!</p>
                         {% endif %}
                     </td>
-                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">
-                            <a href="{{ url('app_event_details', {'id': event.id}) }}" class="underline">Display</a>
+                    <td class="border-t border-gray-200 px-4 py-2">
+                        <a href="{{ url('app_event_details', {'id': event.id}) }}">
+                            <button class="bg-orange-600 text-orange-900 border border-orange-400 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
+                                <span class="bg-orange-300 shadow-orange-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                                <img src="{{ asset('image/chercher.png') }}" alt="Display" class="w-5 h-5"/>
+                                <span>Afficher</span>
+                            </button>
+                        </a>
                     </td>
-                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">
-                        {% if ('ROLE_ADMIN' in app.user.roles) or (event.organizer.id is same as(app.user.id))  %}
-                            <a href="{{ url('app_event_edit', {'id': event.id}) }}" class="underline text-blue-600">Edit</a>
+                    <td class="border-t border-gray-200 px-4 py-2">
+                        {% if ('ROLE_ADMIN' in app.user.roles) or (event.organizer.id is same as(app.user.id)) %}
+                            <a href="{{ url('app_event_edit', {'id': event.id}) }}">
+                                <button class="bg-green-600 text-green-200 border border-green-200 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
+                                    <span class="bg-green-300 shadow-green-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                                    <img src="{{ asset('image/edit.png') }}" alt="Edit" class="w-5 h-5"/>
+                                    <span>Edit</span>
+                                </button>
+                            </a>
                         {% else %}
-                            <p>Denied</p>
+                            <img src="{{ asset('image/ban-user.png') }}" alt="Denied" class="w-6 h-6 mx-auto"/>
+
                         {% endif %}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="6">No events found</td>
+                    <td colspan="7" class="text-center py-4">Aucun événements trouvé</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -117,21 +198,36 @@
                     result.forEach(event => {
                         const row = document.createElement('tr');
                         if (currentUser.roles.includes('ROLE_USER') && event.participants.length < event.participantLimit) {
-                            attend = `<a href="/public/event/${event.id}" class="underline text-blue-600">Attend</a>`;
+                            attend = `<a href="/public/event/${event.id}"   <button class="bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
+                                    <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                                    <img src="{{ asset('image/participation.png') }}" alt="Participer" class="w-5 h-5"/>
+                                    <span>Participer</span>
+                                </button></a>`;
                         } else {
                             attend = 'Full';
                         }
 
                         if (currentUser.roles.includes('ROLE_USER')) {
-                            details = `<a href="/public/event/${event.id}" class="underline text-blue-600">Display</a>`;
+                            details = `<a href="/public/event/${event.id}" > <button class="bg-orange-600 text-orange-900 border border-orange-400 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
+                                <span class="bg-orange-300 shadow-orange-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                                <img src="{{ asset('image/chercher.png') }}" alt="Display" class="w-5 h-5"/>
+                                <span>Afficher</span>
+                            </button> </a>`;
                         } else {
                             details = 'Display';
                         }
 
                         if (currentUser.roles.includes('ROLE_ADMIN') || (event.organizer.id === currentUser.id)) {
-                            edit = `<a href="/public/event/edit/${event.id}" class="underline text-blue-600">Edit</a>`;
+                            edit = `<a href="/public/event/edit/${event.id}"
+    <button class="bg-green-600 text-green-200 border border-green-200 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
+        <span class="bg-green-300 shadow-green-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+        <img src="{{ asset('image/edit.png') }}" alt="Edit" class="w-5 h-5"/>
+        <span>Edit</span>
+    </button>
+
+</a>`;
                         } else {
-                            edit = 'Denied';
+                            edit = '<img src="{{ asset('image/ban-user.png') }}" alt="Denied" class="w-6 h-6 mx-auto"/>';
                         }
 
                         row.innerHTML = `

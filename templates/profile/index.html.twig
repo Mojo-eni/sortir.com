@@ -5,29 +5,37 @@
 {% block title %}My Profile{% endblock %}
 
 {% block body %}
-    <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-        <h1 class="text-3xl font-bold mb-6">Profile Details</h1>
+    <div class="flex justify-center items-center  ">
+    <div class="max-w-4xl mx-auto px-24 p-6 bg-white rounded-lg shadow-md ">
+        <div class="flex flex-col items-center mb-8 ">
+            {% if user.photo %}
+                <img src="{{ asset('uploads/photos/' ~ user.photo) }}" alt="Photo de profil" class="w-32 h-32 rounded-full border-4 border-blue-500 object-cover mb-4">
+            {% else %}
+                <div class="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center mb-4">
+                    <span class="text-gray-600">No Photo</span>
+                </div>
+            {% endif %}
+            <h1 class="text-4xl font-semibold text-gray-800">{{ user.pseudo }}</h1>
+        </div>
+
 
         <div class="mb-6">
             <ul class="space-y-4">
+
                 <li class="flex items-center">
-                    <strong class="w-36 text-gray-700">Pseudo:</strong>
-                    <span class="text-gray-900">{{ user.pseudo }}</span>
-                </li>
-                <li class="flex items-center">
-                    <strong class="w-36 text-gray-700">First Name:</strong>
+                    <strong class="w-36 text-gray-700">Nom:</strong>
                     <span class="text-gray-900">{{ user.firstName }}</span>
                 </li>
                 <li class="flex items-center">
-                    <strong class="w-36 text-gray-700">Last Name:</strong>
+                    <strong class="w-36 text-gray-700">Prénom:</strong>
                     <span class="text-gray-900">{{ user.lastName }}</span>
                 </li>
                 <li class="flex items-center">
-                    <strong class="w-36 text-gray-700">Email:</strong>
+                    <strong class="w-36 text-gray-700">Addresse Email:</strong>
                     <span class="text-gray-900">{{ user.email }}</span>
                 </li>
                 <li class="flex items-center">
-                    <strong class="w-36 text-gray-700">Phone:</strong>
+                    <strong class="w-36 text-gray-700">Téléphone:</strong>
                     <span class="text-gray-900">{{ user.phone }}</span>
                 </li>
                 <li class="flex items-center">
@@ -42,17 +50,7 @@
                     <strong class="w-36 text-gray-700">Campus:</strong>
                     <span class="text-gray-900">{{ user.campus.name }}</span>
                 </li>
-                {% if user.photo %}
-                    <li class="flex items-center">
-                        <strong class="w-36 text-gray-700">Profile Photo:</strong>
-                        <img src="{{ asset('uploads/photos/' ~ user.photo) }}" alt="Photo de profil" class="w-24 h-24 rounded-full border-2 border-gray-300 object-cover">
-                    </li>
-                {% else %}
-                    <li class="flex items-center">
-                        <strong class="w-36 text-gray-700">Profile Photo:</strong>
-                        <p class="text-gray-500">Aucune photo de profil n'est disponible.</p>
-                    </li>
-                {% endif %}
+
             </ul>
         </div>
 
@@ -63,5 +61,6 @@
             <a href="{{ path('app_profile_edit') }}">Modifier</a>
 
         </button>
+    </div>
     </div>
 {% endblock %}

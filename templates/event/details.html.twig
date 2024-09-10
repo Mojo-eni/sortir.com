@@ -3,7 +3,7 @@
 {% block title %}Détails de la sortie{% endblock %}
 
 {% block body %}
-    <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md relative">
+    <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md relative ">
 
         <div class="flex justify-end space-x-4 mb-6">
             {% if app.user == event.organizer %}
@@ -146,11 +146,16 @@
                 <tbody>
                 {% for participant in event.participants %}
                     <tr class="border-t">
-                        <td class="px-4 py-2">{{ participant.pseudo }}</td>
+                        <td class="px-4 py-2">
+                            <a href="{{ path('app_profile_id', { 'id': participant.id }) }}" class=" hover:underline">
+                                {{ participant.pseudo }}
+                            </a>
+                        </td>
                         <td class="px-4 py-2">{{ participant.email }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
+
             </table>
         </div>
 
