@@ -275,18 +275,22 @@
 {#                </div>#}
 
                 <div class="px-4">
+                    {{ form_label(eventForm.save) }}
+                    {{ form_widget(eventForm.save, { 'attr': {'class': "bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1"} }) }}
+                </div>
+
+                <div class="px-4">
+                    {{ form_label(eventForm.publish) }}
+                    {{ form_widget(eventForm.publish, { 'attr': {'class': "bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1"} }) }}
+                </div>
+
+                <div class="px-4">
                     {% if eventForm.vars.value.status.name == "Créée" %}
-                        <button type="submit"><a href="{{ path('app_event_delete', { 'id': eventForm.vars.value.id } ) }}">Supprimer la sortie</a></button>
+                        <button type="submit" class="bg-red-600 text-red-100 border border-red-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 active:shadow-none"><a href="{{ path('app_event_delete', { 'id': eventForm.vars.value.id } ) }}">Supprimer la sortie</a></button>
                     {% endif %}
-                    <button type="submit"><a href="{{ path('app_event_details', { 'id': eventForm.vars.value.id } ) }}">Annuler</a></button>
+                    <button type="submit" class="bg-red-600 text-red-100 border border-red-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 active:shadow-none"><a href="{{ path('app_event_details', { 'id': eventForm.vars.value.id } ) }}">Annuler</a></button>
                 </div>
             </div>
-
-            {{ form_label(eventForm.save) }}
-            {{ form_widget(eventForm.save) }}
-
-            {{ form_label(eventForm.publish) }}
-            {{ form_widget(eventForm.publish) }}
 
             {{ form_end(eventForm) }}
         </div>
