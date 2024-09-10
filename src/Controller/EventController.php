@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Status;
 use App\Entity\User;
 use App\Form\ListEventFormType;
 use App\Entity\City;
 use App\Entity\Event;
 use App\Entity\Place;
 use App\Form\EventType;
+use App\Form\PlaceType;
 use App\Repository\CampusRepository;
 use App\Repository\CityRepository;
 use App\Repository\EventRepository;
@@ -119,6 +121,10 @@ class EventController extends AbstractController
         $eventForm = $this->createForm(EventType::class, $event);
         $eventForm->handleRequest($request);
 
+        // initialisation du formulaire de lieu pour la popup
+        $place = new Place();
+        $placeForm = $this->createForm(PlaceType::class, $place);
+
         if ($eventForm->isSubmitted() && $eventForm->isValid()) {
             $event = $eventForm->getData();
             $event->getParticipationDeadline()->setTime(0,0);
@@ -139,7 +145,8 @@ class EventController extends AbstractController
         }
         return $this->render('event/create.html.twig', [
             'controller_name' => 'EventController',
-            'eventForm' => $eventForm->createView()
+            'eventForm' => $eventForm->createView(),
+            'placeForm' => $placeForm->createView()
         ]);
     }
 
@@ -162,15 +169,15 @@ class EventController extends AbstractController
     #[Route('/edit/{id}', name: '_edit')]
     public function edit($id, Request $req, EventRepository $eRepo, EntityManagerInterface $em): Response {
         $event = $eRepo->find($id);
-        if (!$event){
-            if ($this->getUser()->getUserIdentifier() !== $event->getOrganizer()->getUserIdentifier()
-            || !in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
-                    return $this->redirectToRoute('app_event_list');
-            }
+        if (!$event | $this->getUser() !== $event->getOrganizer()) {
+            return $this->redirectToRoute('app_event_list');
         }
-
         $eventForm = $this->createForm(EventType::class, $event);
         $eventForm->handleRequest($req);
+
+        // initialisation du formulaire de lieu pour la popup
+        $place = new Place();
+        $placeForm = $this->createForm(PlaceType::class, $place);
 
         if ($eventForm->isSubmitted() && $eventForm->isValid()) {
             $event = $eventForm->getData();
@@ -191,9 +198,12 @@ class EventController extends AbstractController
         }
         return $this->render('event/edit.html.twig', [
             'controller_name' => 'EventController',
-            'eventForm' => $eventForm->createView()
+            'eventForm' => $eventForm->createView(),
+            'placeForm' => $placeForm->createView()
         ]);
     }
+
+
 
     #[Route('/delete/{id}', name: '_delete')]
     public function delete($id, Request $req, EventRepository $eRepo, EntityManagerInterface $em): Response {
@@ -211,7 +221,6 @@ class EventController extends AbstractController
 
 
     #[Route('/{id}/participate', name: '_participate')]
-    // src/Controller/SomeController.php
 
     public function participateEvent(int $id, EntityManagerInterface $em): Response
     {
@@ -250,5 +259,76 @@ class EventController extends AbstractController
         $this->addFlash('success', 'Vous avez été ajouté comme participant à cet événement !');
         return $this->redirectToRoute('app_event_details', ['id' => $id]);
     }
+
+
+    #[Route('/{id}/cancel', name: '_cancel')]
+
+    public function cancelEvent(int $id, EntityManagerInterface $em,  EventRepository $eRepo,Request $req ): Response
+    {
+
+        $event = $eRepo->find($id);
+        if (!$event || $this->getUser() !== $event->getOrganizer()) {
+            return $this->redirectToRoute('app_event_list');
+        }
+
+        $description = $req->request->get('description');
+        if ($description) {
+            $event->setDescription($description);
+            try {
+                $em->persist($event);
+                $em->flush();
+            } catch (ORMException $e) {
+                var_dump($e->getMessage());
+            }
+        }
+
+
+
+        $user = $this->getUser();
+
+        if (!$event) {
+            throw $this->createNotFoundException('Événement non trouvé');
+        }
+
+        $canceledStatus = $em->getRepository(Status::class)->findOneBy(['name' => 'Annulée']);
+
+        $event->setStatus($canceledStatus);
+
+        $em->persist($event);
+        $em->flush();
+
+        $this->addFlash('success', 'Vous avez annulé cet event !');
+
+        return $this->redirectToRoute('app_event_details', ['id' => $id]);
+    }
+
+    #[Route('/{id}/exit', name: '_exit')]
+
+    public function exitEvent(int $id, EntityManagerInterface $em): Response
+    {
+        $event = $em->getRepository(Event::class)->find($id);
+        $user = $this->getUser();
+
+        if (!$event) {
+            throw $this->createNotFoundException('Événement non trouvé');
+        }
+
+
+
+        if ($event->getStatus()->getName() !== 'Ouverte') {
+            $this->addFlash('error', 'tu ne peux pas te desister.');
+            return $this->redirectToRoute('app_event_details', ['id' => $id]);
+        }
+
+
+
+        $event->removeParticipant($user);
+        $em->persist($event);
+        $em->flush();
+
+        $this->addFlash('success', 'Vous avez quitter cet événement !');
+        return $this->redirectToRoute('app_event_details', ['id' => $id]);
+    }
+
 
 }
