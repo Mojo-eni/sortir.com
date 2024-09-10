@@ -12,7 +12,7 @@
         <h1>Event List</h1>
         <div class="greeter">
             <label>Date du jour : {{ "now"|date("Y-m-d") }}</label>
-            <label>Hello {{ app.user.pseudo }}</label>
+            <label>Bonjour {{ app.user.pseudo }}</label>
         </div>
         <div>{{ form_start(listForm) }}
             <label class="form-label" for="{{ field_label(listForm.campus) }}">Filtrer les sorties</label>
@@ -23,8 +23,17 @@
                 {%  endfor %}
             </select>
 
-            <label class="form-label" for="{{ field_label(listForm.isAttending) }}">Organizer</label>
+            <label class="form-label" for="{{ field_label(listForm.isOrganizer) }}">Organisateur.ice</label>
+            <input type="checkbox" class="form-control" id="{{ field_label(listForm.isOrganizer) }}" name="{{ field_name(listForm.isOrganizer) }}" onclick="clicOrganizer(this)">
+
+            <label class="form-label" for="{{ field_label(listForm.isAttending) }}">Mes participations</label>
             <input type="checkbox" class="form-control" id="{{ field_label(listForm.isAttending) }}" name="{{ field_name(listForm.isAttending) }}" onclick="clicAttending(this)">
+
+            <label class="form-label" for="{{ field_label(listForm.isNotAttending) }}">Mes opportunités</label>
+            <input type="checkbox" class="form-control" id="{{ field_label(listForm.isNotAttending) }}" name="{{ field_name(listForm.isNotAttending) }}" onclick="clicNotAttending(this)">
+
+            <label class="form-label" for="{{ field_label(listForm.hasPassed) }}">Sorties passées</label>
+            <input type="checkbox" class="form-control" id="{{ field_label(listForm.hasPassed) }}" name="{{ field_name(listForm.hasPassed) }}" onclick="clicPassed(this)">
 
         </div>{{ form_end(listForm) }}
 
@@ -83,6 +92,7 @@
         <script>
             let currentUser = null;
             let isAuthenticated = null;
+            let jsonResponse;
             document.addEventListener('DOMContentLoaded', function() {
                 const userRating = document.querySelector('.js-user-rating');
                 console.log(userRating);
@@ -156,10 +166,48 @@
             }
 
             async function clicAttending(element) {
-                console.log(element.checked);
-                let response = await fetch( '{{ path('get_attending_from_user')}}' + '/' + currentUser.id);
-                let result = await response.json();
-                fillTable(result);
+                if(element.checked){
+                    let response = await fetch( '{{ path('get_attending_from_user')}}' + '/' + currentUser.id);
+                    jsonResponse = await response.json();
+                }else{
+                    let response = await fetch('{{ path('app_event_list')}}');
+                    jsonResponse = await response.json();
+                }
+                fillTable(jsonResponse);
+            }
+
+            async function clicNotAttending(element) {
+                if(element.checked){
+                    let response = await fetch( '{{ path('get_attending_from_user')}}' + '/' + currentUser.id);
+                    jsonResponse = await response.json();
+                }else{
+                    let response = await fetch('{{ path('app_event_list')}}');
+                    jsonResponse = await response.json();
+                }
+                fillTable(jsonResponse);
+            }
+
+            async function clicOrganizer(element) {
+                if(element.checked){
+                    let response = await fetch( '{{ path('get_organized_from_user')}}' + '/' + currentUser.id);
+                    jsonResponse = await response.json();
+                }else{
+                    let response = await fetch('{{ path('app_event_list')}}');
+                    jsonResponse = await response.json();
+                }
+                fillTable(jsonResponse);
+            }
+
+            async function clicPassed(element) {
+                let jsonResponse = null;
+                if(element.checked){
+                    let response = await fetch( '{{ path('get_organized_from_user')}}' + '/' + currentUser.id);
+                    jsonResponse = await response.json();
+                }else{
+                    let response = await fetch('{{ path('app_event_list')}}');
+                    jsonResponse = await response.json();
+                }
+                fillTable(jsonResponse);
             }
         </script>
 {% endblock %}
