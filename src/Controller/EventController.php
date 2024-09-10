@@ -171,6 +171,10 @@ class EventController extends AbstractController
         $eventForm = $this->createForm(EventType::class, $event);
         $eventForm->handleRequest($req);
 
+        // initialisation du formulaire de lieu pour la popup
+        $place = new Place();
+        $placeForm = $this->createForm(PlaceType::class, $place);
+
         if ($eventForm->isSubmitted() && $eventForm->isValid()) {
             $event = $eventForm->getData();
             $event->getParticipationDeadline()->setTime(0,0);
@@ -190,7 +194,8 @@ class EventController extends AbstractController
         }
         return $this->render('event/edit.html.twig', [
             'controller_name' => 'EventController',
-            'eventForm' => $eventForm->createView()
+            'eventForm' => $eventForm->createView(),
+            'placeForm' => $placeForm->createView()
         ]);
     }
 
