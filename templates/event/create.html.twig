@@ -262,22 +262,38 @@
 
                 </div>
 
-                <div class="flex-row">
+                <div class="flex flex-row justify-center">
 
-                    <div class="relative">
-                        {{ form_label(eventForm.save) }}
-                        {{ form_widget(eventForm.save) }}
-                    </div>
+{#                    <div class="px-4">#}
+{#                        <button type="submit" id="event_save" name="event[save]" class="bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1">#}
+{#                            <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>#}
+{#                            <img src="{{ asset('image/crayon.png') }}" alt="Modifier" class="w-5 h-5"/>#}
+{#                            <span>Enregistrer</span>#}
+{#                        </button>#}
+{#                    </div>#}
 
-                    <div class="relative">
-                        {{ form_label(eventForm.publish) }}
-                        {{ form_widget(eventForm.publish) }}
-                    </div>
+{#                    <div class="px-4">#}
+{#                        <button type="submit" id="event_publish" name="event[publish]" class="bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1">#}
+{#                            <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>#}
+{#                            <img src="{{ asset('image/crayon.png') }}" alt="Modifier" class="w-5 h-5"/>#}
+{#                            <span>Publier</span>#}
+{#                        </button>#}
+{#                    </div>#}
 
-                    <div class="relative">
-                        <button><a href="{{ path('app_event_list') }}">Annuler</a></button>
+                    <div class="px-4">
+                        <button type="button" id="cancel" class="bg-red-600 text-red-100 border border-red-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 active:shadow-none">
+                            <span class="bg-red-300 shadow-red-300 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                            <img src="{{ asset('image/effacer.png') }}" alt="Plus" class="w-5 h-5"/>
+                            <a href="{{ path('app_event_list') }}">Annuler</a>
+                        </button>
                     </div>
                 </div>
+
+            {{ form_label(eventForm.save) }}
+            {{ form_widget(eventForm.save) }}
+
+            {{ form_label(eventForm.publish) }}
+            {{ form_widget(eventForm.publish) }}
 
             {{ form_end(eventForm) }}
         </div>
@@ -432,13 +448,6 @@
             popup.classList.add('opacity-100'); // Assure que l'opacité est bien visible
         }
 
-        // document.getElementById('open-place-popup-button').addEventListener('click', function() {
-        //     // Montre la popup sans aucun lien avec le formulaire
-        //     let popup = document.getElementById('place-popup');
-        //     popup.classList.remove('hidden');
-        //     popup.classList.add('opacity-100'); // Assure que l'opacité est bien visible
-        // });
-
         document.getElementById('place-popup').addEventListener('click', function(event) {
             if (event.target === this) {
                 this.classList.add('hidden');
@@ -447,21 +456,9 @@
         });
 
         document.addEventListener("DOMContentLoaded", function() {
-            // selectInit();
             let citySelect = document.querySelector("#city");
             clicCitySelect(citySelect);
         });
-
-        function selectInit() {
-            // let placeSelect = document.querySelector("#place");
-            // placeSelect.innerHTML = "";
-            // let el = document.createElement("option");
-            // el.textContent = "---";
-            // el.value = "";
-            // placeSelect.appendChild(el);
-            // let citySelect = document.querySelector("#city");
-            // clicCitySelect(citySelect);
-        }
 
         async function clicPlaceSelect(element) {
             let placeID = element.value;

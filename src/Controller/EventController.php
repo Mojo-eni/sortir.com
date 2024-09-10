@@ -129,9 +129,6 @@ class EventController extends AbstractController
         if ($eventForm->isSubmitted() && $eventForm->isValid()) {
             $event = $eventForm->getData();
             $event->addParticipant($user);
-
-            $validator->validate($event, null, ['step1']); // Valide NotNull d'abord
-            $validator->validate($event, null, ['step2']); // Valide GreaterThan après
             $event->getParticipationDeadline()->setTime(0,0);
 
             if ($eventForm->getClickedButton() === $eventForm->get('save')) {
