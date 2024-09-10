@@ -8,6 +8,8 @@ use App\Entity\Event;
 use App\Entity\Place;
 use App\Entity\Status;
 use App\Entity\User;
+use DateInterval;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -177,13 +179,16 @@ class AppFixtures extends Fixture
         $campuses = $manager->getRepository(Campus::class)->findAll();
         $users = $manager->getRepository(User::class)->findAll();
         $statuses = $manager->getRepository(Status::class)->findAll();
+        $now = new DateTime();
+        $twoWeeksAgo = $now->sub(new DateInterval('P15D'));
+
 
         for ($i = 0; $i < $number; $i++) {
             $event = new Event();
             $event->setName('event '.$i);
             $event->setOrganizer($this->faker->randomElement($users));
-            $event->setEventStart(new \DateTime());
-            $event->setParticipationDeadline(new \DateTime());
+            $event->setEventStart(new DateTime());
+            $event->setParticipationDeadline(new DateTime());
             $event->setParticipantLimit(mt_rand(2, 50));
             $event->setDuration(mt_rand(1, 52)*10);
             $event->setDescription('description '.$i);
@@ -193,6 +198,35 @@ class AppFixtures extends Fixture
             $event->addParticipant($this->faker->randomElement($users));
             $manager->persist($event);
         }
+
+        $event2 = new Event();
+        $event2->setName('2 weeks ago ');
+        $event2->setOrganizer($this->faker->randomElement($users));
+        $event2->setEventStart($twoWeeksAgo);
+        $event2->setParticipationDeadline($twoWeeksAgo);
+        $event2->setParticipantLimit(mt_rand(2, 50));
+        $event2->setDuration(mt_rand(1, 52)*10);
+        $event2->setDescription('description '.$i);
+        $event2->setPlace($this->faker->randomElement($places));
+        $event2->setCampus($this->faker->randomElement($campuses));
+        $event2->setStatus($this->faker->randomElement($statuses));
+        $event2->addParticipant($this->faker->randomElement($users));
+        $manager->persist($event2);
+
+        $event3 = new Event();
+        $event3->setName('Very long ago ');
+        $event3->setOrganizer($this->faker->randomElement($users));
+        $event3->setEventStart(new DateTime('2022-05-09'));
+        $event3->setParticipationDeadline(new DateTime('2022-05-09'));
+        $event3->setParticipantLimit(mt_rand(2, 50));
+        $event3->setDuration(mt_rand(1, 52)*10);
+        $event3->setDescription('description '.$i);
+        $event3->setPlace($this->faker->randomElement($places));
+        $event3->setCampus($this->faker->randomElement($campuses));
+        $event3->setStatus($this->faker->randomElement($statuses));
+        $event3->addParticipant($this->faker->randomElement($users));
+        $manager->persist($event3);
+
         $manager->flush();
     }
 }

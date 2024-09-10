@@ -62,14 +62,11 @@ class EventController extends AbstractController
     #[Route('/', name: '_list')]
     public function index(SerializerInterface $serializer, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $events = $this->eventRepository->findAll();
-        $campuses = $this->campusRepository->findAll();
-        $participants = $this->userRepository->findAll();
-
+        $user = $this->getUser();
+        $events = null;
 
         $listForm = $this->createForm(ListEventFormType::class);
         $listForm->handleRequest($request);
-        $user = $this->getUser();
         $serializedUser = $serializer->serialize($user, 'json', ['groups' => ['default']]);
 
         if ($listForm->isSubmitted() && $listForm->isValid()) {
@@ -101,8 +98,6 @@ class EventController extends AbstractController
         return $this->render('event/index.html.twig', [
             'controller_name' => 'EventController',
             'events' => $events,
-            'campuses' => $campuses,
-            'participants' => $participants,
             'listForm' => $listForm,
             'serializedUser' => $serializedUser,
         ]);
