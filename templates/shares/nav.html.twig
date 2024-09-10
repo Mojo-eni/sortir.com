@@ -10,9 +10,10 @@
         <!-- Menu -->
         <div class="navbar-menu flex items-center space-x-8 mx-auto">
             {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                <a href="{{ path('app_event_list') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Home</a>
-                <a href="{{ path('app_profile') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Profile</a>
-                <a href="{{ path('app_logout') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Logout</a>
+                <a href="{{ path('app_event_list') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Accueil</a>
+                <a href="{{ path('app_event_create') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Ajouter une sortie</a>
+                <a href="{{ path('app_profile') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Mon Profil</a>
+                <a href="{{ path('app_logout') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Se déconnecter</a>
             {% endif %}
         </div>
 
