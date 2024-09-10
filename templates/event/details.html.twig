@@ -1,0 +1,207 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la sortie{% endblock %}
+
+{% block body %}
+    <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md relative ">
+
+        <div class="flex justify-end space-x-4 mb-6">
+            {% if app.user == event.organizer %}
+
+                <a href="{{ path('app_event_edit', { 'id': event.id }) }}">
+                    <button class="bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1">
+                        <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                        <img src="{{ asset('image/crayon.png') }}" alt="Modifier" class="w-5 h-5"/>
+                        <span>Modifier</span>
+                    </button>
+                </a>
+
+                <button
+                        class="bg-red-600 text-red-100 border border-red-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 active:shadow-none"
+                        id="open-cancel-popup-button"
+                        type="button"
+                        aria-label="Open cancel popup">
+                    <span class="bg-red-300 shadow-red-300 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                    <img src="{{ asset('image/effacer.png') }}" alt="Plus" class="w-5 h-5"/>
+                    <span class="sr-only">Open cancel popup</span>
+               Annuler </button>
+
+
+                <div id="cancel-popup"
+                     class="fixed inset-0 z-50 hidden grid h-screen w-screen place-items-center bg-black bg-opacity-60 opacity-0 backdrop-blur-sm transition-opacity duration-300">
+                    <div class="relative mx-auto flex w-full max-w-[24rem] flex-col rounded-xl bg-white text-gray-700 shadow-md">
+                        <div class="flex flex-col gap-4 p-6">
+                            <h4 class="text-2xl font-semibold text-blue-gray-900">Motif d'annulation</h4>
+
+                            <form action="{{ path('app_event_cancel', { 'id': event.id }) }}" method="post">
+                                <div class="flex-column p-5">
+                                    <label for="description" class="text-gray-500 text-m">Description</label>
+                                    <textarea id="description" name="description" class="w-full p-2 border border-gray-300 rounded-md" rows="4"></textarea>
+                                </div>
+
+                                <div class="p-6 pt-0 flex flex-row">
+                                    <button class="bg-blue-500 text-white px-4 py-2 rounded-md" type="submit">
+                                        Enregistrer
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            {% endif %}
+        </div>
+
+        <a href="{{ path('app_event_list') }}" class="absolute top-4 left-4 text-custom-blue hover:text-blue-600">
+            <img src="{{ asset('image/en-arriere.png') }}" alt="Retour" class="w-10 h-10">
+        </a>
+
+        <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Détails de la sortie</h1>
+
+        <div class="mb-6 space-y-4">
+            <div class="flex items-center">
+                <label for="user" class="w-48 text-gray-700 font-semibold">Organisateur :</label>
+                <input id="user" type="text" value="{{ event.organizer.pseudo() }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="name" class="w-48 text-gray-700 font-semibold">Nom de la sortie :</label>
+                <input id="name" type="text" value="{{ event.name() }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="eventStart" class="w-48 text-gray-700 font-semibold">Date et heure de la sortie :</label>
+                <input id="eventStart" type="text" value="{{ event.eventStart | date('d/m/Y H:i') }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="participationDeadline" class="w-48 text-gray-700 font-semibold">Date limite d'inscription :</label>
+                <input id="participationDeadline" type="text" value="{{ event.participationDeadline | date('d/m/Y') }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="participantLimit" class="w-48 text-gray-700 font-semibold">Nombre de places :</label>
+                <input id="participantLimit" type="text" value="{{ event.participantLimit }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="duration" class="w-48 text-gray-700 font-semibold">Durée :</label>
+                <input id="duration" type="text" value="{{ event.duration }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="description" class="w-48 text-gray-700 font-semibold">Description :</label>
+                <input id="description" type="text" value="{{ event.description }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="campus" class="w-48 text-gray-700 font-semibold">Campus :</label>
+                <input id="campus" type="text" value="{{ event.campus.name }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="city" class="w-48 text-gray-700 font-semibold">Ville :</label>
+                <input id="city" type="text" value="{{ event.place.city.name }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="place" class="w-48 text-gray-700 font-semibold">Lieu :</label>
+                <input id="place" type="text" value="{{ event.place.name }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="address" class="w-48 text-gray-700 font-semibold">Rue :</label>
+                <input id="address" type="text" value="{{ event.place.address }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="zipcode" class="w-48 text-gray-700 font-semibold">Code postal :</label>
+                <input id="zipcode" type="text" value="{{ event.place.city.zipcode }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="latitude" class="w-48 text-gray-700 font-semibold">Latitude :</label>
+                <input id="latitude" type="text" value="{{ event.place.latitude }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+
+            <div class="flex items-center">
+                <label for="longitude" class="w-48 text-gray-700 font-semibold">Longitude :</label>
+                <input id="longitude" type="text" value="{{ event.place.longitude }}" class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" disabled>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold mb-4">Participants</h2>
+            <table class="table-auto w-full bg-gray-100 rounded-md">
+                <thead>
+                <tr class="bg-gray-200 text-gray-700">
+                    <th class="px-4 py-2">Pseudo</th>
+                    <th class="px-4 py-2">Email</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for participant in event.participants %}
+                    <tr class="border-t">
+                        <td class="px-4 py-2">
+                            <a href="{{ path('app_profile_id', { 'id': participant.id }) }}" class=" hover:underline">
+                                {{ participant.pseudo }}
+                            </a>
+                        </td>
+                        <td class="px-4 py-2">{{ participant.email }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+
+
+        {# Affichage du bouton en fonction des conditions #}
+        {% if app.user %}
+            {% if event.participants.contains(app.user) %}
+                <p type="button" class="text-orange-800 text-center align-self-center" disabled>Vous participez déjà à cet événement.</p>
+                <form method="post" action="{{ path('app_event_exit', {'id': event.id}) }}">
+                    <button type="submit" class="group group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 hover:border-white hover:before:[box-shadow:_20px_20px_20px_30px_#ff9b54] duration-500 before:duration-500 hover:duration-500  underline-offset-2 hover:after:-right-8 hover:before:right-12 hover:before:-bottom-8 hover:before:blur hover:underline hover:underline-offset-4  origin-left hover:decoration-2 hover:text-white relative bg-custom-blue h-12 w-full border text-center p-3 text-gray-50 text-base font-bold rounded-lg  overflow-hidden  before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-orange-400 before:rounded-full before:blur-lg  after:absolute after:z-10 after:w-20 after:h-20 after:content['']  after:bg-light-blue after:right-8 after:top-3 after:rounded-full after:blur-lg
+                    ">Se désister</button>
+                </form>
+            {% elseif event.status.name != "Ouverte" %}
+                <button type="button" class="group group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 hover:border-white hover:before:[box-shadow:_20px_20px_20px_30px_#ff9b54] duration-500 before:duration-500 hover:duration-500  underline-offset-2 hover:after:-right-8 hover:before:right-12 hover:before:-bottom-8 hover:before:blur   origin-left hover:decoration-2 hover:text-white relative bg-gray-blue h-12 w-full border text-center p-3 text-gray-50 text-base font-bold rounded-lg  overflow-hidden  before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-orange-400 before:rounded-full before:blur-lg  after:absolute after:z-10 after:w-20 after:h-20 after:content['']  after:bg-light-blue after:right-8 after:top-3 after:rounded-full after:blur-lg"
+                 disabled>L'événement n'est plus ouvert à l'inscription.</button>
+            {% elseif now > event.participationDeadline %}
+                <button type="button" class="group group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 hover:border-white hover:before:[box-shadow:_20px_20px_20px_30px_#ff9b54] duration-500 before:duration-500 hover:duration-500  underline-offset-2 hover:after:-right-8 hover:before:right-12 hover:before:-bottom-8 hover:before:blur   origin-left hover:decoration-2 hover:text-white relative bg-gray-blue h-12 w-full border text-center p-3 text-gray-50 text-base font-bold rounded-lg  overflow-hidden  before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-orange-400 before:rounded-full before:blur-lg  after:absolute after:z-10 after:w-20 after:h-20 after:content['']  after:bg-light-blue after:right-8 after:top-3 after:rounded-full after:blur-lg"
+                 disabled>La date limite d'inscription est dépassée.</button>
+            {% elseif event.participants|length >= event.participantLimit %}
+                <button type="button" class="group group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 hover:border-white hover:before:[box-shadow:_20px_20px_20px_30px_#ff9b54] duration-500 before:duration-500 hover:duration-500  underline-offset-2 hover:after:-right-8 hover:before:right-12 hover:before:-bottom-8 hover:before:blur  origin-left hover:decoration-2 hover:text-white relative bg-gray-blue h-12 w-full border text-center p-3 text-gray-50 text-base font-bold rounded-lg  overflow-hidden  before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-orange-400 before:rounded-full before:blur-lg  after:absolute after:z-10 after:w-20 after:h-20 after:content['']  after:bg-light-blue after:right-8 after:top-3 after:rounded-full after:blur-lg " disabled>Le nombre limite est atteint.</button>
+            {% else %}
+                <form method="post" action="{{ path('app_event_participate', {'id': event.id}) }}">
+                    <button type="submit" class="group group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 hover:border-white hover:before:[box-shadow:_20px_20px_20px_30px_#ff9b54] duration-500 before:duration-500 hover:duration-500  underline-offset-2 hover:after:-right-8 hover:before:right-12 hover:before:-bottom-8 hover:before:blur hover:underline hover:underline-offset-4  origin-left hover:decoration-2 hover:text-white relative bg-custom-blue h-12 w-full border text-center p-3 text-gray-50 text-base font-bold rounded-lg  overflow-hidden  before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-orange-400 before:rounded-full before:blur-lg  after:absolute after:z-10 after:w-20 after:h-20 after:content['']  after:bg-light-blue after:right-8 after:top-3 after:rounded-full after:blur-lg
+                    ">Participer</button>
+                </form>
+            {% endif %}
+        {% else %}
+            <p class="text-warning">Veuillez vous connecter pour participer à cet événement.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+{% block ajax %}
+<script>
+    document.getElementById('open-cancel-popup-button').addEventListener('click', function() {
+
+        let popup = document.getElementById('cancel-popup');
+        popup.classList.remove('hidden');
+        popup.classList.add('opacity-100'); // Assure que l'opacité est bien visible
+    });
+
+    document.getElementById('cancel-popup').addEventListener('click', function(event) {
+        if (event.target === this) {
+            this.classList.add('hidden');
+            this.classList.remove('opacity-100');
+        }
+    });
+</script>
+{% endblock %}

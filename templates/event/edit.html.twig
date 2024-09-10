@@ -1,0 +1,516 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la sortie{% endblock %}
+
+{% block body %}
+    <div class="max-w-4xl mx-auto bg-white rounded-lg p-6 space-y-4 shadow-md mb-48">
+        <div class="flex flex-col justify-end space-x-4">
+            <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Modifier la sortie</h1>
+
+            {{ form_start(eventForm) }}
+
+            <div class="mb-6 space-y-4">
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                        <label for="name" class="w-48 text-gray-700 font-semibold leading-tight"
+                        >Nom de la sortie</label>
+                        <input
+                        type="text"
+                        id="name"
+                        name="{{ field_name(eventForm.name) }}"
+                        value="{{ field_value(eventForm.name) }}"
+                        placeholder=""
+                        class="w-full p-2 border border-gray-300 rounded-md bg-gray-50"
+                        >
+                    </div>
+                    {% for error in field_errors(eventForm.name) %}
+                        <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                        <label for="eventStart"
+                            class="w-48 text-gray-700 font-semibold leading-tight"
+                        >Date et heure de la sortie</label>
+                        <input type="datetime-local"
+                                       id="eventStart"
+                                       name="{{ field_name(eventForm.eventStart) }}"
+                                       value="{{ field_value(eventForm.eventStart) }}"
+                                       placeholder=""
+                                       class="w-full p-2 border border-gray-300 rounded-md bg-gray-50"
+                        >
+                    </div>
+                    {% for error in field_errors(eventForm.eventStart) %}
+                        <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                        <label for="participationDeadline"
+                                class="w-48 text-gray-700 font-semibold leading-tight"
+                        >Date limite d'inscription</label>
+                        <input type="date"
+                                       id="participationDeadline"
+                                       name="{{ field_name(eventForm.participationDeadline) }}"
+                                       value="{{ field_value(eventForm.participationDeadline) }}"
+                                       placeholder=""
+                                       class="w-full p-2 border border-gray-300 rounded-md bg-gray-50"
+                        >
+                    </div>
+                    {% for error in field_errors(eventForm.participationDeadline) %}
+                        <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                        <label for="participantLimit"
+                                       class="w-48 text-gray-700 font-semibold leading-tight"
+                                >Nombre de places</label>
+                        <input type="number"
+                                       id="participantLimit"
+                                       name="{{ field_name(eventForm.participantLimit) }}"
+                                       value="{{ field_value(eventForm.participantLimit) }}"
+                                       placeholder=""
+                                       class="w-full p-2 border border-gray-300 rounded-md bg-gray-50"
+                                >
+                    </div>
+                    {% for error in field_errors(eventForm.participantLimit) %}
+                                <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                            {% endfor %}
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                        <label for="duration"
+                                       class="w-48 text-gray-700 font-semibold leading-tight"
+                                >Durée de la sortie</label>
+                        <input type="number"
+                                       id="duration"
+                                       name="{{ field_name(eventForm.duration) }}"
+                                       value="{{ field_value(eventForm.duration) }}"
+                                       placeholder=""
+                                       class="w-full p-2 border border-gray-300 rounded-md bg-gray-50"
+                                >
+                    </div>
+                    {% for error in field_errors(eventForm.duration) %}
+                        <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                                <label for="description"
+                                       class="w-48 text-gray-700 font-semibold leading-tight"
+                                >Description</label>
+                                <textarea
+                                       id="description"
+                                       name="{{ field_name(eventForm.description) }}"
+                                       placeholder=""
+                                       class="w-full p-2 border border-gray-300 rounded-md bg-gray-50 h-32 max-h-44"
+                                >{{ field_value(eventForm.description) }}</textarea>
+                            </div>
+                    {% for error in field_errors(eventForm.description) %}
+                                <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                            {% endfor %}
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                                <label for="campus"
+                                       class="w-48 text-gray-700 font-semibold leading-tight"
+                                >Campus</label>
+                                <select id="campus" name="{{ field_name(eventForm.campus) }}"
+                                        class="w-full p-2 border border-gray-300 rounded-md bg-gray-50">
+                                    {% for name, id in field_choices(eventForm.campus) %}
+                                        <option value="{{ id }}" {% if id == eventForm.vars.value.campus.id %}selected{% endif %}>{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                    {% for error in field_errors(eventForm.campus) %}
+                                <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                            {% endfor %}
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                                <label for="city"
+                                       class="w-48 text-gray-700 font-semibold leading-tight"
+                                >Ville</label>
+                                <select id="city" name="{{ field_name(eventForm.city) }}" onchange="clicCitySelect(this)"
+                                        class="w-full p-2 border border-gray-300 rounded-md bg-gray-50">
+                                    {% for name, id in field_choices(eventForm.city) %}
+                                        <option value="{{ id }}" {% if id == eventForm.vars.value.place.city.id %}selected{% endif %}>{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+                    {% for error in field_errors(eventForm.city) %}
+                                <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                            {% endfor %}
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                                <label for="place"
+                                       class="w-48 text-gray-700 font-semibold leading-tight"
+                                >Lieu</label>
+                                <div class="w-full flex justify-between">
+                                    <select id="place" name="{{ field_name(eventForm.place) }}" onchange="clicPlaceSelect(this)"
+                                            class="w-full border border-gray-300 rounded-md bg-gray-50">
+                                        {% for name, id in field_choices(eventForm.place) %}
+                                            <option value="{{ id }}" {% if id == eventForm.vars.value.place.id %}selected{% endif %}>{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div>
+                                        <button
+                                                class="select-none rounded-lg bg-gray-900 ml-3 py-2 px-6 text-center font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+                                                id="open-place-popup-button" type="button" onclick="openPopup()">
+                                            <span class="text-lg">+</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                    {% for error in field_errors(eventForm.place) %}
+                                <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                            {% endfor %}
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                                <label for="address"
+                                       class="w-48 text-gray-700 font-semibold leading-tight"
+                                >Rue</label>
+                                <input type="text"
+                                       id="address"
+                                       name="{{ field_name(eventForm.address) }}"
+                                       value="{{ eventForm.vars.value.place.address }}"
+                                       placeholder=""
+                                       class="w-full p-2 border border-gray-300 rounded-md bg-gray-50"
+                                       disabled
+                                >
+                            </div>
+                    {% for error in field_errors(eventForm.address) %}
+                                <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                            {% endfor %}
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                                <label for="zipcode"
+                                       class="w-48 text-gray-700 font-semibold leading-tight"
+                                >Code postal</label>
+                                <input type="text"
+                                       id="zipcode"
+                                       name="{{ field_name(eventForm.zipcode) }}"
+                                       value="{{ eventForm.vars.value.place.city.zipcode }}"
+                                       placeholder=""
+                                       class="w-full p-2 border border-gray-300 rounded-md bg-gray-50"
+                                       disabled
+                                >
+                            </div>
+                    {% for error in field_errors(eventForm.zipcode) %}
+                                <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                            {% endfor %}
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                                <label for="latitude"
+                                       class="w-48 text-gray-700 font-semibold leading-tight"
+                                >Latitude</label>
+                                <input type="text"
+                                       id="latitude"
+                                       name="{{ field_name(eventForm.latitude) }}"
+                                       value="{{ eventForm.vars.value.place.latitude }}"
+                                       placeholder=""
+                                       class="w-full p-2 border border-gray-300 rounded-md bg-gray-50"
+                                       disabled
+                                >
+                            </div>
+                    {% for error in field_errors(eventForm.latitude) %}
+                                <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                            {% endfor %}
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                                <label for="longitude"
+                                       class="w-48 text-gray-700 font-semibold leading-tight"
+                                >Longitude</label>
+                                <input type="text"
+                                       id="longitude"
+                                       name="{{ field_name(eventForm.longitude) }}"
+                                       value="{{ eventForm.vars.value.place.longitude }}"
+                                       placeholder=""
+                                       class="w-full p-2 border border-gray-300 rounded-md bg-gray-50"
+                                       disabled
+                                >
+                            </div>
+                    {% for error in field_errors(eventForm.longitude) %}
+                                <p class="text-sm text-red-700 text-end">{{ error }}</p>
+                            {% endfor %}
+                </div>
+            </div>
+
+            <div class="flex flex-row justify-center">
+
+{#                <div class="px-4">#}
+{#                    <button type="submit" id="event_save" name="event[save]" class="bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1">#}
+{#                        <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>#}
+{#                        <img src="{{ asset('image/crayon.png') }}" alt="Modifier" class="w-5 h-5"/>#}
+{#                        <span>Enregistrer</span>#}
+{#                    </button>#}
+{#                </div>#}
+
+{#                <div class="px-4">#}
+{#                    <button type="submit" id="event_publish" name="event[publish]" class="bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1">#}
+{#                        <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>#}
+{#                        <img src="{{ asset('image/crayon.png') }}" alt="Modifier" class="w-5 h-5"/>#}
+{#                        <span>Publier</span>#}
+{#                    </button>#}
+{#                </div>#}
+
+                <div class="px-4">
+                    {{ form_label(eventForm.save) }}
+                    {{ form_widget(eventForm.save, { 'attr': {'class': "bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1"}) }}
+                </div>
+
+                <div class="px-4">
+                    {{ form_label(eventForm.publish) }}
+                    {{ form_widget(eventForm.publish, { 'attr': {'class': "bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1"} }) }}
+                </div>
+
+                <div class="px-4">
+                    {% if eventForm.vars.value.status.name == "Créée" %}
+                        <button type="submit" class="bg-red-600 text-red-100 border border-red-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 active:shadow-none"><a href="{{ path('app_event_delete', { 'id': eventForm.vars.value.id } ) }}">Supprimer la sortie</a></button>
+                    {% endif %}
+                    <button type="submit" class="bg-red-600 text-red-100 border border-red-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 active:shadow-none"><a href="{{ path('app_event_details', { 'id': eventForm.vars.value.id } ) }}">Annuler</a></button>
+                </div>
+            </div>
+
+            {{ form_end(eventForm) }}
+        </div>
+    </div>
+
+
+    <!-- Main modal -->
+    <div id="place-popup"
+         class="fixed inset-0 z-50 hidden grid h-screen w-screen place-items-center bg-black bg-opacity-60 opacity-0 backdrop-blur-sm transition-opacity duration-300">
+        <div class="relative mx-auto flex w-full max-w-[24rem] flex-col rounded-xl bg-white text-gray-700 shadow-md">
+
+            <form>
+                <div class="flex flex-col gap-4 p-6">
+                    <h4 class="text-2xl font-semibold text-blue-gray-900">Créer un lieu</h4>
+
+                    <div class="w-full">
+                        <div class="flex-column p-5">
+
+                            <div class="relative mt-6">
+                                <label for="place-name"
+                                       class="absolute left-0 -top-4 text-gray-500 text-m"
+                                >Nom du lieu</label>
+                                <input type="text"
+                                       id="place-name"
+                                       name="{{ field_name(placeForm.name) }}"
+                                       value="{{ field_value(placeForm.name) }}"
+                                       placeholder=""
+                                       class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                                >
+                                {% for error in field_errors(placeForm.name) %}
+                                    <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="relative mt-6">
+                                <label for="place-address"
+                                       class="absolute left-0 -top-4 text-gray-500 text-m"
+                                >Rue</label>
+                                <input type="text"
+                                       id="place-address"
+                                       name="{{ field_name(placeForm.address) }}"
+                                       value="{{ field_value(placeForm.address) }}"
+                                       placeholder=""
+                                       class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                                >
+                                {% for error in field_errors(placeForm.address) %}
+                                    <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="relative mt-6">
+                                <label for="place-latitude"
+                                       class="absolute left-0 -top-4 text-gray-500 text-m"
+                                >Latitude</label>
+                                <input type="text"
+                                       id="place-latitude"
+                                       name="{{ field_name(placeForm.latitude) }}"
+                                       value="{{ field_value(placeForm.latitude) }}"
+                                       placeholder=""
+                                       class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                                >
+                                {% for error in field_errors(placeForm.latitude) %}
+                                    <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="relative mt-6">
+                                <label for="place-longitude"
+                                       class="absolute left-0 -top-4 text-gray-500 text-m"
+                                >Longitude</label>
+                                <input type="text"
+                                       id="place-longitude"
+                                       name="{{ field_name(placeForm.longitude) }}"
+                                       value="{{ field_value(placeForm.longitude) }}"
+                                       placeholder=""
+                                       class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue"
+                                >
+                                {% for error in field_errors(placeForm.longitude) %}
+                                    <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="relative mt-6">
+                                <label for="place-city"
+                                       class="absolute left-0 -top-4 text-gray-500 text-m"
+                                >Ville</label>
+                                <select id="place-city" name="{{ field_name(placeForm.city) }}"
+                                        class="peer h-12 w-full border-b-2 border-gray-300 bg-transparent placeholder-transparent
+                               focus:outline-none focus:border-light-blue">
+                                    {% for name, id in field_choices(placeForm.city) %}
+                                        <option value="{{ id }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                                {% for error in field_errors(placeForm.city) %}
+                                    <div class="text-ms accent-red-700">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="p-6 pt-0 flex flex-row">
+                    <button onclick="savePlace(this)">Enregistrer</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block ajax %}
+    <script>
+        async function savePlace() {
+            const bodyData = {
+                'name' : document.getElementById("place-name").value,
+                'address' : document.getElementById("place-address").value,
+                'latitude' : document.getElementById("place-latitude").value,
+                'longitude' : document.getElementById("place-longitude").value,
+                'city': document.getElementById("place-city").value
+            }
+            try {
+                let response = await fetch('{{ path('save_place') }}', {
+                    method: 'POST',
+                    headers: { "X-Requested-with": "XMLHttpRequest" },
+                    body: JSON.stringify(bodyData),
+                });
+                let reponseAjax = await response.text();
+                reponseAjax = JSON.parse(reponseAjax);
+                if (reponseAjax['message']) {
+                    let citySelect = document.querySelector("#city");
+                    await clicCitySelect(citySelect);
+                }
+            } catch (error) {
+                console.error("Erreur lors de l'enregistrement' des données:", error);
+            }
+        }
+
+        function openPopup() {
+            // Montre la popup sans aucun lien avec le formulaire
+            let popup = document.getElementById('place-popup');
+            popup.classList.remove('hidden');
+            popup.classList.add('opacity-100'); // Assure que l'opacité est bien visible
+        }
+
+        document.getElementById('place-popup').addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.classList.add('hidden');
+                this.classList.remove('opacity-100'); // Cache la popup proprement
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let citySelect = document.querySelector("#city");
+            clicCitySelect(citySelect);
+        });
+
+        async function clicPlaceSelect(element) {
+            console.log("clicPlaceSelect")
+            let placeID = element.value;
+            let addressInput = document.getElementById('address');
+            let latitudeInput = document.getElementById('latitude');
+            let longitudeInput = document.getElementById('longitude');
+            if(placeID) {
+                let response = await fetch( '{{ path('get_place_info') }}' + '/' + placeID);
+                let result = await response.json();
+                addressInput.value = result.address;
+                latitudeInput.value = result.latitude;
+                longitudeInput.value = result.longitude;
+            } else {
+                addressInput.value = "";
+                latitudeInput.value = "";
+                longitudeInput.value = "";
+            }
+        }
+    </script>
+
+    <script>
+        async function clicCitySelect(element) {
+            console.log("clicCitySelect")
+            // récupération des lieux liés à la ville
+            let cityID = element.value;
+            let response = await fetch('{{ path('get_city_places') }}' + "/" + cityID);
+            let result = await response.json();
+            let placeTable = JSON.parse(result);
+            let placeSelect = document.querySelector("#place");
+            placeSelect.innerHTML = "";
+
+            for(let i = 0; i < placeTable.length; i++) {
+                let opt = placeTable[i];
+                let el = document.createElement("option");
+                el.textContent = opt.name;
+                el.value = opt.id;
+                if(opt.id === {{ eventForm.vars.value.place.id }}) {
+                    el.selected = true;
+                }
+                placeSelect.appendChild(el);
+            }
+
+            // récupération des détails de la ville (code postal)
+            let infoResponse = await fetch( '{{ path('get_city_info') }}' + '/' + cityID);
+            let infoResult = await infoResponse.json();
+            let zipcodeInput = document.getElementById('zipcode');
+            zipcodeInput.value = infoResult.zipcode;
+
+            // effacement des infos du lieu sélectionné
+            let addressInput = document.getElementById('address');
+            let latitudeInput = document.getElementById('latitude');
+            let longitudeInput = document.getElementById('longitude');
+            addressInput.value = "";
+            latitudeInput.value = "";
+            longitudeInput.value = "";
+
+            await clicPlaceSelect(placeSelect);
+        }
+    </script>
+{% endblock %}

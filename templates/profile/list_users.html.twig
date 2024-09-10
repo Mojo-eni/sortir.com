@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+
+
+        {% for user in users %}
+            <div class="">
+                <a  href="{{ path('app_profile_id', { 'id': user.id }) }}">
+                <div class="wish-card-body">
+                    <h2 class="wish-card-title"> {{ user.pseudo }}</h2>
+                    <h2 class="wish-card-title"> {{ user.lastName }}</h2>
+                 </a>
+                </div>
+            </div>
+        {% else %}
+            <p>Aucun user trouvé.</p>
+        {% endfor %}
+
+{% endblock %}
