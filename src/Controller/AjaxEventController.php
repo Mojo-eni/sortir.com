@@ -20,10 +20,10 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class AjaxEventController extends AbstractController
 {
-    #[Route('/get-data/{id}', name: 'get_list_from_campus')]
-    public function getData(SerializerInterface $serializer, EventRepository $eventRepository, $id = 1): JsonResponse
+    #[Route('/get-data/{campusId}', name: 'get_list_from_campus')]
+    public function getData(SerializerInterface $serializer, EventRepository $eventRepository, $campusId = 1): JsonResponse
     {
-        $events = $eventRepository->findBy(['campus' => $id]);
+        $events = $eventRepository->findBy(['campus' => $campusId]);
         $data = $serializer->serialize($events, 'json', ['groups' => 'default']);
         return JsonResponse::fromJsonString($data);
     }

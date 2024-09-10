@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Status;
+use App\Entity\User;
 use App\Form\ListEventFormType;
 use App\Entity\City;
 use App\Entity\Event;
@@ -11,17 +13,20 @@ use App\Form\PlaceType;
 use App\Repository\CampusRepository;
 use App\Repository\CityRepository;
 use App\Repository\EventRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PlaceRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Exception\ORMException;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+
 
 #[Route('/event', name: 'app_event')]
 
@@ -68,12 +73,11 @@ class EventController extends AbstractController
         $serializedUser = $serializer->serialize($user, 'json', ['groups' => ['default']]);
 
         if ($listForm->isSubmitted() && $listForm->isValid()) {
-            // Get the search query
+
             $query = $request->get('list_event_form');
             $events = $this->eventRepository->findBy(['campus' => $query['campus']]);
-            // Filter the data
-            if ($query['keyword']) {
 
+            if ($query['keyword']) {
                 $events = array_filter($events, function ($item) use ($query) {
                     return stripos($item->getName(), $query['keyword']) !== false;
                 });
@@ -82,14 +86,10 @@ class EventController extends AbstractController
             if ($query['dateTo'] || $query['dateFrom']) {
                 $events = array_filter($events, function ($item) use ($query) {
                     $eventDate = $item->getEventStart();
-                    $startDate = $query['dateFrom'];
-                    $endDate = $query['dateTo'];
+                    $startDate = isset($query['dateFrom']) ? DateTime::createFromFormat('Y-m-d', $query['dateFrom']) : null;
+                    $endDate = isset($query['dateTo']) ? DateTime::createFromFormat('Y-m-d', $query['dateTo']) : null;
                     if ($startDate && $endDate) {
                         return $eventDate >= $startDate && $eventDate <= $endDate;
-                    } else if ($startDate) {
-                        return $eventDate >= $startDate;
-                    } else if ($endDate) {
-                        return $eventDate <= $endDate;
                     }
                     return false;
                 }
@@ -154,8 +154,12 @@ class EventController extends AbstractController
     public function details($id, Request $req, EventRepository $eRepo, UserRepository $uRepo, EntityManagerInterface $em): Response {
         $event = $eRepo->find($id);
         if($event) {
+
+
+            $now = new \DateTime();
+
             return $this->render('event/details.html.twig', [
-                'event' => $event
+                'event' => $event, 'now' => $now
             ]);
         } else {
             return $this->redirectToRoute('app_event_list');
@@ -199,6 +203,8 @@ class EventController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/delete/{id}', name: '_delete')]
     public function delete($id, Request $req, EventRepository $eRepo, EntityManagerInterface $em): Response {
         $event = $eRepo->find($id);
@@ -212,4 +218,117 @@ class EventController extends AbstractController
         $em->flush();
         return $this->redirectToRoute('app_event_list');
     }
+
+
+    #[Route('/{id}/participate', name: '_participate')]
+
+    public function participateEvent(int $id, EntityManagerInterface $em): Response
+    {
+        $event = $em->getRepository(Event::class)->find($id);
+        $user = $this->getUser();
+
+        if (!$event) {
+            throw $this->createNotFoundException('Événement non trouvé');
+        }
+
+        if ($event->getParticipants()->contains($user)) {
+            $this->addFlash('warning', 'Vous participez déjà à cet événement.');
+            return $this->redirectToRoute('app_event_details', ['id' => $id]);
+        }
+
+        if ($event->getStatus()->getName() !== 'Ouverte') {
+            $this->addFlash('error', 'Les inscriptions sont fermées pour cet événement.');
+            return $this->redirectToRoute('app_event_details', ['id' => $id]);
+        }
+
+        $now = new \DateTime();
+        if ($now > $event->getParticipationDeadline()) {
+            $this->addFlash('error', 'La date limite d\'inscription à cet événement est dépassée.');
+            return $this->redirectToRoute('app_event_details', ['id' => $id]);
+        }
+
+        if ($event->getParticipants()->count() >= $event->getParticipantLimit()) {
+            $this->addFlash('error', 'Le nombre limite est atteint.');
+            return $this->redirectToRoute('app_event_details', ['id' => $id]);
+        }
+
+        $event->addParticipant($user);
+        $em->persist($event);
+        $em->flush();
+
+        $this->addFlash('success', 'Vous avez été ajouté comme participant à cet événement !');
+        return $this->redirectToRoute('app_event_details', ['id' => $id]);
+    }
+
+
+    #[Route('/{id}/cancel', name: '_cancel')]
+
+    public function cancelEvent(int $id, EntityManagerInterface $em,  EventRepository $eRepo,Request $req ): Response
+    {
+
+        $event = $eRepo->find($id);
+        if (!$event || $this->getUser() !== $event->getOrganizer()) {
+            return $this->redirectToRoute('app_event_list');
+        }
+
+        $description = $req->request->get('description');
+        if ($description) {
+            $event->setDescription($description);
+            try {
+                $em->persist($event);
+                $em->flush();
+            } catch (ORMException $e) {
+                var_dump($e->getMessage());
+            }
+        }
+
+
+
+        $user = $this->getUser();
+
+        if (!$event) {
+            throw $this->createNotFoundException('Événement non trouvé');
+        }
+
+        $canceledStatus = $em->getRepository(Status::class)->findOneBy(['name' => 'Annulée']);
+
+        $event->setStatus($canceledStatus);
+
+        $em->persist($event);
+        $em->flush();
+
+        $this->addFlash('success', 'Vous avez annulé cet event !');
+
+        return $this->redirectToRoute('app_event_details', ['id' => $id]);
+    }
+
+    #[Route('/{id}/exit', name: '_exit')]
+
+    public function exitEvent(int $id, EntityManagerInterface $em): Response
+    {
+        $event = $em->getRepository(Event::class)->find($id);
+        $user = $this->getUser();
+
+        if (!$event) {
+            throw $this->createNotFoundException('Événement non trouvé');
+        }
+
+
+
+        if ($event->getStatus()->getName() !== 'Ouverte') {
+            $this->addFlash('error', 'tu ne peux pas te desister.');
+            return $this->redirectToRoute('app_event_details', ['id' => $id]);
+        }
+
+
+
+        $event->removeParticipant($user);
+        $em->persist($event);
+        $em->flush();
+
+        $this->addFlash('success', 'Vous avez quitter cet événement !');
+        return $this->redirectToRoute('app_event_details', ['id' => $id]);
+    }
+
+
 }
