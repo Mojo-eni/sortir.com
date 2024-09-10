@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use DateInterval;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -32,13 +34,60 @@ class EventRepository extends ServiceEntityRepository
             ;
         }
 
-    //    public function findOneBySomeField($value): ?Event
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        public function findEventsByUser($userId) : array
+        {
+            return $this->createQueryBuilder('e')
+                ->innerJoin('e.attendees', 'u')
+                ->andWhere('u.id = :userId')
+                ->setParameter('userId', $userId)
+                ->getQuery()
+                ->getResult();
+        }
+
+    public function findEventsNotAttendedByUser($userId) : array
+    {
+        return $this->createQueryBuilder('e')
+            ->innerJoin('e.attendees', 'u')
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @throws \DateMalformedStringException
+     */
+    public function findPastEvents() : array
+    {
+        $yesterday = new DateTime();
+        $yesterday->sub(new DateInterval('P1D'));
+        $oneMonthAgo = new DateTime();
+        $oneMonthAgo->modify('-1 month');
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.eventStart < :yesterday')
+            ->andWhere('e.eventStart > :oneMonthAgo')
+            ->setParameter('oneMonthAgo', $oneMonthAgo)
+            ->setParameter('yesterday', $yesterday)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findOneBySomeField($value): ?Event
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.eventStart = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+//        public function findOneBySomeField($value): ?Event
+//        {
+//            return $this->createQueryBuilder('e')
+//                ->andWhere('e.exampleField = :val')
+//                ->setParameter('val', $value)
+//                ->getQuery()
+//                ->getOneOrNullResult()
+//            ;
+//        }
 }

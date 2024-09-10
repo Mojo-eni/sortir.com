@@ -12,7 +12,7 @@
         <h1>Event List</h1>
         <div class="greeter">
             <label>Date du jour : {{ "now"|date("Y-m-d") }}</label>
-            <label>Hello {{ app.user.pseudo }}</label>
+            <label>Bonjour {{ app.user.pseudo }}</label>
         </div>
         <div>{{ form_start(listForm) }}
             <label class="form-label" for="{{ field_label(listForm.campus) }}">Filtrer les sorties</label>
@@ -23,6 +23,18 @@
                 {%  endfor %}
             </select>
 
+            <label class="form-label" for="{{ field_label(listForm.isOrganizer) }}">Organisateur.ice</label>
+            <input type="checkbox" class="form-control" id="{{ field_label(listForm.isOrganizer) }}" name="{{ field_name(listForm.isOrganizer) }}" onclick="clicOrganizer(this)">
+
+            <label class="form-label" for="{{ field_label(listForm.isAttending) }}">Mes participations</label>
+            <input type="checkbox" class="form-control" id="{{ field_label(listForm.isAttending) }}" name="{{ field_name(listForm.isAttending) }}" onclick="clicAttending(this)">
+
+            <label class="form-label" for="{{ field_label(listForm.isNotAttending) }}">Mes opportunités</label>
+            <input type="checkbox" class="form-control" id="{{ field_label(listForm.isNotAttending) }}" name="{{ field_name(listForm.isNotAttending) }}" onclick="clicNotAttending(this)">
+
+            <label class="form-label" for="{{ field_label(listForm.hasPassed) }}">Sorties passées</label>
+            <input type="checkbox" class="form-control" id="{{ field_label(listForm.hasPassed) }}" name="{{ field_name(listForm.hasPassed) }}" onclick="clicPassed(this)">
+
         </div>{{ form_end(listForm) }}
 
         <div class="js-user-rating"
@@ -32,13 +44,13 @@
         <table class="table-auto border-collapse border border-gray-300 w-full text-center">
             <thead>
                 <tr class="bg-gray-100">
-                    <th>Event</th>
-                    <th>Start</th>
-                    <th>Deadline</th>
+                    <th>Sortie</th>
+                    <th>Début</th>
+                    <th>Limite</th>
                     <th>Participants</th>
-                    <th>Attend</th>
-                    <th>Details</th>
-                    <th>Modify</th>
+                    <th>S'inscrire</th>
+                    <th>Consulter</th>
+                    <th>Modifier</th>
                 </tr>
             </thead>
             <tbody id="event_liste">
@@ -80,15 +92,11 @@
         <script>
             let currentUser = null;
             let isAuthenticated = null;
+            let jsonResponse;
             document.addEventListener('DOMContentLoaded', function() {
                 const userRating = document.querySelector('.js-user-rating');
-                console.log(userRating);
                 isAuthenticated = userRating.getAttribute('data-is-authenticated');
-                console.log('iA'+isAuthenticated);
-
                 currentUser = JSON.parse(userRating.getAttribute('data-user'));
-                console.log(currentUser);
-
             })
 
             function formatDate(dateString) {
@@ -99,22 +107,12 @@
                 return `${year}/${month}/${day}`;
             }
 
-            async function clicCampusSelect(element) {
-                let campusId = element.value;
-                let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
-                let result = await response.json();
-
-                console.log(result)
+            function fillTable(result){
                 let listContainer = document.getElementById("event_liste");
                 listContainer.innerHTML = "";
-
                 if (result.length > 0) {
-                    console.log("RESULT IS HERE" + result.length);
-                    console.log(currentUser.role);
-                    console.log("Role");
                     result.forEach(event => {
                         const row = document.createElement('tr');
-                        console.log(event);
                         if (currentUser.roles.includes('ROLE_USER') && event.participants.length < event.participantLimit) {
                             attend = `<a href="/public/event/${event.id}" class="underline text-blue-600">Attend</a>`;
                         } else {
@@ -145,11 +143,62 @@
                         listContainer.appendChild(row);
                     });
                 } else {
-                    // If no data is found, show a message in the table
                     const row = document.createElement('tr');
-                    row.innerHTML = '<td colspan="6">No products found</td>';
+                    row.innerHTML = '<td colspan="6">Aucune sortie trouvée</td>';
                     listContainer.appendChild(row);
                 }
+            }
+
+            async function clicCampusSelect(element) {
+                let campusId = element.value;
+                let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
+                let result = await response.json();
+                fillTable(result);
+            }
+
+            async function clicAttending(element) {
+                if(element.checked){
+                    let response = await fetch( '{{ path('get_attending_from_user')}}' + '/' + currentUser.id);
+                    jsonResponse = await response.json();
+                }else{
+                    let response = await fetch('{{ path('app_event_list')}}');
+                    jsonResponse = await response.json();
+                }
+                fillTable(jsonResponse);
+            }
+
+            async function clicNotAttending(element) {
+                if(element.checked){
+                    let response = await fetch( '{{ path('get_not_attending_from_user')}}' + '/' + currentUser.id);
+                    jsonResponse = await response.json();
+                }else{
+                    let response = await fetch('{{ path('app_event_list')}}');
+                    jsonResponse = await response.json();
+                }
+                fillTable(jsonResponse);
+            }
+
+            async function clicOrganizer(element) {
+                if(element.checked){
+                    let response = await fetch( '{{ path('get_organized_from_user')}}' + '/' + currentUser.id);
+                    jsonResponse = await response.json();
+                }else{
+                    let response = await fetch('{{ path('app_event_list')}}');
+                    jsonResponse = await response.json();
+                }
+                fillTable(jsonResponse);
+            }
+
+            async function clicPassed(element) {
+                let jsonResponse = null;
+                if(element.checked){
+                    let response = await fetch( '{{ path('get_past_events')}}');
+                    jsonResponse = await response.json();
+                }else{
+                    let response = await fetch('{{ path('app_event_list')}}');
+                    jsonResponse = await response.json();
+                }
+                fillTable(jsonResponse);
             }
         </script>
 {% endblock %}

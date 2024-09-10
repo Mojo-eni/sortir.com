@@ -9,6 +9,7 @@ use App\Entity\Place;
 use App\Repository\CityRepository;
 use App\Repository\EventRepository;
 use App\Repository\PlaceRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,6 +25,55 @@ class AjaxEventController extends AbstractController
     public function getData(SerializerInterface $serializer, EventRepository $eventRepository, $campusId = 1): JsonResponse
     {
         $events = $eventRepository->findBy(['campus' => $campusId]);
+        $data = $serializer->serialize($events, 'json', ['groups' => 'default']);
+        return JsonResponse::fromJsonString($data);
+    }
+
+    #[Route('/get-attending-events/{userId}', name: 'get_attending_from_user')]
+    public function getAttendingEvents(SerializerInterface $serializer, UserRepository $userRepository, $userId = 1): JsonResponse
+    {
+        $user = $userRepository->find($userId);
+        if (!$user) {
+            throw $this->createNotFoundException('User not found');
+        }
+        $events = $user->getParticipations();
+        $data = $serializer->serialize($events, 'json', ['groups' => 'default']);
+        return JsonResponse::fromJsonString($data);
+    }
+
+    #[Route('/get-not-attending-events/{userId}', name: 'get_not_attending_from_user')]
+    public function getNotAttendingEvents(SerializerInterface $serializer, UserRepository $userRepository, EventRepository $eventRepository, $userId = 1): JsonResponse
+    {
+        $user = $userRepository->find($userId);
+        if (!$user) {
+            throw $this->createNotFoundException('User not found');
+        }
+        $userEvents = $user->getParticipations();
+        $events = $eventRepository->findByCampusId($user->getCampus()->getId());
+        $events = array_diff($events, $userEvents);
+        $data = $serializer->serialize($events, 'json', ['groups' => 'default']);
+        return JsonResponse::fromJsonString($data);
+    }
+
+    #[Route('/get-organized-events/{userId}', name: 'get_organized_from_user')]
+    public function getOrganizedEvents(SerializerInterface $serializer, UserRepository $userRepository, $userId = 1): JsonResponse
+    {
+        $user = $userRepository->find($userId);
+        if (!$user) {
+            throw $this->createNotFoundException('User not found');
+        }
+        $events = $user->getEvents();
+        $data = $serializer->serialize($events, 'json', ['groups' => 'default']);
+        return JsonResponse::fromJsonString($data);
+    }
+
+    /**
+     * @throws \DateMalformedStringException
+     */
+    #[Route('/get-past-events', name: 'get_past_events')]
+    public function getPastEvents(SerializerInterface $serializer, EventRepository $eventRepository): JsonResponse
+    {
+        $events = $eventRepository->findPastEvents();
         $data = $serializer->serialize($events, 'json', ['groups' => 'default']);
         return JsonResponse::fromJsonString($data);
     }
