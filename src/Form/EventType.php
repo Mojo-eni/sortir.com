@@ -8,6 +8,7 @@ use App\Entity\Event;
 use App\Entity\Place;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -27,7 +28,7 @@ class EventType extends AbstractType
             ])
             ->add('eventStart', DateTimeType::class, [
                 'widget' => 'single_text',
-                'label' => 'Date et heure de la sortie',
+                'label' => 'Date et heure de la sortie'
             ])
             ->add('participationDeadline', DateType::class, [
                 'widget' => 'single_text',

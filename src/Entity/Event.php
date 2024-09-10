@@ -31,13 +31,20 @@ class Event
 
     #[Groups('default')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(
+        message:'Veuillez choisir une date'
+    )]
     #[Assert\GreaterThan(
         'today 23:59:59',
-        message:"Le début de la sortie ne peut pas être fixé avant demain")]
+        message:"Le début de la sortie ne peut pas être fixé avant demain")
+    ]
     private ?\DateTimeInterface $eventStart = null;
 
     #[Groups('default')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(
+        message:'Veuillez choisir une date'
+    )]
     #[Assert\LessThan(
         propertyPath: 'eventStart',
         message: "La date limite d'inscription ne peut pas être postérieure à la date de la sortie")]
@@ -72,11 +79,17 @@ class Event
     #[Groups('default')]
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(
+        message:"Veuillez choisir un campus"
+    )]
     private ?Campus $campus = null;
 
     #[Groups('default')]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(
+        message:"Veuillez choisir un lieu"
+    )]
     private ?Place $place = null;
 
     #[Groups('default')]
@@ -118,7 +131,7 @@ class Event
         return $this->eventStart;
     }
 
-    public function setEventStart(\DateTimeInterface $eventStart): static
+    public function setEventStart(?\DateTimeInterface $eventStart): static
     {
         $this->eventStart = $eventStart;
 
@@ -130,7 +143,7 @@ class Event
         return $this->participationDeadline;
     }
 
-    public function setParticipationDeadline(\DateTimeInterface $participationDeadline): static
+    public function setParticipationDeadline(?\DateTimeInterface $participationDeadline): static
     {
         $this->participationDeadline = $participationDeadline;
 
