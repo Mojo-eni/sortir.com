@@ -69,7 +69,7 @@ class RegistrationFormType extends AbstractType
                 'class' => Campus::class,
                 'choice_label' => 'name',
                 'label' => 'Campus',
-                'required' => false,
+                'required' => true,
                 'placeholder' => 'Sélectionnez un campus',
             ])
 
@@ -84,7 +84,7 @@ class RegistrationFormType extends AbstractType
                     new Length([
                         'min' => 6,
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
+
                         'max' => 4096,
                     ]),
                 ],
