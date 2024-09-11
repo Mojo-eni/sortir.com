@@ -84,48 +84,27 @@ class ResetPasswordController extends AbstractController
     // src/Controller/ResetPasswordController.php
 
     #[Route('/reset', name: 'app_reset_password')]
-    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, ?string $token = null): Response
+    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator): Response
     {
-        // Si le token est présent, le stocker dans la session
-        if ($token) {
-            $this->storeTokenInSession($token);
-            return $this->redirectToRoute('app_reset_password');
-        }
-
-        // Récupérer le token depuis la session
-        $token = $this->getTokenFromSession();
-
-        if (null === $token) {
-            throw $this->createNotFoundException('No reset password token found in the URL or in the session.');
-        }
-
-        try {
-            /** @var User $user */
-            $user = $this->resetPasswordHelper->validateTokenAndFetchUser($token);
-        } catch (ResetPasswordExceptionInterface $e) {
-            $this->addFlash('reset_password_error', sprintf(
-                '%s - %s',
-                $translator->trans(ResetPasswordExceptionInterface::MESSAGE_PROBLEM_VALIDATE, [], 'ResetPasswordBundle'),
-                $translator->trans($e->getReason(), [], 'ResetPasswordBundle')
-            ));
-
-            return $this->redirectToRoute('app_forgot_password_request');
-        }
-
+        // Créer le formulaire de changement de mot de passe
         $form = $this->createForm(ChangePasswordFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->resetPasswordHelper->removeResetRequest($token);
-
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
 
-            $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
-            $this->entityManager->flush();
+            // Mettre à jour le mot de passe de l'utilisateur ici
+            // Notez que vous devez avoir un mécanisme pour identifier l'utilisateur
+            // qui souhaite changer son mot de passe
 
-            $this->cleanSessionAfterReset();
+            // Exemple d'identification de l'utilisateur :
+            // $user = $this->getUser(); // Assurez-vous que l'utilisateur est authentifié
 
+            // $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
+            // $this->entityManager->flush();
+
+            // Rediriger après le succès
             return $this->redirectToRoute('app_event');
         }
 
