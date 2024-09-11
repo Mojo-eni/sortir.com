@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="flex items-center justify-center min-h-screen">
-        <div class="w-full bg-gradient-to-r bg-white rounded-lg shadow-md overflow-hidden p-6 space-y-4 mx-48 mb-48">
+        <div class="w-full bg-white rounded-lg shadow-md overflow-hidden p-6 space-y-4 mx-48 mb-48">
             <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Créer une sortie</h1>
 
             {{ form_start(eventForm) }}
@@ -312,10 +312,8 @@
             <div class="flex flex-col gap-4 p-6">
                 <h4 class="text-2xl font-semibold text-blue-gray-900">Créer un lieu</h4>
 
-
                 <div class="w-full">
                     <div class="flex-column p-5">
-
                         <div class="relative mt-6">
                             <label for="place-name"
                                    class="absolute left-0 -top-4 text-gray-500 text-m"
@@ -329,7 +327,7 @@
                                focus:outline-none focus:border-light-blue"
                             >
                             {% for error in field_errors(placeForm.name) %}
-                                <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                                <div><p class="text-ms text-red-700">{{ error }}</p></div>
                             {% endfor %}
                         </div>
 
@@ -346,7 +344,7 @@
                                focus:outline-none focus:border-light-blue"
                             >
                             {% for error in field_errors(placeForm.address) %}
-                                <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                                <div><p class="text-ms text-red-700">{{ error }}</p></div>
                             {% endfor %}
                         </div>
 
@@ -363,7 +361,7 @@
                                focus:outline-none focus:border-light-blue"
                             >
                             {% for error in field_errors(placeForm.latitude) %}
-                                <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                                <div><p class="text-ms text-red-700">{{ error }}</p></div>
                             {% endfor %}
                         </div>
 
@@ -380,7 +378,7 @@
                                focus:outline-none focus:border-light-blue"
                             >
                             {% for error in field_errors(placeForm.longitude) %}
-                                <div><p class="text-ms accent-red-700">{{ error }}</p></div>
+                                <div><p class="text-ms text-red-700">{{ error }}</p></div>
                             {% endfor %}
                         </div>
 
@@ -396,21 +394,25 @@
                                 {% endfor %}
                             </select>
                             {% for error in field_errors(placeForm.city) %}
-                                <div class="text-ms accent-red-700">{{ error }}</div>
+                                <div class="text-ms text-red-700">{{ error }}</div>
                             {% endfor %}
+                        </div>
+
+                        <div class="relative mt-6">
+                            <p id="place-form-error" class="hidden text-red-700">Le nom et la rue sont obligatoires</p>
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <div class="p-6 pt-0 flex justify-end">
-                <button onclick="savePlace(this)" class="bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1">
+                <button type="button" onclick="savePlace(this)" class="bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1">
                     <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
                     <img src="{{ asset('image/crayon.png') }}" alt="Modifier" class="w-5 h-5"/>
                     <span>Enregistrer</span>
                 </button>
             </div>
+
             </form>
 
         </div>
@@ -428,20 +430,28 @@
                 'longitude' : document.getElementById("place-longitude").value,
                 'city': document.getElementById("place-city").value
             }
-            try {
-                let response = await fetch('{{ path('save_place') }}', {
-                    method: 'POST',
-                    headers: { "X-Requested-with": "XMLHttpRequest" },
-                    body: JSON.stringify(bodyData),
-                });
-                let reponseAjax = await response.text();
-                reponseAjax = JSON.parse(reponseAjax);
-                if (reponseAjax['message']) {
-                    let citySelect = document.querySelector("#city");
-                    await clicCitySelect(citySelect);
+            let errorMessage = document.getElementById("place-form-error");
+            if (!bodyData.name || !bodyData.address) {
+                errorMessage.classList.remove('hidden');
+            } else {
+                errorMessage.classList.add('hidden');
+                try {
+                    let response = await fetch('{{ path('save_place') }}', {
+                        method: 'POST',
+                        headers: { "X-Requested-with": "XMLHttpRequest" },
+                        body: JSON.stringify(bodyData),
+                    });
+                    let reponseAjax = await response.text();
+                    reponseAjax = JSON.parse(reponseAjax);
+                    if (reponseAjax['message']) {
+                        let citySelect = document.querySelector("#city");
+                        await clicCitySelect(citySelect);
+                    }
+                } catch (error) {
+                    console.error("Erreur lors de l'enregistrement' des données:", error);
+                } finally {
+                    closePopup();
                 }
-            } catch (error) {
-                console.error("Erreur lors de l'enregistrement' des données:", error);
             }
         }
 
@@ -450,6 +460,12 @@
             let popup = document.getElementById('place-popup');
             popup.classList.remove('hidden');
             popup.classList.add('opacity-100'); // Assure que l'opacité est bien visible
+        }
+
+        function closePopup() {
+            let popup = document.getElementById('place-popup');
+            popup.classList.add('hidden');
+            popup.classList.remove('opacity-100');
         }
 
         document.getElementById('place-popup').addEventListener('click', function(event) {
