@@ -5,6 +5,11 @@
 {% block body %}
     <div class="flex items-center justify-center min-h-screen">
         <div class="w-full bg-white rounded-lg shadow-md overflow-hidden p-6 space-y-4 mx-48 mb-48">
+
+            <a href="{{ path('app_event_list') }}" class="top-4 left-4 text-custom-blue hover:text-blue-600">
+                <img src="{{ asset('image/en-arriere.png') }}" alt="Retour" class="w-10 h-10">
+            </a>
+
             <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Créer une sortie</h1>
 
             {{ form_start(eventForm) }}
@@ -287,7 +292,7 @@
 
                     <div class="px-4">
                     {{ form_label(eventForm.publish) }}
-                    {{ form_widget(eventForm.publish, { 'attr': {'class': "bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-2 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1"} }) }}
+                    {{ form_widget(eventForm.publish, { 'attr': {'class': "bg-green-600 text-green-200 border border-green-200 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center"} }) }}
                     </div>
 
                     <div class="px-4">
