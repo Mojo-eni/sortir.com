@@ -56,13 +56,6 @@ class AppFixtures extends Fixture
         $city5->setZipcode('35580');
         $manager->persist($city5);
 
-//        for ($i = 0; $i < $number; $i++) {
-//            $city = new City();
-//            $city->setName('city '.$i);
-//            $city->setZipcode(mt_rand(0, 9).mt_rand(0, 9).mt_rand(0, 9).mt_rand(0, 9).mt_rand(0, 9));
-//            $manager->persist($city);
-//        }
-
         $manager->flush();
     }
 
@@ -163,7 +156,7 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < $number; $i++) {
             $place = new Place();
-            $place->setName('place '.$i);
+            $place->setName('Lieu '.$i);
             $place->setAddress(mt_rand(1, 42)." rue XXX");
             $place->setLatitude('latitude '.$i);
             $place->setLongitude('longitude '.$i);
@@ -185,7 +178,7 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < $number; $i++) {
             $event = new Event();
-            $event->setName('event '.$i);
+            $event->setName('Sortie n° '.$i);
             $event->setOrganizer($this->faker->randomElement($users));
             $event->setEventStart(new DateTime());
             $event->setParticipationDeadline(new DateTime());

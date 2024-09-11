@@ -14,7 +14,7 @@
                 Bonjour <span class="text-orange-400">{{ app.user.pseudo }}</span>
             </label>
             <h1 class="font-bold text-3xl text-blue-950">
-                Rejoignez l'Aventure ! ✨
+                Rejoignez l'aventure ! ✨
             </h1>
         </div>
 
@@ -25,7 +25,7 @@
                 📅 Date du jour :
             </p>
             <p class="text-2xl font-bold text-blue-950">
-                {{ "now"|date("Y-m-d") }}
+                {{ "now"|date("d/m/Y") }}
             </p>
         </div>
 
@@ -106,6 +106,7 @@
         <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden ">
             <thead class="bg-light-blue text-white">
             <tr>
+                <th class="py-3 px-4 text-left">Organisateur</th>
                 <th class="py-3 px-4 text-left">Sortie</th>
                 <th class="py-3 px-4 text-left">Début</th>
                 <th class="py-6 px-4 text-left">Date Limite</th>
@@ -118,9 +119,10 @@
             <tbody id="event_liste" class="text-gray-700">
             {% for event in events %}
                 <tr class="hover:bg-gray-100 transition duration-200">
+                    <td class="border-t border-gray-200 px-4 py-2">{{ event.organizer.pseudo }}</td>
                     <td class="border-t border-gray-200 px-4 py-2">{{ event.name }}</td>
-                    <td class="border-t border-gray-200 px-4 py-2">{{ event.eventStart|date("Y/m/d", false) }}</td>
-                    <td class="border-t border-gray-200 px-4 py-2">{{ event.participationDeadline|date("Y/m/d", false) }}</td>
+                    <td class="border-t border-gray-200 px-4 py-2">{{ event.eventStart|date("d/m/Y", false) }}</td>
+                    <td class="border-t border-gray-200 px-4 py-2">{{ event.participationDeadline|date("d/m/Y", false) }}</td>
                     <td class="border-t border-gray-200 px-4 py-2">{{ event.participants.count }}/{{ event.participantLimit }}</td>
                     <td class="border-t border-gray-200 px-4 py-2">
                         {% if (event.participants.count < event.participantLimit) %}
@@ -150,7 +152,7 @@
                                 <button class="bg-green-600 text-green-200 border border-green-200 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
                                     <span class="bg-green-300 shadow-green-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
                                     <img src="{{ asset('image/edit.png') }}" alt="Edit" class="w-5 h-5"/>
-                                    <span>Edit</span>
+                                    <span>Modifier</span>
                                 </button>
                             </a>
                         {% else %}
@@ -161,7 +163,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="7" class="text-center py-4">Aucun événements trouvé</td>
+                    <td colspan="7" class="text-center py-4">Aucun événement trouvé</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -188,24 +190,25 @@
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
                 const day = String(date.getDate()).padStart(2, '0');
-                return `${year}/${month}/${day}`;
+                return `${day}/${month}/${year}`;
             }
 
             function fillTable(result){
+                let now = new Date();
                 let listContainer = document.getElementById("event_liste");
                 listContainer.innerHTML = "";
                 if (result.length > 0) {
                     result.forEach(event => {
                         const row = document.createElement('tr');
                         let attend;
-                        if (currentUser.roles.includes('ROLE_USER') && event.participants.length < event.participantLimit) {
-                            attend = `<a href="{{ url('app_event_details', {'id': 'REPLACE_ID'}) }}"   <button class="bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
+                        if (currentUser.roles.includes('ROLE_USER') && event.participants.length < event.participantLimit && new Date(event.participationDeadline) > now) {
+                            attend = `<a href="{{ url('app_event_details', {'id': 'REPLACE_ID'}) }}">   <button class="bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
                                     <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
                                     <img src="{{ asset('image/participation.png') }}" alt="Participer" class="w-5 h-5"/>
                                     <span>Participer</span>
                                 </button></a>`.replace('REPLACE_ID', event.id);
                         } else {
-                            attend = 'Full';
+                            attend = `<img src="{{ asset('image/ban-user.png') }}" alt="Denied" class="w-6 h-6 mx-auto"/>`;
                         }
 
                         let details;
@@ -223,11 +226,11 @@
 
                         let edit;
                         if (currentUser.roles.includes('ROLE_ADMIN') || (event.organizer.id === currentUser.id)) {
-                            edit = `<a href="{{ url('app_event_edit', {'id': 'REPLACE_ID'}) }}"
+                            edit = `<a href="{{ url('app_event_edit', {'id': 'REPLACE_ID'}) }}">
                             <button class="bg-green-600 text-green-200 border border-green-200 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
                                 <span class="bg-green-300 shadow-green-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
                                 <img src="{{ asset('image/edit.png') }}" alt="Edit" class="w-5 h-5"/>
-                                <span>Edit</span>
+                                <span>Modifier</span>
                             </button>
                         </a>`.replace('REPLACE_ID', event.id);
                         } else {
@@ -235,6 +238,7 @@
                         }
 
                         row.innerHTML = `
+                        <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${event.organizer.pseudo}</td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${event.name}</td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${formatDate(event.eventStart)}</td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${formatDate(event.participationDeadline)}</td>
