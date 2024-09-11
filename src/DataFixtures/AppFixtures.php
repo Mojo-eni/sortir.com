@@ -163,7 +163,7 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < $number; $i++) {
             $place = new Place();
-            $place->setName('place '.$i);
+            $place->setName('Nom de lieu n° '.$i);
             $place->setAddress(mt_rand(1, 42)." rue XXX");
             $place->setLatitude('latitude '.$i);
             $place->setLongitude('longitude '.$i);
@@ -185,7 +185,7 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < $number; $i++) {
             $event = new Event();
-            $event->setName('event '.$i);
+            $event->setName('nom de sortie n° '.$i);
             $event->setOrganizer($this->faker->randomElement($users));
             $event->setEventStart(new DateTime());
             $event->setParticipationDeadline(new DateTime());
