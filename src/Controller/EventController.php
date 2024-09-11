@@ -73,10 +73,7 @@ class EventController extends AbstractController
         if ($listForm->isSubmitted() && $listForm->isValid()) {
 
             $query = $request->get('list_event_form');
-            dump($query);
             $events = $this->eventRepository->findBy(['campus' => $query['campus']]);
-            dump($events);
-
             if ($query['keyword']) {
                 $events = array_filter($events, function ($item) use ($query) {
                     return stripos($item->getName(), $query['keyword']) !== false;
@@ -96,8 +93,6 @@ class EventController extends AbstractController
                 );
             }
         }
-        dump($events);
-
         return $this->render('event/index.html.twig', [
             'controller_name' => 'EventController',
             'events' => $events,
