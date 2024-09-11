@@ -56,13 +56,6 @@ class AppFixtures extends Fixture
         $city5->setZipcode('35580');
         $manager->persist($city5);
 
-//        for ($i = 0; $i < $number; $i++) {
-//            $city = new City();
-//            $city->setName('city '.$i);
-//            $city->setZipcode(mt_rand(0, 9).mt_rand(0, 9).mt_rand(0, 9).mt_rand(0, 9).mt_rand(0, 9));
-//            $manager->persist($city);
-//        }
-
         $manager->flush();
     }
 
