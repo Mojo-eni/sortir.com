@@ -48,9 +48,6 @@ class AjaxEventController extends AbstractController
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
-//        $userEvents = $user->getParticipations();
-//        $events = $eventRepository->findBy(['campus' => $user->getCampus()->getId()]);
-//        $events = array_diff($events, $userEvents->getValues());
         $events = $eventRepository->findEventsNotAttendedByUser($user);
         $data = $serializer->serialize($events, 'json', ['groups' => 'default']);
         return JsonResponse::fromJsonString($data);
@@ -79,7 +76,7 @@ class AjaxEventController extends AbstractController
         return JsonResponse::fromJsonString($data);
     }
 
-    #[Route('/sort-data/{keyword}', name: 'filter-keyword')]
+    #[Route('/get-search-results/{keyword}', name: 'filter-keyword')]
     public function filterKeyword(EventRepository $eventRepository, $id = 1): JsonResponse
     {
         $events = $eventRepository->findByCampusId($id);

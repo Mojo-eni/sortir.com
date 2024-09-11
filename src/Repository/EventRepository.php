@@ -34,16 +34,6 @@ class EventRepository extends ServiceEntityRepository
             ;
         }
 
-        public function findEventsByUser($userId) : array
-        {
-            return $this->createQueryBuilder('e')
-                ->innerJoin('e.attendees', 'u')
-                ->andWhere('u.id = :userId')
-                ->setParameter('userId', $userId)
-                ->getQuery()
-                ->getResult();
-        }
-
     public function findEventsNotAttendedByUser($user) : array
     {
         return $this->createQueryBuilder('e')
@@ -72,15 +62,6 @@ class EventRepository extends ServiceEntityRepository
             ->setParameter('yesterday', $yesterday)
             ->getQuery()
             ->getResult();
-    }
-
-    public function findOneBySomeField($value): ?Event
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.eventStart = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult();
     }
 
 //        public function findOneBySomeField($value): ?Event
