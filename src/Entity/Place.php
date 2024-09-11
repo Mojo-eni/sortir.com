@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\PlaceRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PlaceRepository::class)]
 class Place
@@ -15,11 +16,19 @@ class Place
     #[Groups('default')]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(
+        message:'Veuillez entrer un nom'
+    )]
     #[Groups('default')]
     private ?string $name = null;
 
+
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(
+        message:"L'adresse ne peut pas être vide"
+    )]
     private ?string $address = null;
 
     #[ORM\Column(length: 64, nullable: true)]
