@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialiser votre mot de passe{% endblock %}
+
+{% block body %}
+    <div class="flex flex-col mx-auto mt-3 min-h-screen ">
+        <div class="bg-white shadow-lg rounded-lg px-8 py-6 w-full max-w-md">
+            <h1 class="font-bold text-2xl text-blue-950 mb-6">Réinitialiser votre mot de passe</h1>
+            <p class="text-gray-700 mb-4">
+                Si un compte correspondant à votre adresse e-mail existe, un e-mail contenant un lien pour réinitialiser votre mot de passe vient d'être envoyé.
+                Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+            </p>
+            <p class="text-gray-700 mb-4">
+                Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier spam ou <a href="{{ path('app_forgot_password_request') }}" class="text-blue-500 hover:underline">réessayez</a>.
+            </p>
+
+            <div class="mt-6">
+                <h2 class="font-bold text-xl text-blue-950 mb-4">Définir un nouveau mot de passe</h2>
+
+                {{ form_start(resetPasswordForm) }}
+
+                <div class="mb-4">
+                    {{ form_label(resetPasswordForm.plainPassword.first, 'Nouveau mot de passe', {'label_attr': {'class': 'block text-lg font-semibold text-gray-800 mb-2'}}) }}
+                    {{ form_widget(resetPasswordForm.plainPassword.first, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
+                    {{ form_errors(resetPasswordForm.plainPassword.first) }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form_label(resetPasswordForm.plainPassword.second, 'Confirmer le mot de passe', {'label_attr': {'class': 'block text-lg font-semibold text-gray-800 mb-2'}}) }}
+                    {{ form_widget(resetPasswordForm.plainPassword.second, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
+                    {{ form_errors(resetPasswordForm.plainPassword.second) }}
+                </div>
+
+                <div class="flex justify-center">
+                    <button class="bg-custom-blue text-gray-50 font-bold py-2 px-4 rounded-md hover:bg-blue-600">
+                        Définir le nouveau mot de passe
+                    </button>
+                </div>
+
+                {{ form_end(resetPasswordForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
