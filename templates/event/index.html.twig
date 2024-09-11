@@ -26,7 +26,7 @@
             </p>
         </div>
 
-        <div>
+<div>
             {{ form_start(listForm) }}
 
             <div class="flex flex-col space-y-4">
@@ -247,7 +247,7 @@
                         }
 
                         row.innerHTML = `
-                        <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${event.organizer.pseudo}</td>
+                        <td class="border border-gray-300 px-4 py-2 whitespace-nowrap"><a href="{{ path('app_profile_id', { 'id': 'ORGANIZER_ID' }) }}" class=" hover:underline">${event.organizer.pseudo}</a></td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${event.name}</td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${formatDate(event.eventStart)}</td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${formatDate(event.participationDeadline)}</td>
@@ -255,7 +255,7 @@
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${attend}</td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${details}</td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${edit}</td>
-                    `;
+                    `.replace('ORGANIZER_ID', event.organizer.id);
                         listContainer.appendChild(row);
                     });
                 } else {
