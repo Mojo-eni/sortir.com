@@ -253,7 +253,7 @@ class EventController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Vous avez été ajouté comme participant à cet événement !');
-        return $this->redirectToRoute('app_event_details', ['id' => $id]);
+        return $this->redirectToRoute('app_event_list');
     }
 
 
