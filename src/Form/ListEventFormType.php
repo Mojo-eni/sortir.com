@@ -69,7 +69,6 @@ class ListEventFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Event::class,
         ]);
     }
 }
