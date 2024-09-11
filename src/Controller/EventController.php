@@ -102,6 +102,51 @@ class EventController extends AbstractController
         ]);
     }
 
+    #[Route('/events/search', name: '_search')]
+    public function searchEvents(SerializerInterface $serializer, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $queryData = $request->request->all(); // This gets all POST data from AJAX
+        dump($queryData);
+        $queryBuilder = $entityManager->createQueryBuilder();
+        $queryBuilder->select('e')
+            ->from('App\Entity\Event', 'e');
+
+        // Add campus filter
+        if (!empty($queryData['campus'])) {
+            $queryBuilder->andWhere('e.campus = :campus')
+                ->setParameter('campus', $queryData['campus']);
+        }
+
+        // Add keyword filter
+        if (!empty($queryData['keyword'])) {
+            $queryBuilder->andWhere('e.name LIKE :keyword')
+                ->setParameter('keyword', '%' . $queryData['keyword'] . '%');
+        }
+
+        // Add date filters
+        if (!empty($queryData['dateFrom'])) {
+            $startDate = DateTime::createFromFormat('Y-m-d', $queryData['dateFrom']);
+            if ($startDate) {
+                $queryBuilder->andWhere('e.eventStart >= :dateFrom')
+                    ->setParameter('dateFrom', $startDate->format('Y-m-d'));
+            }
+        }
+
+        if (!empty($queryData['dateTo'])) {
+            $endDate = DateTime::createFromFormat('Y-m-d', $queryData['dateTo']);
+            if ($endDate) {
+                $queryBuilder->andWhere('e.eventStart <= :dateTo')
+                    ->setParameter('dateTo', $endDate->format('Y-m-d'));
+            }
+        }
+
+        // Execute query and get result
+        $events = $queryBuilder->getQuery()->getResult();
+        // Serialize the result for AJAX response
+        $serializedEvents = $serializer->serialize($events, 'json', ['groups' => ['default']]);
+        return new JsonResponse($serializedEvents, Response::HTTP_OK, [], true);
+    }
+
 
     #[Route('/create', name: '_create')]
     public function create(Request $request, EntityManagerInterface $em, ValidatorInterface $validator): Response
