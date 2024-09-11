@@ -74,7 +74,7 @@
                         />
                         <span class="ml-2">Se souvenir de moi</span>
                     </label>
-                    <a class="text-sm text-purple-200 hover:underline" href="#">Mot de passe oublié?</a>
+                    <a class="text-sm text-purple-200 hover:underline" href="{{ path('app_forgot_password_request') }}">Mot de passe oublié?</a>
                 </div>
 
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">

@@ -29,7 +29,10 @@ security:
                 secret: '2eeb8f2b708e66e33a446429f1688acb' # required
                 lifetime: 604800 # 1 week in seconds
 
-            # activate different ways to authenticate
+
+
+
+          # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
@@ -38,8 +41,12 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+
+
+        # Empêcher l'accès aux pages d'événements aux utilisateurs non connectés
+        - { path: ^/event, roles: ROLE_USER }
+
+
 
 when@test:
     security:
@@ -53,3 +60,10 @@ when@test:
                 cost: 4 # Lowest possible value for bcrypt
                 time_cost: 3 # Lowest possible value for argon
                 memory_cost: 10 # Lowest possible value for argon
+
+            App\Entity\User:
+                # the new hasher, along with its options
+                algorithm: sodium
+                migrate_from:
+                    - bcrypt # uses the "bcrypt" hasher with the default options
+                    - legacy # uses the "legacy" hasher configured above
