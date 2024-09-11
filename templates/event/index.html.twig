@@ -4,7 +4,7 @@
 
 {% block body %}
     <style>
-        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper { margin: 0.5em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
         .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
     </style>
 
@@ -17,7 +17,7 @@
 
 
 
-        <div class="greeter text-center mb-8 p-4 g">
+        <div class="greeter text-center mb-4 p-4 g">
             <p class="text-lg font-semibold text-gray-800 mb-2">
                 📅 Date du jour :
             </p>
@@ -70,18 +70,22 @@
                         </div>
 
                         <!-- Date de début -->
-                        <div>
+                    <div class="flex space-x-4 w-full">
+                        <!-- Date de début -->
+                        <div class="flex-1 w-1/2">
                             <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.dateFrom) }}">Du</label>
                             {{ form_widget(listForm.dateFrom, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
                             {{ form_errors(listForm.dateFrom) }}
                         </div>
 
                         <!-- Date de fin -->
-                        <div>
+                        <div class="flex-1 w-1/2">
                             <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.dateTo) }}">Au</label>
                             {{ form_widget(listForm.dateTo, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
                             {{ form_errors(listForm.dateTo) }}
                         </div>
+                    </div>
+
                 </div>
                 <!-- Bouton de recherche -->
                 <div class="flex justify-center mt-6">
@@ -100,7 +104,7 @@
 
         </div>
 
-        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden ">
+        <table class=" bg-white shadow-md rounded-lg overflow-hidden mx-auto">
             <thead class="bg-light-blue text-white">
             <tr>
                 <th class="py-3 px-4 text-left">Organisateur</th>
