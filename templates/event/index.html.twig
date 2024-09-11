@@ -4,7 +4,7 @@
 
 {% block body %}
     <style>
-        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper { margin: 0.5em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
         .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
     </style>
 
@@ -17,7 +17,7 @@
 
 
 
-        <div class="greeter text-center mb-8 p-4 g">
+        <div class="greeter text-center mb-4 p-4 g">
             <p class="text-lg font-semibold text-gray-800 mb-2">
                 📅 Date du jour :
             </p>
@@ -70,6 +70,25 @@
                         {{ form_errors(listForm.keyword) }}
                     </div>
 
+<<<<<<< HEAD
+                        <!-- Date de début -->
+                    <div class="flex space-x-4 w-full">
+                        <!-- Date de début -->
+                        <div class="flex-1 w-1/2">
+                            <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.dateFrom) }}">Du</label>
+                            {{ form_widget(listForm.dateFrom, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
+                            {{ form_errors(listForm.dateFrom) }}
+                        </div>
+
+                        <!-- Date de fin -->
+                        <div class="flex-1 w-1/2">
+                            <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.dateTo) }}">Au</label>
+                            {{ form_widget(listForm.dateTo, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
+                            {{ form_errors(listForm.dateTo) }}
+                        </div>
+                    </div>
+
+=======
                     <!-- Date de début -->
                     <div>
                         <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.dateFrom) }}">Du</label>
@@ -83,6 +102,7 @@
                         {{ form_widget(listForm.dateTo, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
                         {{ form_errors(listForm.dateTo) }}
                     </div>
+>>>>>>> origin/develop
                 </div>
                 <!-- Bouton de recherche -->
                 <div class="flex justify-center mt-6">
@@ -102,6 +122,51 @@
 
     </div>
 
+<<<<<<< HEAD
+        <table class=" bg-white shadow-md rounded-lg overflow-hidden mx-auto">
+            <thead class="bg-light-blue text-white">
+            <tr>
+                <th class="py-3 px-4 text-left">Organisateur</th>
+                <th class="py-3 px-4 text-left">Sortie</th>
+                <th class="py-3 px-4 text-left">Début</th>
+                <th class="py-6 px-4 text-left">Date Limite</th>
+                <th class="py-3 px-4 text-left">Participants</th>
+                <th class="py-3 px-4 text-left">S'inscrire</th>
+                <th class="py-3 px-4 text-left">Consulter</th>
+                <th class="py-3 px-4 text-left">Modifier</th>
+            </tr>
+            </thead>
+            <tbody id="event_liste" class="text-gray-700">
+            {% for event in events %}
+                <tr class="hover:bg-gray-100 transition duration-200">
+                    <td class="border-t border-gray-200 px-4 py-2">{{ event.organizer.pseudo }}</td>
+                    <td class="border-t border-gray-200 px-4 py-2">{{ event.name }}</td>
+                    <td class="border-t border-gray-200 px-4 py-2">{{ event.eventStart|date("d/m/Y", false) }}</td>
+                    <td class="border-t border-gray-200 px-4 py-2">{{ event.participationDeadline|date("d/m/Y", false) }}</td>
+                    <td class="border-t border-gray-200 px-4 py-2">{{ event.participants.count }}/{{ event.participantLimit }}</td>
+                    <td class="border-t border-gray-200 px-4 py-2">
+                        {% if (event.participants.count < event.participantLimit)
+                            and ("now"|date("Y-m-d") > event.participationDeadline)
+                            and event.status.name == "Ouverte"
+                            and event.organizer.id != app.user.id %}
+                            <a href="{{ url('app_event_participate', {'id': event.id}) }}">
+                                <button class="mx-auto bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
+                                    <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                                    <img src="{{ asset('image/participation.png') }}" alt="Participer" class="w-5 h-5"/>
+                                    <span>Participer</span>
+                                </button>
+                            </a>
+                        {% else %}
+                            <img src="{{ asset('image/ban-user.png') }}" alt="Denied" class="w-6 h-6 mx-auto"/>
+                        {% endif %}
+                    </td>
+                    <td class="border-t border-gray-200 px-4 py-2">
+                        <a href="{{ url('app_event_details', {'id': event.id}) }}">
+                            <button class="mx-auto bg-orange-600 text-orange-900 border border-orange-400 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
+                                <span class="bg-orange-300 shadow-orange-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                                <img src="{{ asset('image/chercher.png') }}" alt="Display" class="w-5 h-5"/>
+                                <span>Afficher</span>
+=======
     <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden ">
         <thead class="bg-light-blue text-white">
         <tr>
@@ -135,6 +200,7 @@
                                 <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
                                 <img src="{{ asset('image/participation.png') }}" alt="Participer" class="w-5 h-5"/>
                                 <span>Participer</span>
+>>>>>>> origin/develop
                             </button>
                         </a>
                     {% else %}
