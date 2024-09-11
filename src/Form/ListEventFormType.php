@@ -22,7 +22,9 @@ class ListEventFormType extends AbstractType
                 'mapped' => false,
                 'class' => 'App\Entity\Campus',
                 'choice_label' => 'name',
-                'label' => "Campus"
+                'label' => "Campus",
+                'placeholder' => 'Select an option',
+                'required' => true,
             ])
             ->add('keyword', TextType::class, [
                 'mapped' => false,
