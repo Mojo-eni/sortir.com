@@ -118,7 +118,9 @@
         <tbody id="event_liste" class="text-gray-700">
         {% for event in events %}
             <tr class="hover:bg-gray-100 transition duration-200">
-                <td class="border-t border-gray-200 px-4 py-2">{{ event.organizer.pseudo }}</td>
+                <td class="border-t border-gray-200 px-4 py-2"><a href="{{ path('app_profile_id', { 'id': event.organizer.id }) }}" class=" hover:underline">
+                        {{ event.organizer.pseudo }}
+                    </a></td>
                 <td class="border-t border-gray-200 px-4 py-2">{{ event.name }}</td>
                 <td class="border-t border-gray-200 px-4 py-2">{{ event.eventStart|date("d/m/Y", false) }}</td>
                 <td class="border-t border-gray-200 px-4 py-2">{{ event.participationDeadline|date("d/m/Y", false) }}</td>
