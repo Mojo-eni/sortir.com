@@ -26,7 +26,7 @@
             </p>
         </div>
 
-<div>
+        <div>
             {{ form_start(listForm) }}
 
             <div class="flex flex-col space-y-4">
@@ -62,114 +62,114 @@
 
 
 
-                        <!-- Mot-clé -->
-                        <div>
-                            <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.keyword) }}">Mot-clé</label>
-                            {{ form_widget(listForm.keyword, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
-                            {{ form_errors(listForm.keyword) }}
-                        </div>
+                    <!-- Mot-clé -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.keyword) }}">Mot-clé</label>
+                        {{ form_widget(listForm.keyword, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
+                        {{ form_errors(listForm.keyword) }}
+                    </div>
 
-                        <!-- Date de début -->
-                        <div>
-                            <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.dateFrom) }}">Du</label>
-                            {{ form_widget(listForm.dateFrom, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
-                            {{ form_errors(listForm.dateFrom) }}
-                        </div>
+                    <!-- Date de début -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.dateFrom) }}">Du</label>
+                        {{ form_widget(listForm.dateFrom, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
+                        {{ form_errors(listForm.dateFrom) }}
+                    </div>
 
-                        <!-- Date de fin -->
-                        <div>
-                            <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.dateTo) }}">Au</label>
-                            {{ form_widget(listForm.dateTo, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
-                            {{ form_errors(listForm.dateTo) }}
-                        </div>
+                    <!-- Date de fin -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-800 mb-2" for="{{ field_label(listForm.dateTo) }}">Au</label>
+                        {{ form_widget(listForm.dateTo, {'attr': {'class': 'block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50'}}) }}
+                        {{ form_errors(listForm.dateTo) }}
+                    </div>
                 </div>
                 <!-- Bouton de recherche -->
                 <div class="flex justify-center mt-6">
                     {{ form_widget(listForm.search, {'attr': {'class': 'bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 ease-in-out'}}) }}
                 </div>
             </div>
-            </div>
+        </div>
 
-            {{ form_end(listForm) }}
+        {{ form_end(listForm) }}
     </div>
 
 
-        <div class="js-user-rating"
-             data-is-authenticated="{{ app.user ? 'true' : 'false' }}"
-             data-user="{{ serializedUser }}">
+    <div class="js-user-rating"
+         data-is-authenticated="{{ app.user ? 'true' : 'false' }}"
+         data-user="{{ serializedUser }}">
 
-        </div>
+    </div>
 
-        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden ">
-            <thead class="bg-light-blue text-white">
-            <tr>
-                <th class="py-3 px-4 text-left">Organisateur</th>
-                <th class="py-3 px-4 text-left">Sortie</th>
-                <th class="py-3 px-4 text-left">Début</th>
-                <th class="py-6 px-4 text-left">Date Limite</th>
-                <th class="py-3 px-4 text-left">Participants</th>
-                <th class="py-3 px-4 text-left">S'inscrire</th>
-                <th class="py-3 px-4 text-left">Consulter</th>
-                <th class="py-3 px-4 text-left">Modifier</th>
-            </tr>
-            </thead>
-            <tbody id="event_liste" class="text-gray-700">
-            {% for event in events %}
-                <tr class="hover:bg-gray-100 transition duration-200">
-                    <td class="border-t border-gray-200 px-4 py-2"><a href="{{ path('app_profile_id', { 'id': participant.id }) }}" class=" hover:underline">
-                            {{ event.organizer.pseudo }}
-                        </a></td>
-                    <td class="border-t border-gray-200 px-4 py-2">{{ event.name }}</td>
-                    <td class="border-t border-gray-200 px-4 py-2">{{ event.eventStart|date("d/m/Y", false) }}</td>
-                    <td class="border-t border-gray-200 px-4 py-2">{{ event.participationDeadline|date("d/m/Y", false) }}</td>
-                    <td class="border-t border-gray-200 px-4 py-2">{{ event.participants.count }}/{{ event.participantLimit }}</td>
-                    <td class="border-t border-gray-200 px-4 py-2">
-                        {% if (event.participants.count < event.participantLimit)
-                            and ("now"|date("Y-m-d") > event.participationDeadline)
-                            and event.status.name == "Ouverte"
-                            and event.organizer.id != app.user.id %}
-                            <a href="{{ url('app_event_participate', {'id': event.id}) }}">
-                                <button class="mx-auto bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
-                                    <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
-                                    <img src="{{ asset('image/participation.png') }}" alt="Participer" class="w-5 h-5"/>
-                                    <span>Participer</span>
-                                </button>
-                            </a>
-                        {% else %}
-                            <img src="{{ asset('image/ban-user.png') }}" alt="Denied" class="w-6 h-6 mx-auto"/>
-                        {% endif %}
-                    </td>
-                    <td class="border-t border-gray-200 px-4 py-2">
-                        <a href="{{ url('app_event_details', {'id': event.id}) }}">
-                            <button class="mx-auto bg-orange-600 text-orange-900 border border-orange-400 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
-                                <span class="bg-orange-300 shadow-orange-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
-                                <img src="{{ asset('image/chercher.png') }}" alt="Display" class="w-5 h-5"/>
-                                <span>Afficher</span>
+    <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden ">
+        <thead class="bg-light-blue text-white">
+        <tr>
+            <th class="py-3 px-4 text-left">Organisateur</th>
+            <th class="py-3 px-4 text-left">Sortie</th>
+            <th class="py-3 px-4 text-left">Début</th>
+            <th class="py-6 px-4 text-left">Date Limite</th>
+            <th class="py-3 px-4 text-left">Participants</th>
+            <th class="py-3 px-4 text-left">S'inscrire</th>
+            <th class="py-3 px-4 text-left">Consulter</th>
+            <th class="py-3 px-4 text-left">Modifier</th>
+        </tr>
+        </thead>
+        <tbody id="event_liste" class="text-gray-700">
+        {% for event in events %}
+            <tr class="hover:bg-gray-100 transition duration-200">
+                <td class="border-t border-gray-200 px-4 py-2"><a href="{{ path('app_profile_id', { 'id': event.organizer.id }) }}" class=" hover:underline">
+                        {{ event.organizer.pseudo }}
+                    </a></td>
+                <td class="border-t border-gray-200 px-4 py-2">{{ event.name }}</td>
+                <td class="border-t border-gray-200 px-4 py-2">{{ event.eventStart|date("d/m/Y", false) }}</td>
+                <td class="border-t border-gray-200 px-4 py-2">{{ event.participationDeadline|date("d/m/Y", false) }}</td>
+                <td class="border-t border-gray-200 px-4 py-2">{{ event.participants.count }}/{{ event.participantLimit }}</td>
+                <td class="border-t border-gray-200 px-4 py-2">
+                    {% if (event.participants.count < event.participantLimit)
+                        and ("now"|date("Y-m-d") > event.participationDeadline)
+                        and event.status.name == "Ouverte"
+                        and event.organizer.id != app.user.id %}
+                        <a href="{{ url('app_event_participate', {'id': event.id}) }}">
+                            <button class="mx-auto bg-sky-950 text-sky-400 border border-sky-400 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
+                                <span class="bg-light-blue shadow-sky-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                                <img src="{{ asset('image/participation.png') }}" alt="Participer" class="w-5 h-5"/>
+                                <span>Participer</span>
                             </button>
                         </a>
-                    </td>
-                    <td class="border-t border-gray-200 px-4 py-2">
-                        {% if ('ROLE_ADMIN' in app.user.roles) or (event.organizer.id is same as(app.user.id)) %}
-                            <a href="{{ url('app_event_edit', {'id': event.id}) }}">
-                                <button class="mx-auto bg-green-600 text-green-200 border border-green-200 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
-                                    <span class="bg-green-300 shadow-green-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
-                                    <img src="{{ asset('image/edit.png') }}" alt="Edit" class="w-5 h-5"/>
-                                    <span>Modifier</span>
-                                </button>
-                            </a>
-                        {% else %}
-                            <img src="{{ asset('image/ban-user.png') }}" alt="Denied" class="w-6 h-6 mx-auto"/>
+                    {% else %}
+                        <img src="{{ asset('image/ban-user.png') }}" alt="Denied" class="w-6 h-6 mx-auto"/>
+                    {% endif %}
+                </td>
+                <td class="border-t border-gray-200 px-4 py-2">
+                    <a href="{{ url('app_event_details', {'id': event.id}) }}">
+                        <button class="mx-auto bg-orange-600 text-orange-900 border border-orange-400 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
+                            <span class="bg-orange-300 shadow-orange-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                            <img src="{{ asset('image/chercher.png') }}" alt="Display" class="w-5 h-5"/>
+                            <span>Afficher</span>
+                        </button>
+                    </a>
+                </td>
+                <td class="border-t border-gray-200 px-4 py-2">
+                    {% if ('ROLE_ADMIN' in app.user.roles) or (event.organizer.id is same as(app.user.id)) %}
+                        <a href="{{ url('app_event_edit', {'id': event.id}) }}">
+                            <button class="mx-auto bg-green-600 text-green-200 border border-green-200 border-b-4 font-medium overflow-hidden relative px-6 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group flex items-center space-x-1 justify-center">
+                                <span class="bg-green-300 shadow-green-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                                <img src="{{ asset('image/edit.png') }}" alt="Edit" class="w-5 h-5"/>
+                                <span>Modifier</span>
+                            </button>
+                        </a>
+                    {% else %}
+                        <img src="{{ asset('image/ban-user.png') }}" alt="Denied" class="w-6 h-6 mx-auto"/>
 
-                        {% endif %}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="7" class="text-center py-4">Aucun événement trouvé</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7" class="text-center py-4">Aucun événement trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
 
     {% block ajax %}
@@ -178,49 +178,6 @@
             let isAuthenticated = null;
             let campusId;
             let jsonResponse;
-            document.addEventListener('DOMContentLoaded', function() {
-                const form = document.getElementById('listForm');
-
-                form.addEventListener('submit', function(event) {
-                    event.preventDefault(); // Prevent the default form submission
-
-                    // Collect form data
-                    const formData = new FormData(form);
-
-                    // Send the AJAX request using fetch
-                    fetch("{{ path('app_event_search') }}", {
-                        method: 'POST',
-                        body: formData,
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
-                        })
-                        .then(events => {
-                            // Clear the event container
-                            const eventsContainer = document.getElementById('events-container');
-                            eventsContainer.innerHTML = '';
-
-                            // Loop through each event and append to the container
-                            events.forEach(event => {
-                                const eventElement = document.createElement('div');
-                                eventElement.classList.add('event-item');
-                                eventElement.innerHTML = `
-                    <h3>${event.name}</h3>
-                    <p>Start: ${event.eventStart}</p>
-                    <p>Campus: ${event.campus}</p>
-                `;
-                                eventsContainer.appendChild(eventElement);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('There was an error with the fetch operation:', error);
-                        });
-                });
-            });
-
             document.addEventListener('DOMContentLoaded', function() {
                 const userRating = document.querySelector('.js-user-rating');
                 const e = document.getElementById('Campus');
@@ -289,7 +246,6 @@
                             edit = '<img src="{{ asset('image/ban-user.png') }}" alt="Denied" class="w-6 h-6 mx-auto"/>';
                         }
 
-
                         row.innerHTML = `
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap"><a href="{{ path('app_profile_id', { 'id': 'ORGANIZER_ID' }) }}" class=" hover:underline">${event.organizer.pseudo}</a></td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${event.name}</td>
@@ -307,13 +263,6 @@
                     row.innerHTML = '<td colspan="6">Aucune sortie trouvée</td>';
                     listContainer.appendChild(row);
                 }
-            }
-
-            async function clicSearch(element) {
-                campusId = element.value;
-                let response = await fetch( '{{ path('get_list_from_campus')}}' + '/' + campusId);
-                let result = await response.json();
-                fillTable(result);
             }
 
             async function clicCampusSelect(element) {
@@ -367,5 +316,4 @@
                 fillTable(jsonResponse);
             }
         </script>
-{% endblock %}
-
+    {% endblock %}
