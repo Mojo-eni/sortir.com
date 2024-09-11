@@ -116,7 +116,9 @@
             <tbody id="event_liste" class="text-gray-700">
             {% for event in events %}
                 <tr class="hover:bg-gray-100 transition duration-200">
-                    <td class="border-t border-gray-200 px-4 py-2">{{ event.organizer.pseudo }}</td>
+                    <td class="border-t border-gray-200 px-4 py-2"><a href="{{ path('app_profile_id', { 'id': participant.id }) }}" class=" hover:underline">
+                            {{ event.organizer.pseudo }}
+                        </a></td>
                     <td class="border-t border-gray-200 px-4 py-2">{{ event.name }}</td>
                     <td class="border-t border-gray-200 px-4 py-2">{{ event.eventStart|date("d/m/Y", false) }}</td>
                     <td class="border-t border-gray-200 px-4 py-2">{{ event.participationDeadline|date("d/m/Y", false) }}</td>
@@ -235,8 +237,9 @@
                             edit = '<img src="{{ asset('image/ban-user.png') }}" alt="Denied" class="w-6 h-6 mx-auto"/>';
                         }
 
+
                         row.innerHTML = `
-                        <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${event.organizer.pseudo}</td>
+                        <td class="border border-gray-300 px-4 py-2 whitespace-nowrap"><a href="{{ path('app_profile_id', { 'id': 'ORGANIZER_ID' }) }}" class=" hover:underline">${event.organizer.pseudo}</a></td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${event.name}</td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${formatDate(event.eventStart)}</td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${formatDate(event.participationDeadline)}</td>
@@ -244,7 +247,7 @@
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${attend}</td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${details}</td>
                         <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">${edit}</td>
-                    `;
+                    `.replace('ORGANIZER_ID', event.organizer.id);
                         listContainer.appendChild(row);
                     });
                 } else {
