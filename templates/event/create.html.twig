@@ -436,8 +436,15 @@
                 'city': document.getElementById("place-city").value
             }
             let errorMessage = document.getElementById("place-form-error");
-            if (!bodyData.name || !bodyData.address) {
+            if (!bodyData.name && !bodyData.address) {
                 errorMessage.classList.remove('hidden');
+                errorMessage.innerHTML = "Le nom et la rue sont obligatoires"
+            } else if (!bodyData.name) {
+                errorMessage.classList.remove('hidden');
+                errorMessage.innerHTML = "Le nom est obligatoire"
+            } else if (!bodyData.address) {
+                errorMessage.classList.remove('hidden');
+                errorMessage.innerHTML = "La rue est obligatoire"
             } else {
                 errorMessage.classList.add('hidden');
                 try {

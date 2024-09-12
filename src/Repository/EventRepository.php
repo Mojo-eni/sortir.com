@@ -36,12 +36,15 @@ class EventRepository extends ServiceEntityRepository
 
     public function findEventsNotAttendedByUser($user) : array
     {
+        $today = new DateTime();
         return $this->createQueryBuilder('e')
             ->innerJoin('e.participants', 'u')
             ->andWhere(':userId NOT MEMBER OF e.participants')
             ->andWhere(':campus = e.campus')
+            ->andWhere(':deadline < e.participationDeadline')
             ->setParameter('userId', $user->getId())
             ->setParameter('campus', $user->getCampus())
+            ->setParameter('deadline', $today)
             ->getQuery()
             ->getResult();
     }

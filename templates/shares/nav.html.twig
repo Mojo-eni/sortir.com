@@ -13,7 +13,13 @@
                 <a href="{{ path('app_event_list') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Accueil</a>
                 <a href="{{ path('app_event_create') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Ajouter une sortie</a>
                 <a href="{{ path('app_profile') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Mon Profil</a>
+
+                <!-- Add User link for ADMIN role -->
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_register') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Ajouter un utilisateur</a>
+                {% endif %}
                 <a href="{{ path('app_logout') }}" class="navbar-item text-custom-blue hover:text-orange-400 transition duration-200">Se déconnecter</a>
+
             {% endif %}
         </div>
 
@@ -36,5 +42,5 @@
 </nav>
 
 <div class="pt-24">
-
+    <!-- Content -->
 </div>
