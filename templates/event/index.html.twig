@@ -35,7 +35,7 @@
                     <label class="block text-lg font-semibold text-gray-800" for="{{ field_label(listForm.campus) }}">Filtrer les sorties</label>
                     <select id="{{ field_label(listForm.campus) }}" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
                             name="{{ field_name(listForm.campus) }}" onchange="clicCampusSelect(this)" required>
-                        <option value="">Select an option</option>
+                        <option value="">Sélectionnez un campus pour afficher les sorties</option>
                         {% for name, id in field_choices(listForm.campus) %}
                             <option value="{{ id }}">{{ name }}</option>
                         {% endfor %}
